@@ -1,5 +1,5 @@
 import sys
-sys.path.append('path/to/astroSABER/astroSABER/')
+sys.path.append('../astroSABER/')
 
 import os
 import numpy as np
