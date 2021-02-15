@@ -23,15 +23,16 @@ def baseline_als(y, lam, p, niter):
         w = p * (y > z) + (1-p) * (y < z)
     return z
 
+
 #optimized version; this should be faster by a factor ~1.5
 def baseline_als_optimized(y, lam, p, niter):
     L = len(y)
     D = sparse.diags([1,-2,1],[0,-1,-2], shape=(L,L-2))
-    D = lam * D.dot(D.transpose()) # Precompute this term since it does not depend on `w`
+    D = lam * D.dot(D.transpose())
     w = np.ones(L)
     W = sparse.spdiags(w, 0, L, L)
     for i in range(niter):
-        W.setdiag(w) # Do not create a new matrix, just update diagonal values
+        W.setdiag(w) 
         Z = W + D
         z = spsolve(Z, w*y)
         w = p * (y > z) + (1-p) * (y < z)

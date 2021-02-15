@@ -13,7 +13,7 @@ import warnings
 
 def velocity_axes(name):
 	header = fits.getheader(name)
-	n = header['NAXIS3'] #number of channels on spectral axis
+	n = header['NAXIS3']
 	velocity = (header['CRVAL3'] - header['CRPIX3'] * header['CDELT3']) + (np.arange(n)+1) * header['CDELT3']
 	velocity = velocity / 1000
 	return velocity
@@ -47,7 +47,7 @@ def check_signal(spectrum, sigma, noise):
     return np.any(spectrum > sigma * noise)
             
 
-#check if there is signal in at least xy neighboring channels corresponding to velo_range [km/s]: default 5 channels
+#check if there is signal in at least xy neighboring channels corresponding to velo_range [km/s]: default 10 channels
 def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=None):
     vdelt = header['CDELT3'] / 1000.
     if sigma is None:

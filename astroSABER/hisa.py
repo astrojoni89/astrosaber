@@ -2,7 +2,7 @@
 # @Date:   2021-01
 # @Filename: hisa.py
 # @Last modified by:   syed
-# @Last modified time: 27-01-2021
+# @Last modified time: 15-02-2021
 
 '''hisa extraction'''
 
@@ -46,7 +46,7 @@ class HisaExtraction(object):
 
         self.header = fits.getheader(self.fitsfile)
         self.header_2d = md_header_2d(self.fitsfile)
-        self.v = self.header['NAXIS3'] #number of spectral channels
+        self.v = self.header['NAXIS3']
         string = 'Done!'
         say(string)
 
@@ -95,9 +95,8 @@ class HisaExtraction(object):
                         n = 0
                         converge_logic = np.array([])
                         while n < self.niters:
-                            #print('Iteration {} in progress'.format(n+1))
-                            spectrum_prior = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3) #first iteration
-                            spectrum_next = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3) #second iteration
+                            spectrum_prior = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
+                            spectrum_next = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
                             residual = abs(spectrum_next - spectrum_prior)
                             if np.any(np.isnan(residual)):
                                 print('Residual contains NaNs') 
@@ -109,18 +108,15 @@ class HisaExtraction(object):
                                 i_converge = np.min(np.argwhere(c > self.iterations_for_convergence))
                                 res = abs(spectrum_next - spectrum_firstfit)
                                 final_spec = spectrum_next + res
-                                #print('Stable convergence achieved at iteration: {}'.format(i_converge))
-                                #print('Convergence reached after total {} iterations'.format(n+1))
                                 break
                             else:
-                                #print('Residual {} > {}. Next iteration...'.format(abs(residual),1.0))
                                 n += 1
                             if n==self.niters:
                                 warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), StopIteration)
                                 res = abs(spectrum_next - spectrum_firstfit)
                                 final_spec = spectrum_next + res
                         image_asy[:,j,i] = final_spec - thresh[j,i]
-                        HISA_map[:,j,i] = final_spec - self.image[:,j,i] - thresh[j,i] #subtract also noise (systematic offset set by thresh=x*noise)
+                        HISA_map[:,j,i] = final_spec - self.image[:,j,i] - thresh[j,i]
                         iteration_map[j,i] = i_converge
                     else:
                         image_asy[:,j,i] = np.nan
