@@ -6,3 +6,5 @@ include setup.cfg
 recursive-include astroSABER *.py
 recursive-include astroSABER/utils *.py
 recursive-include scripts *
+
+global-exclude *.pyc *.o
