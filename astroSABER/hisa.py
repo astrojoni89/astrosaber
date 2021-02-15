@@ -14,9 +14,9 @@ from astropy.io import fits
 from tqdm import trange
 import warnings
 
-from .astroSABER.utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, StopIteration, say
+from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, StopIteration, say
 
-from .astroSABER.utils.aslsq_fit import baseline_als_optimized
+from .utils.aslsq_fit import baseline_als_optimized
 
 
 class HisaExtraction(object):
