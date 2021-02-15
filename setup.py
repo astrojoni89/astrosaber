@@ -17,7 +17,7 @@ metadata = dict(conf.items('metadata'))
 PACKAGENAME = metadata.get('package_name', 'astroSABER')
 DESCRIPTION = metadata.get('description', 'astroSABER: Self-Absorption Baseline ExtractoR developed for systematic baseline fitting')
 AUTHOR = metadata.get('author', 'Jonas Syed')
-AUTHOR_EMAIL = metadata.get('author_email', '')
+AUTHOR_EMAIL = metadata.get('author_email', 'syed [at] mpia-hd.mpg.de')
 LICENSE = metadata.get('license', 'BSD 3-Clause')
 URL = metadata.get('url', 'https://github.com/astrojoni89/astroSABER')
 
