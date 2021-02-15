@@ -9,15 +9,15 @@ from hisa import HisaExtraction
 
 
 ###HI data to extract HISA
-image_HI = 'HI_test_cube.fits'
+image_HI = 'HI_THOR_test_cube.fits'
 
 
 ###initialize hisa extraction
 hisa = HisaExtraction(fitsfile=image_HI)
 
-###path to noise data (or universal noise value)
-hisa.path_to_noise_map = os.path.join('.', 'dir', 'sub', '*.fits')
-#hisa.noise = 4. #K
+###path to noise map (or universal noise value)
+#hisa.path_to_noise_map = os.path.join('.', 'dir', 'sub', '*.fits')
+hisa.noise = 4. #Kelvin
 
 
 ###asymmetric least squares smoothing (Eilers et al. 2005) parameters
