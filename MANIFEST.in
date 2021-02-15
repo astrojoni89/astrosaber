@@ -4,5 +4,5 @@ include CHANGES.md
 include setup.cfg
 
 recursive-include astroSABER *.py *.pyx *.c *.pxd
-recursive-include astroSABER/ *.py *.pyx *.c *.pxd
+recursive-include astroSABER/utils *.py *.pyx *.c *.pxd
 recursive-include scripts *
