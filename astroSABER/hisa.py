@@ -85,7 +85,7 @@ class HisaExtraction(object):
             image_asy = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
             HISA_map = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
             iteration_map = np.zeros((self.header['NAXIS2'],self.header['NAXIS1']))
-            print('Asymmetric least squares fitting in progress...')
+            print('\n'+'Asymmetric least squares fitting in progress...')
             for i in trange(pixel_start[0],pixel_end[0],1):
                 for j in range(pixel_start[1],pixel_end[1],1):
                     spectrum = self.image[:,j,i]
