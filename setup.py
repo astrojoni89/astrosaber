@@ -20,7 +20,12 @@ AUTHOR = metadata.get('author', 'Jonas Syed')
 AUTHOR_EMAIL = metadata.get('author_email', 'syed [at] mpia-hd.mpg.de')
 LICENSE = metadata.get('license', 'BSD 3-Clause')
 URL = metadata.get('url', 'https://github.com/astrojoni89/astroSABER')
+__minimum_python_version__ = metadata.get("minimum_python_version", "3.6")
 
+# Enforce Python version check - this is the same check as in __init__.py but
+if sys.version_info < tuple((int(val) for val in __minimum_python_version__.split('.'))):
+    sys.stderr.write("ERROR: astroSABER requires Python {} or later\n".format(__minimum_python_version__))
+    sys.exit(1)
 
 
 from setuptools import setup
@@ -48,6 +53,7 @@ setup(name=PACKAGENAME,
     license=LICENSE,
     url=URL,
     long_description=LONG_DESCRIPTION,
+    python_requires='>={}'.format(__minimum_python_version__),
     packages=['astroSABER'],
 )
 
