@@ -1,9 +1,7 @@
 include README.md
 include CHANGES.md
-
 include setup.cfg
 
-recursive-include astroSABER *.py
-recursive-include scripts *
+recursive-include astroSABER *.pyx *.c *.pxd
 
 global-exclude *.pyc *.o
