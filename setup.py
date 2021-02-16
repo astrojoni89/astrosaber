@@ -28,7 +28,7 @@ if sys.version_info < tuple((int(val) for val in __minimum_python_version__.spli
     sys.exit(1)
 
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 readme_glob = 'README*'
 with open(glob.glob(readme_glob)[0]) as f:
@@ -54,6 +54,6 @@ setup(name=PACKAGENAME,
     url=URL,
     long_description=LONG_DESCRIPTION,
     python_requires='>={}'.format(__minimum_python_version__),
-    packages=['astroSABER'],
+    packages=find_packages(),
 )
 
