@@ -1,7 +1,7 @@
 # astroSABER
 
 ## About
-**S**elf-**A**bsorption **B**aseline **E**xtracto**R** (astroSABER) is a baseline fitting routine originally developed to extract the baselines of self-absorption features in HI spectra. The routine makes use of asymmetric least squares smoothing first proposed by [Eilers and Boelens 2005](https://www.researchgate.net/publication/228961729_Baseline_Correction_with_Asymmetric_Least_Squares_Smoothing). The basic principle is to find a solution that minimizes the regularized least squares function:
+**S**elf-**A**bsorption **B**aseline **E**xtracto**R** (astroSABER) is a baseline fitting routine originally developed to extract the baselines of self-absorption features in HI spectra. The routine makes use of asymmetric least squares smoothing first proposed by [Eilers & Boelens 2005](https://www.researchgate.net/publication/228961729_Baseline_Correction_with_Asymmetric_Least_Squares_Smoothing). The basic principle is to find a solution that minimizes the regularized least squares function:
 
 ![\begin{align*}
     F(\mathbf{z}) = (\mathbf{y} - \mathbf{z})^\top (\mathbf{y} - \mathbf{z}) + \lambda \mathbf{z}^\top \, \mathbf{D}^\top \mathbf{D} \, \mathbf{z} \: .
