@@ -9,7 +9,7 @@ astroSABER (**S**elf-**A**bsorption **B**aseline **E**xtracto**R**) is a baselin
 
 where ![\mathbf{y}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7By%7D) is the signal and ![\mathbf{z}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7Bz%7D) is the smoothed signal to be found. The first and second term in Eq.(1) express the fitness of the data and smoothness of ![\mathbf{z}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7Bz%7D) defined by the second order differential matrix ![\mathbf{D}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7BD%7D), respectively.  The parameter ![\lambda](https://render.githubusercontent.com/render/math?math=%5CLarge+%5Ctextstyle+%5Clambda%0A) adjusts the balance between these two terms.
 In order to correct the baseline with respect to peaks and dips in the spectrum, the weighting matrix ![\mathbf{W} = \mathrm{diag}(\mathbf{w})
-](https://render.githubusercontent.com/render/math?math=%5CLarge+%5Ctextstyle+%5Cmathbf%7BW%7D+%3D+%5Cmathrm%7Bdiag%7D%28%5Cmathbf%7Bw%7D%29%0A) is introduced. 
+](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7BW%7D+%3D+%5Cmathrm%7Bdiag%7D%28%5Cmathbf%7Bw%7D%29%0A) is introduced. 
 
 ## Dependencies
 You will need the following packages to run `astroSABER`. We list the version of each package which we know to be compatible with `astroSABER`:
