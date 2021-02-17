@@ -1,11 +1,8 @@
-import sys
-sys.path.append('../astroSABER/')
-
 import os
 import numpy as np
 from astropy.io import fits
 
-from hisa import HisaExtraction
+from astroSABER.hisa import HisaExtraction
 
 
 ###HI data to extract HISA
