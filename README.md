@@ -35,7 +35,7 @@ You will need the following packages to run `astroSABER`. We list the version of
 Download `astroSABER` using git `$ git clone https://github.com/astrojoni89/astroSABER.git`
 
 ### Installing astroSABER
-To install `astroSABER`, make sure that all dependences are already installed and properly linked to python. We recommend using anaconda and creating a new environment. Then cd to the local directory containing `astroSABER` and install via
+To install `astroSABER`, make sure that all dependencies are already installed and properly linked to python. We recommend using anaconda and creating a new environment. Then cd to the local directory containing `astroSABER` and install via
 ```
 python setup.py install
 ```
