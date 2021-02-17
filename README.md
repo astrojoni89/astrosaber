@@ -1,12 +1,11 @@
 # astroSABER
 
 ## About
-**S**elf-**A**bsorption **B**aseline **E**xtracto**R** developed for systematic baseline fitting
+**S**elf-**A**bsorption **B**aseline **E**xtracto**R** (astroSABER) is a baseline fitting routine originally developed to extract the baselines of self-absorption features in HI spectra. The routine makes use of asymmetric least squares smoothing first proposed by Eilers 2005. The basic principle is to find a solution that minimizes the regularized least squares function:
 
 ![\begin{align*}
-F(\mathbf{z}) = (\mathbf{y} - \mathbf{z})^\top \mathbf{W} (\mathbf{y} - \mathbf{z}) + \lambda \mathbf{z}^\top \, \mathbf{D}^\top \mathbf{D} \, \mathbf{z}
-\end{align*}
-](https://render.githubusercontent.com/render/math?math=%5CLarge+%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0AF%28%5Cmathbf%7Bz%7D%29+%3D+%28%5Cmathbf%7By%7D+-+%5Cmathbf%7Bz%7D%29%5E%5Ctop+%5Cmathbf%7BW%7D+%28%5Cmathbf%7By%7D+-+%5Cmathbf%7Bz%7D%29+%2B+%5Clambda+%5Cmathbf%7Bz%7D%5E%5Ctop+%5C%2C+%5Cmathbf%7BD%7D%5E%5Ctop+%5Cmathbf%7BD%7D+%5C%2C+%5Cmathbf%7Bz%7D%0A%5Cend%7Balign%2A%7D%0A)
+    F(\mathbf{z}) = (\mathbf{y} - \mathbf{z})^\top (\mathbf{y} - \mathbf{z}) + \lambda \mathbf{z}^\top \, \mathbf{D}^\top \mathbf{D} \, \mathbf{z} \: .
+\end{align*}](https://render.githubusercontent.com/render/math?math=%5CLarge+%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A++++F%28%5Cmathbf%7Bz%7D%29+%3D+%28%5Cmathbf%7By%7D+-+%5Cmathbf%7Bz%7D%29%5E%5Ctop+%28%5Cmathbf%7By%7D+-+%5Cmathbf%7Bz%7D%29+%2B+%5Clambda+%5Cmathbf%7Bz%7D%5E%5Ctop+%5C%2C+%5Cmathbf%7BD%7D%5E%5Ctop+%5Cmathbf%7BD%7D+%5C%2C+%5Cmathbf%7Bz%7D+%5C%3A+.%0A%5Cend%7Balign%2A%7D)
 
 ## Dependencies
 You will need the following packages to run `astroSABER`. We list the version of each package which we know to be compatible with `astroSABER`:
