@@ -1,13 +1,13 @@
 # astroSABER
 
 ## About
-**S**elf-**A**bsorption **B**aseline **E**xtracto**R** (astroSABER) is a baseline fitting routine originally developed to extract the baselines of self-absorption features in HI spectra. The routine makes use of asymmetric least squares smoothing first proposed by [Eilers & Boelens 2005](https://www.researchgate.net/publication/228961729_Baseline_Correction_with_Asymmetric_Least_Squares_Smoothing). The basic principle is to find a solution that minimizes the regularized least squares function:
+astroSABER (**S**elf-**A**bsorption **B**aseline **E**xtracto**R**) is a baseline fitting routine originally developed to extract the baselines of self-absorption features in HI spectra. The routine makes use of asymmetric least squares smoothing first proposed by [Eilers & Boelens 2005](https://www.researchgate.net/publication/228961729_Baseline_Correction_with_Asymmetric_Least_Squares_Smoothing). The basic principle is to find a solution that minimizes the penalized least squares function:
 
-![\begin{align*}
-    F(\mathbf{z}) = (\mathbf{y} - \mathbf{z})^\top (\mathbf{y} - \mathbf{z}) + \lambda \mathbf{z}^\top \, \mathbf{D}^\top \mathbf{D} \, \mathbf{z} \: .
-\end{align*}](https://render.githubusercontent.com/render/math?math=%5CLarge+%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A++++F%28%5Cmathbf%7Bz%7D%29+%3D+%28%5Cmathbf%7By%7D+-+%5Cmathbf%7Bz%7D%29%5E%5Ctop+%28%5Cmathbf%7By%7D+-+%5Cmathbf%7Bz%7D%29+%2B+%5Clambda+%5Cmathbf%7Bz%7D%5E%5Ctop+%5C%2C+%5Cmathbf%7BD%7D%5E%5Ctop+%5Cmathbf%7BD%7D+%5C%2C+%5Cmathbf%7Bz%7D+%5C%3A+.%0A%5Cend%7Balign%2A%7D)
+![\begin{align}
+    F(\mathbf{z}) = (\mathbf{y} - \mathbf{z})^\top \mathbf{W} (\mathbf{y} - \mathbf{z}) + \lambda \mathbf{z}^\top \, \mathbf{D}^\top \mathbf{D} \, \mathbf{z} \: ,
+\end{align}](https://render.githubusercontent.com/render/math?math=%5CLarge+%5Cdisplaystyle+%5Cbegin%7Balign%7D%0A++++F%28%5Cmathbf%7Bz%7D%29+%3D+%28%5Cmathbf%7By%7D+-+%5Cmathbf%7Bz%7D%29%5E%5Ctop+%5Cmathbf%7BW%7D+%28%5Cmathbf%7By%7D+-+%5Cmathbf%7Bz%7D%29+%2B+%5Clambda+%5Cmathbf%7Bz%7D%5E%5Ctop+%5C%2C+%5Cmathbf%7BD%7D%5E%5Ctop+%5Cmathbf%7BD%7D+%5C%2C+%5Cmathbf%7Bz%7D+%5C%3A+%2C%0A%5Cend%7Balign%7D)
 
-The spectrum is described by ![\mathbf{y}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7By%7D) and ![\mathbf{z}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7Bz%7D) is the smoothed signal to be found.
+where ![\mathbf{y}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7By%7D) is the signal and ![\mathbf{z}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7Bz%7D) is the smoothed signal to be found. The first and second term in Eq.(1) express the fitness of the data and smoothness of ![\mathbf{z}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7Bz%7D) defined by the second order differential matrix ![\mathbf{D}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7BD%7D).
 
 ## Dependencies
 You will need the following packages to run `astroSABER`. We list the version of each package which we know to be compatible with `astroSABER`:
