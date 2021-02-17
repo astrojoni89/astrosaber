@@ -22,7 +22,7 @@ Given both the parameters ![\lambda](https://render.githubusercontent.com/render
 ](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+w_i+%3D+1%0A). Depending on the deviation of ![\mathbf{z}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7Bz%7D) from ![\mathbf{y}](https://render.githubusercontent.com/render/math?math=%5Clarge+%5Ctextstyle+%5Cmathbf%7By%7D) after each iteration, dips in the spectrum will be smoothed out while peaks will be given most weight (or vice versa).
 
 ## Installation
-# Dependencies
+### Dependencies
 You will need the following packages to run `astroSABER`. We list the version of each package which we know to be compatible with `astroSABER`:
 
 * [python3.6](https://www.python.org/) 
@@ -31,14 +31,14 @@ You will need the following packages to run `astroSABER`. We list the version of
 * [scipy (v1.5.2)](https://www.scipy.org/)
 * [tqdm (v4.56.2)](https://tqdm.github.io/)
 
-# Download astroSABER
+### Download astroSABER
 Download `astroSABER` using git `$ git clone https://github.com/astrojoni89/astroSABER.git`
 
-# Installing astroSABER
+### Installing astroSABER
 To install `astroSABER`, make sure that all dependences are already installed and properly linked to python. If you are using anaconda, we recommend to create a new environment. Then cd to the local directory containing `astroSABER` and install via
 ```
 python setup.py install
 ```
 
-# Getting started
+## Getting started
 You can find an example script for an HI self-absorption (HISA) baseline extraction run in the `example` directory. The data used in this example are taken from The HI/OH Recombination line survey of the inner Milky Way (THOR; [Beuther et al. 2016](https://ui.adsabs.harvard.edu/abs/2016A%26A...595A..32B/abstract), [Wang et al. 2020](https://ui.adsabs.harvard.edu/abs/2020A%26A...634A..83W/abstract)).
