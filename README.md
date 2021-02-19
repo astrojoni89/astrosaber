@@ -1,3 +1,9 @@
+<!--
+  Title: astroSABER
+  Description: Self-Absorption Baseline ExtractoR developed for systematic baseline fitting.
+  Author: astrojoni89
+-->
+
 # astroSABER
 
 ## About
