@@ -32,6 +32,7 @@ class HisaExtraction(object):
         self.niters = 20
         self.iterations_for_convergence = 3
         self.noise = None
+        self.add_residual = True
 
     def getting_ready(self):
         string = 'preparation'
@@ -107,14 +108,20 @@ class HisaExtraction(object):
                             if np.any(c > self.iterations_for_convergence):
                                 i_converge = np.min(np.argwhere(c > self.iterations_for_convergence))
                                 res = abs(spectrum_next - spectrum_firstfit)
-                                final_spec = spectrum_next + res
+                                if self.add_residual:
+                                    final_spec = spectrum_next + res
+                                else:
+                                    final_spec = spectrum_next
                                 break
                             else:
                                 n += 1
                             if n==self.niters:
                                 warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), StopIteration)
                                 res = abs(spectrum_next - spectrum_firstfit)
-                                final_spec = spectrum_next + res
+                                if self.add_residual:
+                                    final_spec = spectrum_next + res
+                                else:
+                                    final_spec = spectrum_next
                         image_asy[:,j,i] = final_spec - thresh[j,i]
                         HISA_map[:,j,i] = final_spec - self.image[:,j,i] - thresh[j,i]
                         iteration_map[j,i] = i_converge
