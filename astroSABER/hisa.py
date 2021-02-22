@@ -130,8 +130,8 @@ class HisaExtraction(object):
                         HISA_map[:,j,i] = np.nan
                         iteration_map[j,i] = np.nan
 
-            stri = 'Done!'
-            say(stri)
+            string = 'Done!'
+            say(string)
             filename_bg = self.fitsfile.split('.fits')[0]+'_aslsq_bg_spectrum.fits'
             filename_hisa = self.fitsfile.split('.fits')[0]+'_HISA_spectrum.fits'
             filename_iter = self.fitsfile.split('.fits')[0]+'_number_of_iterations.fits'
