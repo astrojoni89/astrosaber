@@ -33,6 +33,7 @@ class HisaExtraction(object):
         self.iterations_for_convergence = 3
         self.noise = None
         self.add_residual = True
+        self.sig = 1.0
 
     def getting_ready(self):
         string = 'preparation'
@@ -66,13 +67,13 @@ class HisaExtraction(object):
 
         if self.path_to_noise_map is not None:
             noise_map = fits.getdata(self.path_to_noise_map)
-            thresh = 1.0 * noise_map
+            thresh = self.sig * noise_map
         else:
             if self.noise is None:
                raise Exception("Need to specify 'noise' if no path to noise map is given.") 
             else:
                 noise_map = self.noise * np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
-                thresh = 1.0 * noise_map
+                thresh = self.sig * noise_map
 
         pixel_start=[0,0]
         pixel_end=[self.header['NAXIS1'],self.header['NAXIS2']]
