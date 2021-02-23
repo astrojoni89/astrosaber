@@ -25,15 +25,21 @@ class HisaExtraction(object):
         self.path_to_noise_map = path_to_noise_map
         self.path_to_data = '.'
         self.smoothing = 'Y'
+        
         self.lam1 = None
         self.p1 = None
         self.lam2 = None
         self.p2 = None
+        
         self.niters = 20
         self.iterations_for_convergence = 3
+        
         self.noise = None
         self.add_residual = True
         self.sig = 1.0
+        
+        self.velo_range = 15.0
+        self.check_signal_sigma = 10
 
     def getting_ready(self):
         string = 'preparation'
@@ -91,7 +97,7 @@ class HisaExtraction(object):
             for i in trange(pixel_start[0],pixel_end[0],1):
                 for j in range(pixel_start[1],pixel_end[1],1):
                     spectrum = self.image[:,j,i]
-                    if check_signal_ranges(spectrum, self.header, sigma=10, noise=noise_map[j,i], velo_range=15.0):
+                    if check_signal_ranges(spectrum, self.header, sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range):
                         spectrum_prior = baseline_als_optimized(spectrum, self.lam1, self.p1, niter=3)
                         spectrum_firstfit = spectrum_prior
                         n = 0
