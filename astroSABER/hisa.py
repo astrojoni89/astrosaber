@@ -90,9 +90,9 @@ class HisaExtraction(object):
             heading = '\n' + banner + '\n' + string + '\n' + banner
             say(heading)
 
-            image_asy = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
-            HISA_map = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
-            iteration_map = np.zeros((self.header['NAXIS2'],self.header['NAXIS1']))
+            self.image_asy = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
+            self.HISA_map = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
+            self.iteration_map = np.zeros((self.header['NAXIS2'],self.header['NAXIS1']))
             print('\n'+'Asymmetric least squares fitting in progress...')
             for i in trange(pixel_start[0],pixel_end[0],1):
                 for j in range(pixel_start[1],pixel_end[1],1):
@@ -129,13 +129,13 @@ class HisaExtraction(object):
                                     final_spec = spectrum_next + res
                                 else:
                                     final_spec = spectrum_next
-                        image_asy[:,j,i] = final_spec - thresh[j,i]
-                        HISA_map[:,j,i] = final_spec - self.image[:,j,i] - thresh[j,i]
-                        iteration_map[j,i] = i_converge
+                        self.image_asy[:,j,i] = final_spec - thresh[j,i]
+                        self.HISA_map[:,j,i] = final_spec - self.image[:,j,i] - thresh[j,i]
+                        self.iteration_map[j,i] = i_converge
                     else:
-                        image_asy[:,j,i] = np.nan
-                        HISA_map[:,j,i] = np.nan
-                        iteration_map[j,i] = np.nan
+                        self.image_asy[:,j,i] = np.nan
+                        self.HISA_map[:,j,i] = np.nan
+                        self.iteration_map[j,i] = np.nan
 
             string = 'Done!'
             say(string)
@@ -148,11 +148,11 @@ class HisaExtraction(object):
         filename_hisa = self.fitsfile.split('.fits')[0]+'_HISA_spectrum.fits'
         filename_iter = self.fitsfile.split('.fits')[0]+'_number_of_iterations.fits'
         pathname_bg = os.path.join(self.path_to_data, filename_bg)
-        fits.writeto(pathname_bg, image_asy, header=self.header, overwrite=True)
+        fits.writeto(pathname_bg, self.image_asy, header=self.header, overwrite=True)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_bg, self.path_to_data))
         pathname_hisa = os.path.join(self.path_to_data, filename_hisa)
-        fits.writeto(pathname_hisa, HISA_map, header=self.header, overwrite=True)
+        fits.writeto(pathname_hisa, self.HISA_map, header=self.header, overwrite=True)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_hisa, self.path_to_data))
         pathname_iter = os.path.join(self.path_to_data, filename_iter)
-        fits.writeto(pathname_iter, iteration_map, header=self.header_2d, overwrite=True)
+        fits.writeto(pathname_iter, self.iteration_map, header=self.header_2d, overwrite=True)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_iter, self.path_to_data))
