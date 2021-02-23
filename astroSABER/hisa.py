@@ -144,15 +144,15 @@ class HisaExtraction(object):
             raise Exception("No smoothing applied. Set smoothing to 'Y'")
             
     def save_data(self):
-            filename_bg = self.fitsfile.split('.fits')[0]+'_aslsq_bg_spectrum.fits'
-            filename_hisa = self.fitsfile.split('.fits')[0]+'_HISA_spectrum.fits'
-            filename_iter = self.fitsfile.split('.fits')[0]+'_number_of_iterations.fits'
-            pathname_bg = os.path.join(self.path_to_data, filename_bg)
-            fits.writeto(pathname_bg, image_asy, header=self.header, overwrite=True)
-            print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_bg, self.path_to_data))
-            pathname_hisa = os.path.join(self.path_to_data, filename_hisa)
-            fits.writeto(pathname_hisa, HISA_map, header=self.header, overwrite=True)
-            print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_hisa, self.path_to_data))
-            pathname_iter = os.path.join(self.path_to_data, filename_iter)
-            fits.writeto(pathname_iter, iteration_map, header=self.header_2d, overwrite=True)
-            print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_iter, self.path_to_data))
+        filename_bg = self.fitsfile.split('.fits')[0]+'_aslsq_bg_spectrum.fits'
+        filename_hisa = self.fitsfile.split('.fits')[0]+'_HISA_spectrum.fits'
+        filename_iter = self.fitsfile.split('.fits')[0]+'_number_of_iterations.fits'
+        pathname_bg = os.path.join(self.path_to_data, filename_bg)
+        fits.writeto(pathname_bg, image_asy, header=self.header, overwrite=True)
+        print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_bg, self.path_to_data))
+        pathname_hisa = os.path.join(self.path_to_data, filename_hisa)
+        fits.writeto(pathname_hisa, HISA_map, header=self.header, overwrite=True)
+        print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_hisa, self.path_to_data))
+        pathname_iter = os.path.join(self.path_to_data, filename_iter)
+        fits.writeto(pathname_iter, iteration_map, header=self.header_2d, overwrite=True)
+        print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_iter, self.path_to_data))
