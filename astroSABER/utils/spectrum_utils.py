@@ -17,9 +17,9 @@ def pixel_circle_calculation(fitsfile,glon,glat,r):
     delta = abs(header['CDELT1']) #in degree
     pixel_array = []
     if header['NAXIS']==3:
-        central_px = w.all_world2pix(Glon,Glat,0,1)
+        central_px = w.all_world2pix(glon,glat,0,1)
     elif header['NAXIS']==2:
-        central_px = w.all_world2pix(Glon,Glat,1)
+        central_px = w.all_world2pix(glon,glat,1)
     else:
         raise Exception('Something wrong with the header!')
     central_px = [int(np.round(central_px[0],decimals=0))-1,int(np.round(central_px[1],decimals=0))-1]
