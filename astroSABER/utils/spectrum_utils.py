@@ -32,7 +32,7 @@ def pixel_circle_calculation(fitsfile,glon,glat,r):
         px_end = [int(np.round(px_end[0],decimals=0)),int(np.round(px_end[1],decimals=0))]
         for i_x in range(px_start[0]-1,px_end[0]+1):
             for i_y in range(px_start[1]-1,px_end[1]+1):
-                if sqrt((i_x-central_px[0])**2+(i_y-central_px[1])**2) < circle_size_px/2.:
+                if np.sqrt((i_x-central_px[0])**2+(i_y-central_px[1])**2) < circle_size_px/2.:
                     pixel_array.append((i_x,i_y))
     else:
         pixel_array.append((central_px[0],central_px[1]))
@@ -60,7 +60,7 @@ def pixel_circle_calculation_px(fitsfile,x,y,r):
         px_end = [int(np.round(px_end[0],decimals=0)),int(np.round(px_end[1],decimals=0))]
         for i_x in range(px_start[0]-1,px_end[0]+1):
             for i_y in range(px_start[1]-1,px_end[1]+1):
-                if sqrt((i_x-central_px[0])**2+(i_y-central_px[1])**2) < circle_size_px/2.:
+                if np.sqrt((i_x-central_px[0])**2+(i_y-central_px[1])**2) < circle_size_px/2.:
                     pixel_array.append((i_x,i_y))
     else:
         pixel_array.append((central_px[0],central_px[1]))
