@@ -11,6 +11,11 @@ from tqdm import trange
 import warnings
 
 
+def find_nearest(array,value):
+    idx = (np.abs(array-value)).argmin()
+    return idx
+
+
 def velocity_axes(name):
 	header = fits.getheader(name)
 	n = header['NAXIS3']
