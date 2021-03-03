@@ -116,6 +116,7 @@ class HisaExtraction(object):
                                 n += 1
                             if n==self.niters:
                                 #warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), IterationWarning)
+                                print('Flag pixel (x,y)=({},{}). Fit did not converge.'.format(i,j))
                                 flag_map[j,i] = False
                                 res = abs(spectrum_next - spectrum_firstfit)
                                 final_spec = spectrum_next + res
