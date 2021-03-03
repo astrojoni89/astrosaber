@@ -2,7 +2,7 @@
 # @Date:   2021-01
 # @Filename: hisa.py
 # @Last modified by:   syed
-# @Last modified time: 15-02-2021
+# @Last modified time: 03-03-2021
 
 '''hisa extraction'''
 
@@ -93,6 +93,8 @@ class HisaExtraction(object):
             self.image_asy = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
             self.HISA_map = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
             self.iteration_map = np.zeros((self.header['NAXIS2'],self.header['NAXIS1']))
+            #flags
+            self.flag_map = np.ones((self.header['NAXIS2'],self.header['NAXIS1']), dtype=bool)
             
             print('\n'+'Asymmetric least squares fitting in progress...')
             for i in trange(pixel_start[0],pixel_end[0],1):
@@ -125,6 +127,8 @@ class HisaExtraction(object):
                                 n += 1
                             if n==self.niters:
                                 warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), IterationWarning)
+                                #flags
+                                self.flag_map[j,i] = False
                                 res = abs(spectrum_next - spectrum_firstfit)
                                 if self.add_residual:
                                     final_spec = spectrum_next + res
@@ -137,6 +141,8 @@ class HisaExtraction(object):
                         self.image_asy[:,j,i] = np.nan
                         self.HISA_map[:,j,i] = np.nan
                         self.iteration_map[j,i] = np.nan
+                        #flags
+                        self.flag_map[j,i] = False
 
             string = 'Done!'
             say(string)
@@ -148,6 +154,9 @@ class HisaExtraction(object):
         filename_bg = self.fitsfile.split('.fits')[0]+'_aslsq_bg_spectrum.fits'
         filename_hisa = self.fitsfile.split('.fits')[0]+'_HISA_spectrum.fits'
         filename_iter = self.fitsfile.split('.fits')[0]+'_number_of_iterations.fits'
+        #flags
+        filename_flags = self.fitsfile.split('.fits')[0]+'_flags.fits'
+        
         pathname_bg = os.path.join(self.path_to_data, filename_bg)
         fits.writeto(pathname_bg, self.image_asy, header=self.header, overwrite=True)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_bg, self.path_to_data))
@@ -157,3 +166,7 @@ class HisaExtraction(object):
         pathname_iter = os.path.join(self.path_to_data, filename_iter)
         fits.writeto(pathname_iter, self.iteration_map, header=self.header_2d, overwrite=True)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_iter, self.path_to_data))
+        #flags
+        pathname_flags = os.path.join(self.path_to_data, filename_flags)
+        fits.writeto(pathname_flags, self.flag_map, header=self.header_2d, overwrite=True)
+        print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_flags, self.path_to_data))
