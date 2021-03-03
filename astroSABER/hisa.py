@@ -10,13 +10,15 @@ import os
 import numpy as np
 
 from astropy.io import fits
+from astropy import units as u
 
 from tqdm import trange
 import warnings
 
 from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say
-
 from .utils.aslsq_fit import baseline_als_optimized
+
+from plotting import plot_spectra
 
 
 class HisaExtraction(object):
@@ -40,6 +42,8 @@ class HisaExtraction(object):
         
         self.velo_range = 15.0
         self.check_signal_sigma = 10
+        
+        self.plot_spectra = False
 
     def getting_ready(self):
         string = 'preparation'
@@ -170,3 +174,7 @@ class HisaExtraction(object):
         pathname_flags = os.path.join(self.path_to_data, filename_flags)
         fits.writeto(pathname_flags, self.flag_map, header=self.header_2d, overwrite=True)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_flags, self.path_to_data))
+        
+    if plot_spectra:
+        fitsfiles = [self.fitsfile, filename_bg, filename_hisa]
+        plot_spectra(fitsfiles, outfile='spectra_astroSABER.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s)
