@@ -168,6 +168,6 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
         os.makedirs(path_to_plots)
     filename = outfile
     pathname = os.path.join(path_to_plots, filename)
-    fig.savefig(pathname, dpi=dpi, bbox_inches='tight', overwrite=True)
+    fig.savefig(pathname, dpi=dpi, bbox_inches='tight')
     #plt.close()
     print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
