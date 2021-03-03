@@ -14,7 +14,7 @@ from astropy.io import fits
 from tqdm import trange
 import warnings
 
-from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, StopIteration, say
+from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say
 
 from .utils.aslsq_fit import baseline_als_optimized
 
@@ -112,7 +112,7 @@ class HisaExtraction(object):
                             else:
                                 n += 1
                             if n==self.niters:
-                                warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), StopIteration)
+                                warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), IterationWarning)
                                 res = abs(spectrum_next - spectrum_firstfit)
                                 final_spec = spectrum_next + res
                         image_asy[:,j,i] = final_spec - thresh[j,i]
