@@ -20,7 +20,7 @@ from .utils.spectrum_utils import pixel_circle_calculation, pixel_circle_calcula
 from .utils.aslsq_helper import find_nearest, velocity_axes
 
 def styles():
-    color_list = ['k', 'r', 'r']
+    color_list = ['k', 'b', 'b']
     draw_list = ['steps-mid', 'default', 'steps-mid']
     line_list = ['-', '--', '-']
     return color_list, draw_list, line_list
@@ -105,7 +105,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
         
         if radius is not None:
             for i in range(len(coordinates)):
-                ax = fig.add_subplot(rows,cols,i+1)
+                ax = fig.add_subplot(rows,cols,i+1,sharex=True,sharey=True)
                 for idx, fitsfile in enumerate(fitsfiles):
                     pixel_array = pixel_circle_calculation(fitsfile,glon=coordinates[i,0],glat=coordinates[i,1],r=radius)
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
