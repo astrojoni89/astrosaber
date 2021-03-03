@@ -14,7 +14,7 @@ from astropy.io import fits
 from tqdm import trange
 import warnings
 
-from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, StopIteration, say
+from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say
 
 from .utils.aslsq_fit import baseline_als_optimized
 
@@ -93,6 +93,7 @@ class HisaExtraction(object):
             self.image_asy = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
             self.HISA_map = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
             self.iteration_map = np.zeros((self.header['NAXIS2'],self.header['NAXIS1']))
+            
             print('\n'+'Asymmetric least squares fitting in progress...')
             for i in trange(pixel_start[0],pixel_end[0],1):
                 for j in range(pixel_start[1],pixel_end[1],1):
@@ -123,7 +124,7 @@ class HisaExtraction(object):
                             else:
                                 n += 1
                             if n==self.niters:
-                                warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), StopIteration)
+                                warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), IterationWarning)
                                 res = abs(spectrum_next - spectrum_firstfit)
                                 if self.add_residual:
                                     final_spec = spectrum_next + res
