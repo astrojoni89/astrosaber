@@ -69,6 +69,8 @@ def ylabel_from_header(header):
 
 
 def add_figure_properties(ax, header=None, fontsize=10, vel_unit=u.km/u.s):
+    ax.set_xlim(np.amin(velocity_range), np.amax(velocity_range))
+    #ax.set_ylim()
     ax.set_xlabel(xlabel_from_header(header, vel_unit), fontsize=fontsize)
     ax.set_ylabel(ylabel_from_header(header), fontsize=fontsize)
 
@@ -105,7 +107,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
         
         if radius is not None:
             for i in range(len(coordinates)):
-                ax = fig.add_subplot(rows,cols,i+1,sharex=True,sharey=True)
+                ax = fig.add_subplot(rows,cols,i+1)
                 for idx, fitsfile in enumerate(fitsfiles):
                     pixel_array = pixel_circle_calculation(fitsfile,glon=coordinates[i,0],glat=coordinates[i,1],r=radius)
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
@@ -169,8 +171,8 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle=draw_list[idx], color=color_list[idx], linestyle=line_list[idx])
                 add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
 
-    for axs in fig.axes:
-        axs.label_outer()
+    #for axs in fig.axes:
+        #axs.label_outer()
     fig.tight_layout()
 
     if not os.path.exists(path_to_plots):
