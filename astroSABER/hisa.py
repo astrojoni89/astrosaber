@@ -151,6 +151,10 @@ class HisaExtraction(object):
             string = 'Done!'
             say(string)
             self.save_data()
+            if plot_spectra:
+                fitsfiles = [self.fitsfile, filename_bg, filename_hisa]
+                plot_spectra(fitsfiles, outfile='spectra_astroSABER.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s)
+
         else:
             raise Exception("No smoothing applied. Set smoothing to 'Y'")
             
@@ -175,6 +179,3 @@ class HisaExtraction(object):
         fits.writeto(pathname_flags, self.flag_map, header=self.header_2d, overwrite=True)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_flags, self.path_to_data))
         
-    if plot_spectra:
-        fitsfiles = [self.fitsfile, filename_bg, filename_hisa]
-        plot_spectra(fitsfiles, outfile='spectra_astroSABER.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s)
