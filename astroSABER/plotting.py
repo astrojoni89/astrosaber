@@ -16,7 +16,7 @@ from astropy.io import fits
 from astropy import units as u
 from tqdm import tqdm
 
-from .utils.spectrum_utils import pixel_circle_calculation, calculate_spectrum
+from .utils.spectrum_utils import pixel_circle_calculation, pixel_circle_calculation_px, calculate_spectrum
 from .utils.aslsq_helper import find_nearest, velocity_axes
 
 
