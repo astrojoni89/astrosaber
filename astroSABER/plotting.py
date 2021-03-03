@@ -15,10 +15,8 @@ import matplotlib.pyplot as plt
 from astropy import units as u
 from tqdm import tqdm
 
-from .utils.spectrum_utils import pixel_circle_calculation
-from .utils.spectrum_utils import calculate_spectrum
+from .utils.spectrum_utils import pixel_circle_calculation, calculate_spectrum
 from .utils.aslsq_helper import find_nearest, velocity_axes
-
 
 
 
