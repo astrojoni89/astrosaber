@@ -11,8 +11,8 @@ from astroSABER.hisa import HisaExtraction
 image_HI = 'HI_THOR_test_cube.fits'
 
 
-###initialize hisa extraction; also plot some example spectra at random positions
-hisa = HisaExtraction(fitsfile=image_HI, plot_spectra=True)
+###initialize hisa extraction
+hisa = HisaExtraction(fitsfile=image_HI)
 
 ###path to noise map (or universal noise value)
 #hisa.path_to_noise_map = os.path.join('.', 'dir', 'sub', '*.fits')
@@ -30,8 +30,8 @@ hisa.p2 = 0.90
 hisa.niters = 20
 
 
-###this runs the hisa extraction routine
-hisa.saber()
+###this runs the hisa extraction routine; also plot some example spectra at random positions
+hisa.saber(plot_spectra=True)
 
 
 
