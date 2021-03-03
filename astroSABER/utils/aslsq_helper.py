@@ -83,7 +83,7 @@ def md_header_2d(fitsfile):
     return header_2d
 
 
-class StopIteration(UserWarning):
+class IterationWarning(UserWarning):
     pass
 
 
