@@ -1,9 +1,10 @@
 import os
 import numpy as np
 from astropy.io import fits
+from astropy import units as u
 
 from astroSABER.hisa import HisaExtraction
-from astroSABER.plotting import plot_spectra
+#from astroSABER.plotting import plot_spectra
 
 
 ###HI data to extract HISA
