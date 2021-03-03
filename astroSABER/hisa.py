@@ -18,7 +18,7 @@ import warnings
 from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say
 from .utils.aslsq_fit import baseline_als_optimized
 
-from plotting import plot_spectra
+from astroSABER.plotting import plot_spectra
 
 
 class HisaExtraction(object):
