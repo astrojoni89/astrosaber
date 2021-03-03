@@ -3,6 +3,7 @@ import numpy as np
 from astropy.io import fits
 
 from astroSABER.hisa import HisaExtraction
+from astroSABER.plotting import plot_spectra
 
 
 ###HI data to extract HISA
@@ -28,8 +29,8 @@ hisa.p2 = 0.90
 hisa.niters = 20
 
 
-###this runs the hisa extraction routine
-hisa.saber()
+###this runs the hisa extraction routine; also plot some example spectra at random positions
+hisa.saber(plot_spectra=True)
 
 
 
