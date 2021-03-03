@@ -6,6 +6,7 @@
 # @Last modified by:   syed
 # @Last modified time: 03-03-2021
 
+import os
 import random
 import numpy as np
 
@@ -79,7 +80,7 @@ def scale_fontsize(rowsize):
     return fontsize
 
 
-def plot_spectra(fitsfiles, outfile='spectra.png', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=6., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s):
+def plot_spectra(fitsfiles, outfile='spectra.png', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s):
     '''
     fitsfiles: list of fitsfiles to plot spectra from
     coordinates: array of central coordinates [[Glon, Glat]] to plot spectra from
@@ -120,6 +121,7 @@ def plot_spectra(fitsfiles, outfile='spectra.png', coordinates=None, radius=None
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
+                add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
 
     else:
         random.seed(111)
@@ -141,6 +143,7 @@ def plot_spectra(fitsfiles, outfile='spectra.png', coordinates=None, radius=None
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
+                add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
 
         else:
             for i in range(n_spectra):
@@ -156,6 +159,7 @@ def plot_spectra(fitsfiles, outfile='spectra.png', coordinates=None, radius=None
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
+                add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
 
                     
     fig.tight_layout()
