@@ -22,7 +22,7 @@ from .utils.aslsq_helper import find_nearest, velocity_axes
 
 
 def get_figure_params(n_spectra, rowsize, rowbreak):
-    colsize = rowsize
+    colsize = ((1+np.sqrt(5))/2) * rowsize
     cols = int(np.sqrt(n_spectra))
     rows = int(n_spectra / (cols))
     if n_spectra % cols != 0:
@@ -39,7 +39,7 @@ def get_figure_params(n_spectra, rowsize, rowbreak):
 
 
 
-def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n_spectra=9, rowsize=7.75, rowbreak=50, dpi=50, velocity_range=[-110,163]):
+def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n_spectra=9, rowsize=3., rowbreak=10, dpi=50, velocity_range=[-110,163]):
     '''
     fitsfiles: list of fitsfiles to plot spectra from
     coordinates: array of central coordinates [[Glon, Glat]] to plot spectra from
