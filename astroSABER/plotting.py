@@ -95,7 +95,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
         n_spectra = len(coordinates)
         cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
         figsize = (cols*colsize, rowbreak*rowsize)
-        fig = plt.figure(figsize=figsize)
+        fig = plt.figure(figsize=figsize, )
         
         if radius is not None:
             for i in range(len(coordinates)):
