@@ -39,7 +39,7 @@ def get_figure_params(n_spectra, rowsize, rowbreak):
 
 
 
-def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n_spectra=9, rowsize=3., rowbreak=10, dpi=50, velocity_range=[-110,163]):
+def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n_spectra=9, rowsize=6., rowbreak=10, dpi=72, velocity_range=[-110,163]):
     '''
     fitsfiles: list of fitsfiles to plot spectra from
     coordinates: array of central coordinates [[Glon, Glat]] to plot spectra from
