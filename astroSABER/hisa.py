@@ -18,7 +18,6 @@ import warnings
 from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say
 from .utils.aslsq_fit import baseline_als_optimized
 
-from astroSABER.plotting import plot_spectra
 
 
 class HisaExtraction(object):
@@ -61,7 +60,7 @@ class HisaExtraction(object):
         say(string)
 
     #TODO
-    def saber(self, plot_spectra=False):
+    def saber(self):
         self.prepare_data()
 
         if self.lam1 is None:
@@ -149,10 +148,7 @@ class HisaExtraction(object):
             string = 'Done!'
             say(string)
             self.save_data()
-            if plot_spectra:
-                fitsfiles = [self.fitsfile, filename_bg, filename_hisa]
-                plot_spectra(fitsfiles, outfile='spectra_astroSABER.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s)
-
+            
         else:
             raise Exception("No smoothing applied. Set smoothing to 'Y'")
             
