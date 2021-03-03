@@ -50,6 +50,7 @@ def pixel_circle_calculation_px(fitsfile,x,y,r):
     header = fits.getheader(fitsfile)
     w = WCS(fitsfile)
     delta = abs(header['CDELT1']) #in degree
+    pixel_array = []
     central_px = [x,y]
     if r is not 'single':
         circle_size_px = 2*r/3600. / delta
