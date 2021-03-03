@@ -59,7 +59,7 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
-                    ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max])
+                    ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
 
 
         else:
@@ -73,7 +73,7 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
-                    ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max])
+                    ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
 
     else:
         random.seed(111)
@@ -94,7 +94,7 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
-                    ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max])
+                    ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
 
 
         else:
@@ -110,6 +110,6 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
-                    ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max])
+                    ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
 
 
