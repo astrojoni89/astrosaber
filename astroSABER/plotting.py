@@ -79,7 +79,7 @@ def scale_fontsize(rowsize):
     return fontsize
 
 
-def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n_spectra=9, rowsize=6., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s):
+def plot_spectra(fitsfiles, outfile='spectra.png', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=6., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s):
     '''
     fitsfiles: list of fitsfiles to plot spectra from
     coordinates: array of central coordinates [[Glon, Glat]] to plot spectra from
@@ -107,8 +107,6 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
                 add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
-                    
-
 
         else:
             for i in range(len(coordinates)):
@@ -144,7 +142,6 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
 
-
         else:
             for i in range(n_spectra):
                 xValue = random.randint(edge,xsize-edge)
@@ -160,4 +157,13 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
 
+                    
+    fig.tight_layout()
 
+    if not os.path.exists(path_to_plots):
+        os.makedirs(path_to_plots)
+    filename = outfile
+    pathname = os.path.join(path_to_plots, filename)
+    fig.savefig(pathname, dpi=dpi, bbox_inches='tight', overwrite=True)
+    #plt.close()
+    print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
