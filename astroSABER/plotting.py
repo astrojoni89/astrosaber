@@ -68,7 +68,7 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, c
                 for fitsfile in fitsfiles:
                     header = fits.getheader(fitsfile)
                     beam = header['BMAJ']
-                    radius = 1/2. * (beam/3600)
+                    radius = 1/2. * (beam*3600)
                     pixel_array = pixel_circle_calculation(fitsfile,glon=coordinates[i,0],glat=coordinates[i,1],r=radius)
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
                     velocity = velocity_axes(fitsfile)
@@ -106,7 +106,7 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, c
                 for fitsfile in fitsfiles:
                     header = fits.getheader(fitsfile)
                     beam = header['BMAJ']
-                    radius = 1/2. * (beam/3600)
+                    radius = 1/2. * (beam*3600)
                     pixel_array = pixel_circle_calculation_px(fitsfile,x=xValue,y=yValue,r=radius)
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
                     velocity = velocity_axes(fitsfile)
