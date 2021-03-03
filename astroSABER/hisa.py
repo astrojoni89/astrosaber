@@ -42,8 +42,6 @@ class HisaExtraction(object):
         
         self.velo_range = 15.0
         self.check_signal_sigma = 10
-        
-        self.plot_spectra = False
 
     def getting_ready(self):
         string = 'preparation'
@@ -63,7 +61,7 @@ class HisaExtraction(object):
         say(string)
 
     #TODO
-    def saber(self):
+    def saber(self, plot_spectra=False):
         self.prepare_data()
 
         if self.lam1 is None:
