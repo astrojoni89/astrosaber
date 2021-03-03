@@ -37,14 +37,60 @@ def get_figure_params(n_spectra, rowsize, rowbreak):
     return cols, rows, rowbreak, colsize
 
 
+def xlabel_from_header(header, vel_unit):
+    xlabel = 'Channels'
+
+    if header is None:
+        return xlabel
+
+    if 'CTYPE3' in header.keys():
+        xlabel = '{} [{}]'.format(header['CTYPE3'], vel_unit)
+
+    return xlabel
 
 
-def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n_spectra=9, rowsize=6., rowbreak=10, dpi=72, velocity_range=[-110,163]):
+def ylabel_from_header(header):
+    if header is None:
+        return 'Intensity'
+
+    btype = 'Intensity'
+    if 'BTYPE' in header.keys():
+        btype = header['BTYPE']
+
+    bunit = ''
+    if 'BUNIT' in header.keys():
+        bunit = ' [{}]'.format(header['BUNIT'])
+
+    return btype + bunit
+
+
+def add_figure_properties(ax, header=None, fontsize=10, vel_unit=u.km/u.s):
+    ax.set_xlabel(xlabel_from_header(header, vel_unit), fontsize=fontsize)
+    ax.set_ylabel(ylabel_from_header(header), fontsize=fontsize)
+
+    ax.tick_params(labelsize=fontsize - 2)
+
+    
+def scale_fontsize(rowsize):
+    rowsize_scale = 4
+    if rowsize >= rowsize_scale:
+        fontsize = 10 + int(rowsize - rowsize_scale)
+    else:
+        fontsize = 10 - int(rowsize - rowsize_scale)
+    return fontsize
+
+
+def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n_spectra=9, rowsize=6., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s):
     '''
     fitsfiles: list of fitsfiles to plot spectra from
     coordinates: array of central coordinates [[Glon, Glat]] to plot spectra from
     radius: radius of area to be averaged for each spectrum [arcseconds]
-    ''' 
+    '''
+    
+    print("\nPlotting...")
+    
+    fontsize = scale_fontsize(rowsize)
+    
     if coordinates is not None:
         n_spectra = len(coordinates)
         cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
@@ -57,9 +103,12 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                 for fitsfile in fitsfiles:
                     pixel_array = pixel_circle_calculation(fitsfile,glon=coordinates[i,0],glat=coordinates[i,1],r=radius)
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
+                    header = fits.getheader(fitsfile)
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
-                    ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
+                    ax = ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
+                    add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
+                    
 
 
         else:
