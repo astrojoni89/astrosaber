@@ -95,7 +95,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
         n_spectra = len(coordinates)
         cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
         figsize = (cols*colsize, rowbreak*rowsize)
-        fig = plt.figure(figsize=figsize, )
+        fig = plt.figure(figsize=figsize)
         
         if radius is not None:
             for i in range(len(coordinates)):
@@ -108,8 +108,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
                 add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
-                for axs in ax.flat:
-                    axs.label_outer()
+                
 
         else:
             for i in range(len(coordinates)):
@@ -163,7 +162,8 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
                 add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
 
-                    
+    for axs in fig.axes:
+        axs.label_outer()
     fig.tight_layout()
 
     if not os.path.exists(path_to_plots):
