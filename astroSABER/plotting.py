@@ -105,8 +105,8 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     header = fits.getheader(fitsfile)
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
-                    ax = ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
-                    add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
+                    ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle='steps-mid')
+                add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
                     
 
 
