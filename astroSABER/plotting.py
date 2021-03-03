@@ -21,7 +21,7 @@ from .utils.aslsq_helper import find_nearest, velocity_axes
 
 
 
-def get_figure_params(n_spectra, cols, rowsize, rowbreak):
+def get_figure_params(n_spectra, rowsize, rowbreak):
     colsize = rowsize
     cols = int(np.sqrt(n_spectra))
     rows = int(n_spectra / (cols))
@@ -39,7 +39,7 @@ def get_figure_params(n_spectra, cols, rowsize, rowbreak):
 
 
 
-def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n_spectra=9, cols=3, rowsize=7.75, rowbreak=50, dpi=50, velocity_range=[-110,163]):
+def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n_spectra=9, rowsize=7.75, rowbreak=50, dpi=50, velocity_range=[-110,163]):
     '''
     fitsfiles: list of fitsfiles to plot spectra from
     coordinates: array of central coordinates [[Glon, Glat]] to plot spectra from
@@ -47,7 +47,7 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
     ''' 
     if coordinates is not None:
         n_spectra = len(coordinates)
-        cols, rows, rowbreak, colsize = get_figure_params(n_spectra, cols, rowsize, rowbreak)
+        cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
         figsize = (cols*colsize, rowbreak*rowsize)
         fig = plt.figure(figsize=figsize)
         
@@ -80,7 +80,7 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
         edge = 20
         xsize = fits.getdata(fitsfiles[0]).shape[2]
         ysize = fits.getdata(fitsfiles[0]).shape[1]
-        cols, rows, rowbreak, colsize = get_figure_params(n_spectra, cols, rowsize, rowbreak)
+        cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
         figsize = (cols*colsize, rowbreak*rowsize)
         fig = plt.figure(figsize=figsize)
 
