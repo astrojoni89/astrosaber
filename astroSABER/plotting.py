@@ -58,7 +58,7 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     pixel_array = pixel_circle_calculation(fitsfile,glon=coordinates[i,0],glat=coordinates[i,1],r=radius)
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
                     velocity = velocity_axes(fitsfile)
-                    velo_min, velo_max = find_nearest(velocity,velocity_range[0]), find_nearest(velocity,velocity_range[1])
+                    velo_min, velo_max = find_nearest(velocity,velocity_range[np.argmin(velocity_range)]), find_nearest(velocity,velocity_range[np.argmax(velocity_range)])
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max])
 
 
@@ -72,7 +72,7 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     pixel_array = pixel_circle_calculation(fitsfile,glon=coordinates[i,0],glat=coordinates[i,1],r=radius)
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
                     velocity = velocity_axes(fitsfile)
-                    velo_min, velo_max = find_nearest(velocity,np.argmin(velocity_range)), find_nearest(velocity,np.argmax(velocity_range))
+                    velo_min, velo_max = find_nearest(velocity,velocity_range[np.argmin(velocity_range)]), find_nearest(velocity,velocity_range[np.argmax(velocity_range)])
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max])
 
     else:
@@ -93,7 +93,7 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     pixel_array = pixel_circle_calculation_px(fitsfile,x=xValue,y=yValue,r=radius)
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
                     velocity = velocity_axes(fitsfile)
-                    velo_min, velo_max = find_nearest(velocity,np.argmin(velocity_range)), find_nearest(velocity,np.argmax(velocity_range))
+                    velo_min, velo_max = find_nearest(velocity,velocity_range[np.argmin(velocity_range)]), find_nearest(velocity,velocity_range[np.argmax(velocity_range)])
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max])
 
 
@@ -109,7 +109,7 @@ def plot_spectra(fitsfiles, coordinates=None, radius=None, path_to_plots=None, n
                     pixel_array = pixel_circle_calculation_px(fitsfile,x=xValue,y=yValue,r=radius)
                     spectrum = calculate_spectrum(fitsfile,pixel_array)
                     velocity = velocity_axes(fitsfile)
-                    velo_min, velo_max = find_nearest(velocity,np.argmin(velocity_range)), find_nearest(velocity,np.argmax(velocity_range))
+                    velo_min, velo_max = find_nearest(velocity,velocity_range[np.argmin(velocity_range)]), find_nearest(velocity,velocity_range[np.argmax(velocity_range)])
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max])
 
 
