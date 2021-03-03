@@ -94,7 +94,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
     print("\nPlotting...")
     
     fontsize = scale_fontsize(rowsize)
-    if len(fitsfiles==3):
+    if len(fitsfiles)==3:
         color_list, draw_list, line_list = styles()
     
     if coordinates is not None:
