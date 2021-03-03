@@ -68,7 +68,7 @@ def ylabel_from_header(header):
     return btype + bunit
 
 
-def add_figure_properties(ax, header=None, fontsize=10, vel_unit=u.km/u.s):
+def add_figure_properties(ax, header=None, fontsize=10, velocity_range=velocity_range, vel_unit=u.km/u.s):
     ax.set_xlim(np.amin(velocity_range), np.amax(velocity_range))
     #ax.set_ylim()
     ax.set_xlabel(xlabel_from_header(header, vel_unit), fontsize=fontsize)
@@ -115,7 +115,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle=draw_list[idx], color=color_list[idx], linestyle=line_list[idx])
-                add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
+                add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
                 
 
         else:
@@ -130,7 +130,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle=draw_list[idx], color=color_list[idx], linestyle=line_list[idx])
-                add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
+                add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
 
     else:
         random.seed(111)
@@ -153,7 +153,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle=draw_list[idx], color=color_list[idx], linestyle=line_list[idx])
-                add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
+                add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
 
         else:
             for i in range(n_spectra):
@@ -169,7 +169,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                     velocity = velocity_axes(fitsfile)
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle=draw_list[idx], color=color_list[idx], linestyle=line_list[idx])
-                add_figure_properties(ax, header=header, fontsize=fontsize, vel_unit=vel_unit)
+                add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
 
     #for axs in fig.axes:
         #axs.label_outer()
