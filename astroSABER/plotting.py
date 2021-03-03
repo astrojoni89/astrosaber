@@ -68,7 +68,7 @@ def ylabel_from_header(header):
     return btype + bunit
 
 
-def add_figure_properties(ax, header=None, fontsize=10, velocity_range=velocity_range, vel_unit=u.km/u.s):
+def add_figure_properties(ax, header=None, fontsize=10, velocity_range=None, vel_unit=u.km/u.s):
     ax.set_xlim(np.amin(velocity_range), np.amax(velocity_range))
     #ax.set_ylim()
     ax.set_xlabel(xlabel_from_header(header, vel_unit), fontsize=fontsize)
