@@ -94,7 +94,7 @@ class HisaExtraction(object):
             self.HISA_map = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
             self.iteration_map = np.zeros((self.header['NAXIS2'],self.header['NAXIS1']))
             #flags
-            self.flag_map = np.ones((self.header['NAXIS2'],self.header['NAXIS1']), dtype=bool)
+            self.flag_map = np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
             
             print('\n'+'Asymmetric least squares fitting in progress...')
             for i in trange(pixel_start[0],pixel_end[0],1):
@@ -128,7 +128,7 @@ class HisaExtraction(object):
                             if n==self.niters:
                                 warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), IterationWarning)
                                 #flags
-                                self.flag_map[j,i] = False
+                                self.flag_map[j,i] = 0.
                                 res = abs(spectrum_next - spectrum_firstfit)
                                 if self.add_residual:
                                     final_spec = spectrum_next + res
@@ -142,7 +142,7 @@ class HisaExtraction(object):
                         self.HISA_map[:,j,i] = np.nan
                         self.iteration_map[j,i] = np.nan
                         #flags
-                        self.flag_map[j,i] = False
+                        self.flag_map[j,i] = 0.
 
             string = 'Done!'
             say(string)
