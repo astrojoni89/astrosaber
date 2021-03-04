@@ -1,8 +1,10 @@
 import os
 import numpy as np
 from astropy.io import fits
+from astropy import units as u
 
 from astroSABER.hisa import HisaExtraction
+from astroSABER.plotting import plot_spectra
 
 
 ###HI data to extract HISA
@@ -32,12 +34,17 @@ hisa.niters = 20
 hisa.saber()
 
 
+#also plot nine example spectra at random positions
+fitsfiles = ['HI_THOR_test_cube.fits', 'HI_THOR_test_cube_aslsq_bg_spectrum.fits', 'HI_THOR_test_cube_HISA_spectrum.fits']
+plot_spectra(fitsfiles, outfile='spectra_astroSABER.pdf', n_spectra=9, velocity_range=[-110,163])
+
 
 '''
-the output will be three files:
+the output will be four files:
 hisa background spectrum (.fits)
 hisa spectrum (.fits)
 number of iterations needed (.fits); good to check for contamination by continuum or noisy pixels
+map of flags (.fits)
 '''
 
 
