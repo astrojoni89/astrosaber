@@ -10,13 +10,14 @@ import os
 import numpy as np
 
 from astropy.io import fits
+from astropy import units as u
 
 from tqdm import trange
 import warnings
 
 from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say
-
 from .utils.aslsq_fit import baseline_als_optimized
+
 
 
 class HisaExtraction(object):
@@ -25,13 +26,21 @@ class HisaExtraction(object):
         self.path_to_noise_map = path_to_noise_map
         self.path_to_data = '.'
         self.smoothing = 'Y'
+        
         self.lam1 = None
         self.p1 = None
         self.lam2 = None
         self.p2 = None
+        
         self.niters = 20
         self.iterations_for_convergence = 3
+        
         self.noise = None
+        self.add_residual = True
+        self.sig = 1.0
+        
+        self.velo_range = 15.0
+        self.check_signal_sigma = 10
 
     def getting_ready(self):
         string = 'preparation'
@@ -65,13 +74,13 @@ class HisaExtraction(object):
 
         if self.path_to_noise_map is not None:
             noise_map = fits.getdata(self.path_to_noise_map)
-            thresh = 1.0 * noise_map
+            thresh = self.sig * noise_map
         else:
             if self.noise is None:
                raise Exception("Need to specify 'noise' if no path to noise map is given.") 
             else:
                 noise_map = self.noise * np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
-                thresh = 1.0 * noise_map
+                thresh = self.sig * noise_map
 
         pixel_start=[0,0]
         pixel_end=[self.header['NAXIS1'],self.header['NAXIS2']]
@@ -82,17 +91,17 @@ class HisaExtraction(object):
             heading = '\n' + banner + '\n' + string + '\n' + banner
             say(heading)
 
-            image_asy = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
-            HISA_map = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
-            iteration_map = np.zeros((self.header['NAXIS2'],self.header['NAXIS1']))
+            self.image_asy = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
+            self.HISA_map = np.zeros((self.v,self.header['NAXIS2'],self.header['NAXIS1']))
+            self.iteration_map = np.zeros((self.header['NAXIS2'],self.header['NAXIS1']))
             #flags
-            flag_map = np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
+            self.flag_map = np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
             
             print('\n'+'Asymmetric least squares fitting in progress...')
             for i in trange(pixel_start[0],pixel_end[0],1):
                 for j in range(pixel_start[1],pixel_end[1],1):
                     spectrum = self.image[:,j,i]
-                    if check_signal_ranges(spectrum, self.header, sigma=10, noise=noise_map[j,i], velo_range=15.0):
+                    if check_signal_ranges(spectrum, self.header, sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range):
                         spectrum_prior = baseline_als_optimized(spectrum, self.lam1, self.p1, niter=3)
                         spectrum_firstfit = spectrum_prior
                         n = 0
@@ -110,47 +119,57 @@ class HisaExtraction(object):
                             if np.any(c > self.iterations_for_convergence):
                                 i_converge = np.min(np.argwhere(c > self.iterations_for_convergence))
                                 res = abs(spectrum_next - spectrum_firstfit)
-                                final_spec = spectrum_next + res
+                                if self.add_residual:
+                                    final_spec = spectrum_next + res
+                                else:
+                                    final_spec = spectrum_next
                                 break
                             else:
                                 n += 1
                             if n==self.niters:
-                                #warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), IterationWarning)
-                                print('Flag pixel (x,y)=({},{}). Fit did not converge.'.format(i,j))
-                                flag_map[j,i] = 0.
+                                warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), IterationWarning)
+                                #flags
+                                self.flag_map[j,i] = 0.
                                 res = abs(spectrum_next - spectrum_firstfit)
-                                final_spec = spectrum_next + res
-                        image_asy[:,j,i] = final_spec - thresh[j,i]
-                        HISA_map[:,j,i] = final_spec - self.image[:,j,i] - thresh[j,i]
-                        iteration_map[j,i] = i_converge
+                                if self.add_residual:
+                                    final_spec = spectrum_next + res
+                                else:
+                                    final_spec = spectrum_next
+                        self.image_asy[:,j,i] = final_spec - thresh[j,i]
+                        self.HISA_map[:,j,i] = final_spec - self.image[:,j,i] - thresh[j,i]
+                        self.iteration_map[j,i] = i_converge
                     else:
-                        image_asy[:,j,i] = np.nan
-                        HISA_map[:,j,i] = np.nan
-                        iteration_map[j,i] = np.nan
+                        self.image_asy[:,j,i] = np.nan
+                        self.HISA_map[:,j,i] = np.nan
+                        self.iteration_map[j,i] = np.nan
                         #flags
-                        flag_map[j,i] = 0.
+                        self.flag_map[j,i] = 0.
 
-            stri = 'Done!'
-            say(stri)
-            filename_bg = self.fitsfile.split('.fits')[0]+'_aslsq_bg_spectrum.fits'
-            filename_hisa = self.fitsfile.split('.fits')[0]+'_HISA_spectrum.fits'
-            filename_iter = self.fitsfile.split('.fits')[0]+'_number_of_iterations.fits'
-            #flags
-            filename_flags = self.fitsfile.split('.fits')[0]+'_flags.fits'
+            string = 'Done!'
+            say(string)
+            self.save_data()
             
-            pathname_bg = os.path.join(self.path_to_data, filename_bg)
-            fits.writeto(pathname_bg, image_asy, header=self.header, overwrite=True)
-            print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_bg, self.path_to_data))
-            pathname_hisa = os.path.join(self.path_to_data, filename_hisa)
-            fits.writeto(pathname_hisa, HISA_map, header=self.header, overwrite=True)
-            print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_hisa, self.path_to_data))
-            pathname_iter = os.path.join(self.path_to_data, filename_iter)
-            fits.writeto(pathname_iter, iteration_map, header=self.header_2d, overwrite=True)
-            print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_iter, self.path_to_data))
-            #flags
-            pathname_flags = os.path.join(self.path_to_data, filename_flags)
-            fits.writeto(pathname_flags, flag_map, header=self.header_2d, overwrite=True)
-            print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_flag, self.path_to_data))
         else:
             raise Exception("No smoothing applied. Set smoothing to 'Y'")
-
+            
+    def save_data(self):
+        filename_bg = self.fitsfile.split('.fits')[0]+'_aslsq_bg_spectrum.fits'
+        filename_hisa = self.fitsfile.split('.fits')[0]+'_HISA_spectrum.fits'
+        filename_iter = self.fitsfile.split('.fits')[0]+'_number_of_iterations.fits'
+        #flags
+        filename_flags = self.fitsfile.split('.fits')[0]+'_flags.fits'
+        
+        pathname_bg = os.path.join(self.path_to_data, filename_bg)
+        fits.writeto(pathname_bg, self.image_asy, header=self.header, overwrite=True)
+        print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_bg, self.path_to_data))
+        pathname_hisa = os.path.join(self.path_to_data, filename_hisa)
+        fits.writeto(pathname_hisa, self.HISA_map, header=self.header, overwrite=True)
+        print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_hisa, self.path_to_data))
+        pathname_iter = os.path.join(self.path_to_data, filename_iter)
+        fits.writeto(pathname_iter, self.iteration_map, header=self.header_2d, overwrite=True)
+        print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_iter, self.path_to_data))
+        #flags
+        pathname_flags = os.path.join(self.path_to_data, filename_flags)
+        fits.writeto(pathname_flags, self.flag_map, header=self.header_2d, overwrite=True)
+        print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_flags, self.path_to_data))
+        
