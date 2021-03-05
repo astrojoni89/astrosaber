@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 from astropy.io import fits
 from astropy import units as u
-from tqdm import tqdm
+from tqdm import trange
 
 from .utils.spectrum_utils import pixel_circle_calculation, pixel_circle_calculation_px, calculate_spectrum
 from .utils.aslsq_helper import find_nearest, velocity_axes
@@ -26,7 +26,7 @@ def styles():
     return color_list, draw_list, line_list
 
 def get_figure_params(n_spectra, rowsize, rowbreak):
-    colsize = 1.2 * rowsize
+    colsize = 1.15 * rowsize
     cols = int(np.sqrt(n_spectra))
     rows = int(n_spectra / (cols))
     if n_spectra % cols != 0:
@@ -106,7 +106,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
         fig = plt.figure(figsize=figsize)
         
         if radius is not None:
-            for i in range(len(coordinates)):
+            for i in trange(len(coordinates)):
                 ax = fig.add_subplot(rows,cols,i+1)
                 for idx, fitsfile in enumerate(fitsfiles):
                     pixel_array = pixel_circle_calculation(fitsfile,glon=coordinates[i,0],glat=coordinates[i,1],r=radius)
@@ -119,7 +119,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                 
 
         else:
-            for i in range(len(coordinates)):
+            for i in trange(len(coordinates)):
                 ax = fig.add_subplot(rows,cols,i+1)
                 for idx, fitsfile in enumerate(fitsfiles):
                     header = fits.getheader(fitsfile)
@@ -142,7 +142,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
         fig = plt.figure(figsize=figsize)
 
         if radius is not None:
-            for i in range(n_spectra):
+            for i in trange(n_spectra):
                 xValue = random.randint(edge,xsize-edge)
                 yValue = random.randint(edge,ysize-edge)
                 ax = fig.add_subplot(rows,cols,i+1)
@@ -156,7 +156,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                 add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
 
         else:
-            for i in range(n_spectra):
+            for i in trange(n_spectra):
                 xValue = random.randint(edge,xsize-edge)
                 yValue = random.randint(edge,ysize-edge)
                 ax = fig.add_subplot(rows,cols,i+1)
