@@ -35,6 +35,7 @@ You will need the following packages to run `astroSABER`. We list the version of
 * [astropy (v4.0.2)](https://www.astropy.org/)
 * [numpy (v1.19.2)](https://numpy.org/)
 * [scipy (v1.5.2)](https://www.scipy.org/)
+* [matplotlib (v3.3.4)](https://matplotlib.org/)
 * [tqdm (v4.56.2)](https://tqdm.github.io/)
 
 ### Download astroSABER
