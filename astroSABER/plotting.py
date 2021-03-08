@@ -20,9 +20,9 @@ from .utils.spectrum_utils import pixel_circle_calculation, pixel_circle_calcula
 from .utils.aslsq_helper import find_nearest, velocity_axes
 
 def styles():
-    color_list = ['k', 'b', 'b']
-    draw_list = ['steps-mid', 'default', 'steps-mid']
-    line_list = ['-', '--', '-']
+    color_list = ['k', 'b', 'b', 'r', 'g']
+    draw_list = ['steps-mid', 'default', 'steps-mid', 'steps-mid', 'steps-mid']
+    line_list = ['-', '--', '-', '-', '-']
     return color_list, draw_list, line_list
 
 def get_figure_params(n_spectra, rowsize, rowbreak):
