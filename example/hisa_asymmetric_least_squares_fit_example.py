@@ -34,7 +34,7 @@ hisa.niters = 20
 hisa.saber()
 
 '''
-the output will be four files:
+the output will be three (four if output_flags = True) files:
 hisa background spectrum (.fits)
 hisa spectrum (.fits)
 number of iterations needed (.fits); good to check for contamination by continuum or noisy pixels
