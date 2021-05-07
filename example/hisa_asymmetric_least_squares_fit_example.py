@@ -38,7 +38,7 @@ the output will be three (four if output_flags = True) files:
 hisa background spectrum (.fits)
 hisa spectrum (.fits)
 number of iterations needed (.fits); good to check for contamination by continuum or noisy pixels
-map of flags (.fits); 1: good pixels, 0: flagged spectra that did not meet convergence criteria or were discarded due to missing signal
+(optional) map of flags (.fits); 1: good pixels, 0: flagged spectra that did not meet convergence criteria or were discarded due to missing signal
 '''
 
 
