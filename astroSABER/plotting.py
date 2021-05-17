@@ -115,6 +115,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle=draw_list[idx], color=color_list[idx], linestyle=line_list[idx])
                 add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
+                plt.annotate('Glon: {} deg\nGlat: {}'.format(coordinates[i][0],coordinates[i][1]), xy=(0.95, 0.95), xycoords='axes fraction')
                 
 
         else:
@@ -130,6 +131,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                     velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
                     ax.plot(velocity[velo_min:velo_max], spectrum[velo_min:velo_max], drawstyle=draw_list[idx], color=color_list[idx], linestyle=line_list[idx])
                 add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
+                plt.annotate('Glon: {} deg\nGlat: {}'.format(coordinates[i][0],coordinates[i][1]), xy=(0.95, 0.95), xycoords='axes fraction')
 
     else:
         random.seed(111)
