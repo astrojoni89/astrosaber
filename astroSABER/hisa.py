@@ -172,7 +172,7 @@ class HisaExtraction(object):
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_iter, self.path_to_data))
         #flags
         pathname_flags = os.path.join(self.path_to_data, filename_flags)
-        if output_flags:
+        if self.output_flags:
             fits.writeto(pathname_flags, self.flag_map, header=self.header_2d, overwrite=True)
             print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_flags, self.path_to_data))
         
