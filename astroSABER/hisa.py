@@ -2,7 +2,7 @@
 # @Date:   2021-01
 # @Filename: hisa.py
 # @Last modified by:   syed
-# @Last modified time: 07-05-2021
+# @Last modified time: 18-05-2021
 
 '''hisa extraction'''
 
@@ -66,20 +66,24 @@ class HisaExtraction(object):
         self.prepare_data()
 
         if self.lam1 is None:
-            raise Exception("Need to specify 'lam1' for extraction.")
+            raise TypeError("Need to specify 'lam1' for extraction.")
         if self.p1 is None:
-            raise Exception("Need to specify 'p1' for extraction.")
+            raise TypeError("Need to specify 'p1' for extraction.")
+        if not 0<= self.p1 <=1:
+            raise ValueError("'p1' has to be in the range [0,1]")
         if self.lam2 is None:
-            raise Exception("Need to specify 'lam2' for extraction.")
+            raise TypeError("Need to specify 'lam2' for extraction.")
         if self.p2 is None:
-            raise Exception("Need to specify 'p2' for extraction.")
+            raise TypeError("Need to specify 'p2' for extraction.")
+        if not 0<= self.p2 <=1:
+            raise ValueError("'p2' has to be in the range [0,1]")
 
         if self.path_to_noise_map is not None:
             noise_map = fits.getdata(self.path_to_noise_map)
             thresh = self.sig * noise_map
         else:
             if self.noise is None:
-               raise Exception("Need to specify 'noise' if no path to noise map is given.") 
+               raise TypeError("Need to specify 'noise' if no path to noise map is given.") 
             else:
                 noise_map = self.noise * np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
                 thresh = self.sig * noise_map
