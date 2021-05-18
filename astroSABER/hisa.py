@@ -21,28 +21,28 @@ from .utils.aslsq_fit import baseline_als_optimized
 
 
 class HisaExtraction(object):
-    def __init__(self, fitsfile, path_to_noise_map=None):
+    def __init__(self, fitsfile, path_to_noise_map=None, path_to_data='.', smoothing='Y', lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence = 3, noise=None, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 10, output_flags = False):
         self.fitsfile = fitsfile
         self.path_to_noise_map = path_to_noise_map
-        self.path_to_data = '.'
-        self.smoothing = 'Y'
+        self.path_to_data = path_to_data
+        self.smoothing = smoothing
         
-        self.lam1 = None
-        self.p1 = None
-        self.lam2 = None
-        self.p2 = None
+        self.lam1 = lam1
+        self.p1 = p1
+        self.lam2 = lam2
+        self.p2 = p2
         
-        self.niters = 20
-        self.iterations_for_convergence = 3
+        self.niters = niters
+        self.iterations_for_convergence = iterations_for_convergence
         
-        self.noise = None
-        self.add_residual = True
-        self.sig = 1.0
+        self.noise = noise
+        self.add_residual = add_residual
+        self.sig = sig
         
-        self.velo_range = 15.0
-        self.check_signal_sigma = 10
+        self.velo_range = velo_range
+        self.check_signal_sigma = check_signal_sigma
         
-        self.output_flags = False
+        self.output_flags = output_flags
 
     def getting_ready(self):
         string = 'preparation'
