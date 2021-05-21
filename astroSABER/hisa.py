@@ -159,11 +159,11 @@ class HisaExtraction(object):
             raise Exception("No smoothing applied. Set smoothing to 'Y'")
             
     def save_data(self):
-        filename_bg = self.fitsfile.split('.fits')[0]+'_aslsq_bg_spectrum.fits'
-        filename_hisa = self.fitsfile.split('.fits')[0]+'_HISA_spectrum.fits'
-        filename_iter = self.fitsfile.split('.fits')[0]+'_number_of_iterations.fits'
+        filename_bg = self.fitsfile.split('/')[-1].fitsfile.split('.fits')[0]+'_aslsq_bg_spectrum.fits'
+        filename_hisa = self.fitsfile.split('/')[-1].fitsfile.split('.fits')[0]+'_HISA_spectrum.fits'
+        filename_iter = self.fitsfile.split('/')[-1].fitsfile.split('.fits')[0]+'_number_of_iterations.fits'
         #flags
-        filename_flags = self.fitsfile.split('.fits')[0]+'_flags.fits'
+        filename_flags = self.fitsfile.split('/')[-1].fitsfile.split('.fits')[0]+'_flags.fits'
         
         pathname_bg = os.path.join(self.path_to_data, filename_bg)
         fits.writeto(pathname_bg, self.image_asy, header=self.header, overwrite=True)
