@@ -10,6 +10,7 @@ from scipy.sparse.linalg import spsolve
 
 from tqdm import trange
 import warnings
+import sys
 
 
 def find_nearest(array,value):
@@ -107,3 +108,7 @@ def say(message, verbose=True, end=None):
     """Diagnostic messages."""
     if verbose:
         print(message, end=end)
+
+
+def format_warning(message, category, filename, lineno, file=None, line=None):
+    sys.stderr.write("\n\033[93mWARNING:\033[0m {}: {}\n".format(category.__name__, message))
