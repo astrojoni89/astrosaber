@@ -26,7 +26,7 @@ def styles():
     return color_list, draw_list, line_list
 
 def get_figure_params(n_spectra, rowsize, rowbreak):
-    colsize = 1.15 * rowsize
+    colsize = 1.3 * rowsize
     cols = int(np.sqrt(n_spectra))
     rows = int(n_spectra / (cols))
     if n_spectra % cols != 0:
