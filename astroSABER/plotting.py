@@ -135,7 +135,6 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
 
     else:
         random.seed(111)
-        edge = 20
         xsize = fits.getdata(fitsfiles[0]).shape[2]
         ysize = fits.getdata(fitsfiles[0]).shape[1]
         cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
@@ -144,8 +143,11 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
 
         if radius is not None:
             for i in trange(n_spectra):
-                xValue = random.randint(edge,xsize-edge)
-                yValue = random.randint(edge,ysize-edge)
+                temp_header = fits.getheader(fitsfiles[0])
+                px_scale = abs(temp_header['CDELT1'])
+                edge = int(np.ceil((radius/3600) / px_scale))
+                xValue = random.randint(edge+1,xsize-edge-1)
+                yValue = random.randint(edge+1,ysize-edge-1)
                 ax = fig.add_subplot(rows,cols,i+1)
                 for idx, fitsfile in enumerate(fitsfiles):
                     pixel_array = pixel_circle_calculation_px(fitsfile,x=xValue,y=yValue,r=radius)
@@ -158,6 +160,11 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
 
         else:
             for i in trange(n_spectra):
+                temp_header = fits.getheader(fitsfiles[0])
+                px_scale = abs(temp_header['CDELT1'])
+                temp_beam = temp_header['BMAJ']
+                temp_radius = 1/2. * temp_beam
+                edge = int(np.ceil(temp_radius / px_scale))
                 xValue = random.randint(edge,xsize-edge)
                 yValue = random.randint(edge,ysize-edge)
                 ax = fig.add_subplot(rows,cols,i+1)
