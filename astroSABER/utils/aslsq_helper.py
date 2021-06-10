@@ -4,6 +4,7 @@ import os
 import numpy as np
 
 from astropy.io import fits
+from astropy.wcs import WCS
 from scipy import sparse
 from scipy.sparse.linalg import spsolve
 
@@ -22,6 +23,16 @@ def velocity_axes(name):
 	velocity = (header['CRVAL3'] - header['CRPIX3'] * header['CDELT3']) + (np.arange(n)+1) * header['CDELT3']
 	velocity = velocity / 1000
 	return velocity
+
+
+def pixel_to_world(fitsfile,x,y,ch=0):
+    w = WCS(fitsfile)
+    if w.wcs.naxis == 3:
+        return w.all_pix2world(x, y, ch, 1)
+    elif w.wcs.naxis == 2:
+        return w.all_pix2world(x, y, 1)
+    else:
+        raise ValueError('Something wrong with the header.')
 
 
 #taken from Lindner (2014) & Riener (2019); GaussPy(+)
