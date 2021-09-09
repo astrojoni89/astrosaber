@@ -46,6 +46,12 @@ class HisaExtraction(object):
         self.check_signal_sigma = check_signal_sigma
         
         self.output_flags = output_flags
+        
+    def __str__(self):
+        return f'hisa(fitsfile: {self.fitsfile}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\n
+        smoothing: {self.smoothing}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\n
+        iterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\n
+        velo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\noutput_flags: {self.output_flags})'
 
     def getting_ready(self):
         string = 'preparation'
