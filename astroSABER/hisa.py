@@ -35,7 +35,7 @@ class HisaExtraction(object):
         self.lam2 = lam2
         self.p2 = p2
         
-        self.niters = niters
+        self.niters = int(niters)
         self.iterations_for_convergence = iterations_for_convergence
         
         self.noise = noise
