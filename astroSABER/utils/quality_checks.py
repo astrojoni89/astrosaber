@@ -46,7 +46,7 @@ def goodness_of_fit(data, fit, errors, dof, mask=None,
     rchi2 = chi2 / (n_samples - dof)
     if get_aicc:
         #  sum of squared residuals
-        ssr = np.sum(squared_residuals)
+        ssr = np.nansum(squared_residuals)
         log_likelihood = -0.5 * n_samples * np.log(ssr / n_samples)
         aicc = (2.0 * (dof - log_likelihood) +
                 2.0 * dof * (dof + 1.0) /
