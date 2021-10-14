@@ -147,6 +147,7 @@ class HisaExtraction(object):
                                     final_spec = spectrum_next + res
                                 else:
                                     final_spec = spectrum_next
+                                i_converge = self.niters
                         self.image_asy[:,j,i] = final_spec - thresh[j,i]
                         self.HISA_map[:,j,i] = final_spec - self.image[:,j,i] - thresh[j,i]
                         self.iteration_map[j,i] = i_converge
