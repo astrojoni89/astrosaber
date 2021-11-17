@@ -146,7 +146,7 @@ class saberPrepare(object):
             velos_of_comps_HISA = np.random.choice(velos_HISA, ncomps_HISA[i])
             amps_of_comps_HISA = np.random.choice(amps_HISA, ncomps_HISA[i])
             lws_of_comps_HISA = np.random.choice(lws_HISA, ncomps_HISA[i])  
-            ncomp_HISA = np.arange(0,ncomps_HISA[i],1)
+            ncomp_HISA = np.arange(0,ncomps_HISA[i]+1,1)
             lws_of_comps_HISA[np.argwhere(lws_of_comps_HISA<spectral_resolution)] = spectral_resolution
 
             gauss_HISA = np.zeros(shape=(self.v,))
