@@ -157,7 +157,7 @@ class saberPrepare(object):
             for ch in range(len(gauss_HISA)):
                 if gauss_HISA[ch]>results_list[i][0][ch]:
                     gauss_HISA[ch] = results_list[i][0][ch]
-            gauss_HISA[np.invert(mask)] = 0.   
+            gauss_HISA[np.invert(results_list[i][2])] = 0.   
 
             training_data.append(results_list[i][0] - gauss_HISA)
             test_data.append(results_list[i][0])
