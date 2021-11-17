@@ -155,13 +155,13 @@ class saberPrepare(object):
 
             #limit HISA to HI emission
             for ch in range(len(gauss_HISA)):
-                if gauss_HISA[ch]>mock_emission[ch]:
-                    gauss_HISA[ch] = mock_emission[ch]
+                if gauss_HISA[ch]>results_list[i][0][ch]:
+                    gauss_HISA[ch] = results_list[i][0][ch]
             gauss_HISA[np.invert(mask)] = 0.   
 
-        training_data.append(mock_emission - gauss_HISA)
-        test_data.append(mock_emission)
-        hisa_spectra.append(gauss_HISA)
+            training_data.append(results_list[i][0] - gauss_HISA)
+            test_data.append(results_list[i][0])
+            hisa_spectra.append(gauss_HISA)
 
         self.mock_data['training_data'] = training_data
         self.mock_data['test_data'] = test_data
