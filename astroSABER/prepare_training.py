@@ -136,7 +136,7 @@ class saberPrepare(object):
             self.thresh_list.append(thresh[y,x])
         init(self.spectrum_list)
 
-        self.results_list = func(use_ncpus=self.ncpus, function='hisa') # initiate parallel process
+        self.results_list = func(use_ncpus=self.ncpus, function=self.two_step_extraction) # initiate parallel process
 
         for i in trange(len(self.results_list[:,0])):
             amps_HISA = np.random.normal(results_list[i,3], results_list[i,4], self.training_set_size).reshape(self.training_set_size,)
