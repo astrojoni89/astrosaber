@@ -119,7 +119,7 @@ def func(use_ncpus=None, function=None):
     except KeyboardInterrupt:
         print("KeyboardInterrupt... quitting.")
         quit()
-    return np.array(results_list)
+    return results_list
 
 
 def func_wo_bar(use_ncpus=None, function='cost'):
