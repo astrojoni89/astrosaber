@@ -110,7 +110,7 @@ def func(use_ncpus=None, function=None):
     # p = multiprocessing.Pool(ncpus, init_worker)
     if use_ncpus is None:
         use_ncpus = int(ncpus*0.75)
-    print('Using {} of {} cpus'.format(use_ncpus, ncpus))
+    print('\nUsing {} of {} cpus'.format(use_ncpus, ncpus))
     try:
         if function is None:
             raise ValueError('Have to set function for parallel process.')
