@@ -119,7 +119,7 @@ class saberPrepare(object):
         edges = int(0.10 * min(self.header['NAXIS1'],self.header['NAXIS2']))
         indices = np.column_stack((np.random.randint(edges,self.header['NAXIS1']-edges,self.training_set_size), np.random.randint(edges,self.header['NAXIS2']-edges,self.training_set_size)))
 
-        mu_lws_HISA, sigma_lws_HISA = mean_linewidth/np.sqrt(8*np.log(2)) /channel_width, self.std_linewidth/np.sqrt(8*np.log(2)) / channel_width # mean and standard deviation
+        mu_lws_HISA, sigma_lws_HISA = self.mean_linewidth/np.sqrt(8*np.log(2)) / channel_width, self.std_linewidth/np.sqrt(8*np.log(2)) / channel_width # mean and standard deviation
         mu_ncomps_HISA, sigma_ncomps_HISA = 2, 1 
         lws_HISA = np.random.normal(mu_lws_HISA, sigma_lws_HISA, self.training_set_size).reshape(self.training_set_size,)
         ncomps_HISA = np.random.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size).astype(int)
