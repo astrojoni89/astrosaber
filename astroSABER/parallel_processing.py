@@ -104,7 +104,7 @@ def parallel_process_wo_bar(array, function, n_jobs=4, use_kwargs=False, front_n
     return front + out
 
 
-def func(use_ncpus=None, function='cost'):
+def func(use_ncpus=None, function=None):
     # Multiprocessing code
     ncpus = multiprocessing.cpu_count()
     # p = multiprocessing.Pool(ncpus, init_worker)
@@ -112,10 +112,10 @@ def func(use_ncpus=None, function='cost'):
         use_ncpus = int(ncpus*0.75)
     print('Using {} of {} cpus'.format(use_ncpus, ncpus))
     try:
-        if function == 'cost':
-            results_list = parallel_process(ilist, self.single_cost, n_jobs=use_ncpus)
-        elif function == 'hisa':
-            results_list = parallel_process(ilist, self.two_step_extraction, n_jobs=use_ncpus)
+        if function is None:
+            raise ValueError('Have to set function for parallel process.')
+        results_list = parallel_process(ilist, function=function, n_jobs=use_ncpus)
+        
     except KeyboardInterrupt:
         print("KeyboardInterrupt... quitting.")
         quit()
