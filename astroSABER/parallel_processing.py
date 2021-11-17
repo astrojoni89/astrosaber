@@ -131,9 +131,9 @@ def func_wo_bar(use_ncpus=None, function='cost'):
     #print('Using {} of {} cpus'.format(use_ncpus, ncpus))
     try:
         if function == 'cost':
-            results_list = parallel_process_wo_bar(ilist, self.single_cost, n_jobs=use_ncpus)
+            results_list = parallel_process_wo_bar(ilist, single_cost, n_jobs=use_ncpus)
         elif function == 'hisa':
-            results_list = parallel_process_wo_bar(ilist, self.two_step_extraction, n_jobs=use_ncpus)
+            results_list = parallel_process_wo_bar(ilist, two_step_extraction, n_jobs=use_ncpus)
     except KeyboardInterrupt:
         print("KeyboardInterrupt... quitting.")
         quit()
