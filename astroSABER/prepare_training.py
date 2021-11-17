@@ -222,7 +222,7 @@ class saberPrepare(object):
         consecutive_channels, ranges = determine_peaks(spectrum=self.spectrum_list[i], peak='positive', amp_threshold=None)
         #amp_values, ranges = determine_peaks(spectrum=data[:,y,x], peak='positive', amp_threshold=6*self.noise_list[i])
         mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
-        mask = mask_channels(self.v, mask_ranges, pad_channels=0, remove_intervals=None)
+        mask = mask_channels(self.v, mask_ranges, pad_channels=-5, remove_intervals=None)
         
         obs_noise = np.random.normal(0,self.noise_list[i],size=(self.v,))
         mock_emission = bg + obs_noise
