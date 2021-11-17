@@ -169,7 +169,7 @@ class saberPrepare(object):
         self.mock_data['velocity'] = self.velocity
         self.mock_data['header'] = self.header
 
-        self.save_data():
+        self.save_data()
 
 
     def two_step_extraction(self, i):
