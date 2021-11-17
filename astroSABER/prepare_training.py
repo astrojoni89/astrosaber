@@ -233,10 +233,10 @@ class saberPrepare(object):
 
 
     def save_data(self):
-        if filename_out is None:
+        if self.filename_out is None:
             filename_out = '{}-training_set-{}_spectra{}.pickle'.format(self.fitsfile.split('/')[-1].split('.fits')[0], self.training_set_size, self.suffix)
-        elif not filename_out.endswith('.pickle'):
-            filename_out = filename_out + '.pickle'
+        elif not self.filename_out.endswith('.pickle'):
+            filename_out = self.filename_out + '.pickle'
         dirname = os.path.join(self.path_to_data, 'astrosaber_training')
         if not os.path.exists(dirname):
             os.makedirs(dirname)
