@@ -51,7 +51,7 @@ class saberPrepare(object):
 
         self.p_limit = p_limit
 
-        self.ncpus = use_ncpus
+        self.ncpus = ncpus
 
         self.suffix = suffix
         self.filename_out = filename_out
