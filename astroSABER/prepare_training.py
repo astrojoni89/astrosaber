@@ -136,13 +136,12 @@ class saberPrepare(object):
             self.thresh_list.append(thresh[y,x])
         init(self.spectrum_list)
 
-        self.results_list = func(use_ncpus=self.ncpus, function=self.two_step_extraction) # initiate parallel process
-        return self.results_list
-        '''
-        for i in trange(len(self.results_list[0])):
-            amps_HISA = np.random.normal(results_list[i,3], results_list[i,4], self.training_set_size).reshape(self.training_set_size,)
+        results_list = func(use_ncpus=self.ncpus, function=self.two_step_extraction) # initiate parallel process
+
+        for i in trange(len(results_list)):
+            amps_HISA = np.random.normal(results_list[i][3], results_list[i][4], self.training_set_size).reshape(self.training_set_size,)
             amps_HISA[amps_HISA<0] = 0.
-            mu_velos_HISA, sigma_velos_HISA = min(results_list[i,1][:,0]) + np.abs(max(results_list[i,1][:,1]) - min(results_list[i,1][:,0])) / 2., 5. # mean and standard deviation
+            mu_velos_HISA, sigma_velos_HISA = (min(results_list[i][1][:,0]) + max(results_list[i][1][:,1])) / 2., 5. # mean and standard deviation
             velos_HISA = np.random.normal(mu_velos_HISA, sigma_velos_HISA, self.training_set_size).reshape(self.training_set_size,)
             velos_of_comps_HISA = np.random.choice(velos_HISA, ncomps_HISA[i])
             amps_of_comps_HISA = np.random.choice(amps_HISA, ncomps_HISA[i])
@@ -171,7 +170,7 @@ class saberPrepare(object):
         self.mock_data['header'] = self.header
 
         self.save_data()
-        '''
+
 
     def two_step_extraction(self, i):
         flag = 1.
