@@ -241,6 +241,6 @@ class saberPrepare(object):
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         path_to_file = os.path.join(dirname, filename_out)
-        pickle.dump(mock_data, open(path_to_file, 'wb'), protocol=2)
+        pickle.dump(self.mock_data, open(path_to_file, 'wb'), protocol=2)
         say("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_out, dirname))
 
