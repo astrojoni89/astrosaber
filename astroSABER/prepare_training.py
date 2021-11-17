@@ -159,13 +159,13 @@ class saberPrepare(object):
                     gauss_HISA[ch] = results_list[i][0][ch]
             gauss_HISA[np.invert(results_list[i][2])] = 0.   
 
-            training_data.append(results_list[i][0] - gauss_HISA)
-            test_data.append(results_list[i][0])
-            hisa_spectra.append(gauss_HISA)
+            self.training_data.append(results_list[i][0] - gauss_HISA)
+            self.test_data.append(results_list[i][0])
+            self.hisa_spectra.append(gauss_HISA)
 
-        self.mock_data['training_data'] = training_data
-        self.mock_data['test_data'] = test_data
-        self.mock_data['hisa_spectra'] = hisa_spectra
+        self.mock_data['training_data'] = self.training_data
+        self.mock_data['test_data'] = self.test_data
+        self.mock_data['hisa_spectra'] = self.hisa_spectra
         self.mock_data['velocity'] = self.velocity
         self.mock_data['header'] = self.header
 
