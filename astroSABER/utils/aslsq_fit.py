@@ -10,7 +10,7 @@ from scipy.sparse.linalg import spsolve
 from tqdm import trange
 import warnings
 
-from .utils.aslsq_helper import IterationWarning
+from .aslsq_helper import IterationWarning
 
 
 #Asymmetric least squares baseline fit from Eilers et al. 2005
