@@ -117,7 +117,7 @@ class saberPrepare(object):
         channel_width = self.header['CDELT3'] / 1000.
         spectral_resolution = 1/np.sqrt(8*np.log(2)) # sigma; unit channel
         edges = int(0.10 * min(self.header['NAXIS1'],self.header['NAXIS2']))
-        indices = np.column_stack((np.random.randint(edges,self.header['NAXIS1']-edges,self.training_set_size), np.random.randint(edges,self.header['NAXIS2']-edges,self.training_set_size)))
+        indices = np.column_stack((np.random.randint(edges,self.header['NAXIS2']-edges,self.training_set_size), np.random.randint(edges,self.header['NAXIS1']-edges,self.training_set_size)))
 
         mu_lws_HISA, sigma_lws_HISA = self.mean_linewidth/np.sqrt(8*np.log(2)) / channel_width, self.std_linewidth/np.sqrt(8*np.log(2)) / channel_width # mean and standard deviation
         mu_ncomps_HISA, sigma_ncomps_HISA = 2, 1 
