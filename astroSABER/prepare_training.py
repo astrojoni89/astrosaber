@@ -153,23 +153,23 @@ class saberPrepare(object):
             for idx, (c, v, lw, amp) in enumerate(zip(ncomp_HISA,velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA)):
                 gauss_HISA = gauss_HISA + gauss_function(xvals,amp, v, lw)
 
-           #limit HISA to HI emission
-           for ch in range(len(gauss_HISA)):
-               if gauss_HISA[ch]>mock_emission[ch]:
-                   gauss_HISA[ch] = mock_emission[ch]
-           gauss_HISA[np.invert(mask)] = 0.   
+            #limit HISA to HI emission
+            for ch in range(len(gauss_HISA)):
+                if gauss_HISA[ch]>mock_emission[ch]:
+                    gauss_HISA[ch] = mock_emission[ch]
+            gauss_HISA[np.invert(mask)] = 0.   
 
-           training_data.append(mock_emission - gauss_HISA)
-           test_data.append(mock_emission)
-           hisa_spectra.append(gauss_HISA)
+        training_data.append(mock_emission - gauss_HISA)
+        test_data.append(mock_emission)
+        hisa_spectra.append(gauss_HISA)
 
-           self.mock_data['training_data'] = training_data
-           self.mock_data['test_data'] = test_data
-           self.mock_data['hisa_spectra'] = hisa_spectra
-           self.mock_data['velocity'] = self.velocity
-           self.mock_data['header'] = self.header
+        self.mock_data['training_data'] = training_data
+        self.mock_data['test_data'] = test_data
+        self.mock_data['hisa_spectra'] = hisa_spectra
+        self.mock_data['velocity'] = self.velocity
+        self.mock_data['header'] = self.header
 
-           self.save_data():
+        self.save_data():
 
 
     def two_step_extraction(self, i):
