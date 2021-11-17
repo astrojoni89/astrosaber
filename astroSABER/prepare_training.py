@@ -186,7 +186,7 @@ class saberPrepare(object):
                 if np.any(np.isnan(residual)):
                     print('Residual contains NaNs') 
                     residual[np.isnan(residual)] = 0.0
-                converge_test = (np.all(residual < thresh_list[i]))
+                converge_test = (np.all(residual < self.thresh_list[i]))
                 converge_logic = np.append(converge_logic,converge_test)
                 c = count_ones_in_row(converge_logic)
                 if np.any(c > self.iterations_for_convergence):
