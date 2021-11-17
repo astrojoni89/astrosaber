@@ -209,8 +209,8 @@ class saberPrepare(object):
                     else:
                         final_spec = spectrum_next
                     i_converge = self.niters
-            bg = final_spec - thresh_list[i]
-            hisa = final_spec - spectrum_list[i] - thresh_list[i]
+            bg = final_spec - self.thresh_list[i]
+            hisa = final_spec - self.spectrum_list[i] - self.thresh_list[i]
             iterations = i_converge
         else:
             bg = np.nan
