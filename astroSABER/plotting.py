@@ -85,7 +85,7 @@ def scale_fontsize(rowsize):
     return fontsize
 
 
-def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s):
+def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
     '''
     fitsfiles: list of fitsfiles to plot spectra from
     coordinates: array of central coordinates [[Glon, Glat]] to plot spectra from
@@ -133,7 +133,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                 plt.annotate('Glon: {} deg\nGlat: {} deg'.format(round(coordinates[i][0],2),round(coordinates[i][1],2)), xy=(0.05, 0.85), xycoords='axes fraction', fontsize=fontsize)
 
     else:
-        rng = np.random.default_rng(111)
+        rng = np.random.default_rng(seed)
         xsize = fits.getdata(fitsfiles[0]).shape[2]
         ysize = fits.getdata(fitsfiles[0]).shape[1]
         cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
