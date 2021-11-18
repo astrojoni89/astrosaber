@@ -114,6 +114,11 @@ class saberPrepare(object):
 
         if self.p_limit is None:
             self.p_limit = 0.02
+            
+        string = 'creating training data'
+        banner = len(string) * '='
+        heading = '\n' + banner + '\n' + string + '\n' + banner
+        say(heading)
 
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
         channel_width = self.header['CDELT3'] / 1000.
