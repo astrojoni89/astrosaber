@@ -7,7 +7,6 @@
 # @Last modified time: 03-03-2021
 
 import os
-import random
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -134,7 +133,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                 plt.annotate('Glon: {} deg\nGlat: {} deg'.format(round(coordinates[i][0],2),round(coordinates[i][1],2)), xy=(0.05, 0.85), xycoords='axes fraction', fontsize=fontsize)
 
     else:
-        random.seed(111)
+        rng = np.random.default_rng(111)
         xsize = fits.getdata(fitsfiles[0]).shape[2]
         ysize = fits.getdata(fitsfiles[0]).shape[1]
         cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
@@ -146,8 +145,8 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                 temp_header = fits.getheader(fitsfiles[0])
                 px_scale = abs(temp_header['CDELT1'])
                 edge = int(np.ceil((radius/3600) / px_scale))
-                xValue = random.randint(edge+1,xsize-edge-1)
-                yValue = random.randint(edge+1,ysize-edge-1)
+                xValue = rng.integers(edge+1,xsize-edge)
+                yValue = rng.integers(edge+1,ysize-edge)
                 ax = fig.add_subplot(rows,cols,i+1)
                 for idx, fitsfile in enumerate(fitsfiles):
                     pixel_array = pixel_circle_calculation_px(fitsfile,x=xValue,y=yValue,r=radius)
@@ -167,8 +166,8 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                 temp_beam = temp_header['BMAJ']
                 temp_radius = 1/2. * temp_beam
                 edge = int(np.ceil(temp_radius / px_scale))
-                xValue = random.randint(edge,xsize-edge)
-                yValue = random.randint(edge,ysize-edge)
+                xValue = rng.integers(edge+1,xsize-edge)
+                yValue = rng.integers(edge+1,ysize-edge)
                 ax = fig.add_subplot(rows,cols,i+1)
                 for idx, fitsfile in enumerate(fitsfiles):
                     header = fits.getheader(fitsfile)
