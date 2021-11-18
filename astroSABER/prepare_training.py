@@ -82,7 +82,7 @@ class saberPrepare(object):
         say(string)
 #TODO
     def prepare_training(self):
-        np.random.seed(111)
+        rng = np.random.default_rng(111)
         self.prepare_data()
 
         if self.training_set_size <= 0:
@@ -117,12 +117,12 @@ class saberPrepare(object):
         channel_width = self.header['CDELT3'] / 1000.
         spectral_resolution = 1/np.sqrt(8*np.log(2)) # sigma; unit channel
         edges = int(0.10 * min(self.header['NAXIS1'],self.header['NAXIS2']))
-        indices = np.column_stack((np.random.randint(edges,self.header['NAXIS2']-edges,self.training_set_size), np.random.randint(edges,self.header['NAXIS1']-edges,self.training_set_size)))
+        indices = np.column_stack((rng.integers(edges,self.header['NAXIS2']-edges+1,self.training_set_size), rng.integers(edges,self.header['NAXIS1']-edges+1,self.training_set_size)))
 
         mu_lws_HISA, sigma_lws_HISA = self.mean_linewidth/np.sqrt(8*np.log(2)) / channel_width, self.std_linewidth/np.sqrt(8*np.log(2)) / channel_width # mean and standard deviation
         mu_ncomps_HISA, sigma_ncomps_HISA = 1, 1 
-        lws_HISA = np.random.normal(mu_lws_HISA, sigma_lws_HISA, self.training_set_size).reshape(self.training_set_size,)
-        ncomps_HISA = np.random.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size).astype(int)
+        lws_HISA = rng.normal(mu_lws_HISA, sigma_lws_HISA, self.training_set_size).reshape(self.training_set_size,)
+        ncomps_HISA = rng.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size).astype(int)
         ncomps_HISA[ncomps_HISA<0] = int(1.)
 
         xvals = np.arange(0,self.v,1)
@@ -139,13 +139,13 @@ class saberPrepare(object):
         results_list = func(use_ncpus=self.ncpus, function=self.two_step_extraction) # initiate parallel process
 
         for i in trange(len(results_list)):
-            amps_HISA = np.random.normal(results_list[i][3], results_list[i][4], self.training_set_size).reshape(self.training_set_size,)
+            amps_HISA = rng.normal(results_list[i][3], results_list[i][4], self.training_set_size).reshape(self.training_set_size,)
             amps_HISA[amps_HISA<0] = 0.
             mu_velos_HISA, sigma_velos_HISA = (min(results_list[i][1][:,0]) + max(results_list[i][1][:,1])) / 2., 5. # mean and standard deviation
-            velos_HISA = np.random.normal(mu_velos_HISA, sigma_velos_HISA, self.training_set_size).reshape(self.training_set_size,)
-            velos_of_comps_HISA = np.random.choice(velos_HISA, ncomps_HISA[i])
-            amps_of_comps_HISA = np.random.choice(amps_HISA, ncomps_HISA[i])
-            lws_of_comps_HISA = np.random.choice(lws_HISA, ncomps_HISA[i])  
+            velos_HISA = rng.normal(mu_velos_HISA, sigma_velos_HISA, self.training_set_size).reshape(self.training_set_size,)
+            velos_of_comps_HISA = rng.choice(velos_HISA, ncomps_HISA[i])
+            amps_of_comps_HISA = rng.choice(amps_HISA, ncomps_HISA[i])
+            lws_of_comps_HISA = rng.choice(lws_HISA, ncomps_HISA[i])  
             ncomp_HISA = np.arange(0,ncomps_HISA[i]+1,1)
             lws_of_comps_HISA[np.argwhere(lws_of_comps_HISA<spectral_resolution)] = spectral_resolution
 
@@ -224,7 +224,7 @@ class saberPrepare(object):
         mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
         mask = mask_channels(self.v, mask_ranges, pad_channels=-5, remove_intervals=None)
         
-        obs_noise = np.random.normal(0,self.noise_list[i],size=(self.v,))
+        obs_noise = rng.normal(0,self.noise_list[i],size=(self.v,))
         mock_emission = bg + obs_noise
 
         mu_amps_HISA, sigma_amps_HISA = 6*self.noise_list[i], 1*self.noise_list[i]
