@@ -130,11 +130,10 @@ def func_wo_bar(use_ncpus=None, function='cost'):
         use_ncpus = int(ncpus*0.75)
     #print('Using {} of {} cpus'.format(use_ncpus, ncpus))
     try:
-        if function == 'cost':
-            results_list = parallel_process_wo_bar(ilist, single_cost, n_jobs=use_ncpus)
-        elif function == 'hisa':
-            results_list = parallel_process_wo_bar(ilist, two_step_extraction, n_jobs=use_ncpus)
+        if function is None:
+            raise ValueError('Have to set function for parallel process.')
+        results_list = parallel_process_wo_bar(ilist, function=function, n_jobs=use_ncpus)
     except KeyboardInterrupt:
         print("KeyboardInterrupt... quitting.")
         quit()
-    return np.array(results_list)
+    return results_list
