@@ -80,7 +80,7 @@ class saberPrepare(object):
         self.test_data = []
         string = 'Done!'
         say(string)
-
+#TODO
     def prepare_training(self):
         np.random.seed(111)
         self.prepare_data()
