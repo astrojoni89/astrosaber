@@ -125,7 +125,7 @@ class saberPrepare(object):
         mu_ncomps_HISA, sigma_ncomps_HISA = 1, 1 
         lws_HISA = self.rng.normal(mu_lws_HISA, sigma_lws_HISA, self.training_set_size).reshape(self.training_set_size,)
         ncomps_HISA = self.rng.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size).astype(int)
-        ncomps_HISA[ncomps_HISA<0] = int(1.)
+        ncomps_HISA[ncomps_HISA<=0] = int(1.)
 
         xvals = np.arange(0,self.v,1)
         
