@@ -122,7 +122,7 @@ def func(use_ncpus=None, function=None):
     return results_list
 
 
-def func_wo_bar(use_ncpus=None, function='cost'):
+def func_wo_bar(use_ncpus=None, function=None):
     # Multiprocessing code
     ncpus = multiprocessing.cpu_count()
     # p = multiprocessing.Pool(ncpus, init_worker)
