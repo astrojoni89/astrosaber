@@ -76,7 +76,7 @@ class saberPrepare(object):
         #self.header_2d = md_header_2d(self.fitsfile)
         self.v = self.header['NAXIS3']
         self.velocity = velocity_axes(self.fitsfile)
-        self.mock_data = {'training_data' : None, 'test_data' : None, 'hisa_spectra' : None, 'velocity' : None, 'header' : None}
+        self.mock_data = {'training_data' : None, 'test_data' : None, 'hisa_spectra' : None, 'rms_noise' : None, 'velocity' : None, 'header' : None}
         self.hisa_spectra = []
         self.training_data = []
         self.test_data = []
@@ -172,6 +172,7 @@ class saberPrepare(object):
         self.mock_data['training_data'] = self.training_data
         self.mock_data['test_data'] = self.test_data
         self.mock_data['hisa_spectra'] = self.hisa_spectra
+        self.mock_data['rms_noise'] = self.noise_list
         self.mock_data['velocity'] = self.velocity
         self.mock_data['header'] = self.header
 
