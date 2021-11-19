@@ -196,7 +196,7 @@ class saberTraining(object):
             raise ValueError("'lam1_initial' has to be greater than 'lam2_initial'")
 
         # Initialize book-keeping object
-        gd = gradient_descent_lambda_set(self.iterations)
+        gd = self.gradient_descent_lambda_set(self.iterations)
         gd.lam1_trace[0] = self.lam1_initial
         gd.lam2_trace[0] = self.lam2_initial
 
