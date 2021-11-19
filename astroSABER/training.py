@@ -82,6 +82,7 @@ class saberTraining(object):
         if self.p_limit is None:
             self.p_limit = 0.02
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
+        init(self.training_data)
         string = 'Done!'
         say(string)
 
