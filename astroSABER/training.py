@@ -162,7 +162,7 @@ class saberTraining(object):
             self.iter_of_convergence = np.nan
 
 
-    def train_lambda_set(objective_function=self.objective_function_lambda_set, training_data=None, test_data=None, noise=None, lam1_initial=None, p1=None, lam2_initial=None, p2=None, lam1_bounds=None, lam2_bounds=None, iterations=100, MAD=None, eps=None, learning_rate=None, mom=None, window_size=5, iterations_for_convergence_training=10, mask=None, ncpus=None):
+    def train_lambda_set(self, objective_function=self.objective_function_lambda_set, training_data=None, test_data=None, noise=None, lam1_initial=None, p1=None, lam2_initial=None, p2=None, lam1_bounds=None, lam2_bounds=None, iterations=100, MAD=None, eps=None, learning_rate=None, mom=None, window_size=5, iterations_for_convergence_training=10, mask=None, ncpus=None):
         """
         lam1_initial =
         lam2_initial =
