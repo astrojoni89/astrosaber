@@ -12,7 +12,7 @@ from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels,
 from .utils.aslsq_helper import velocity_axes, count_ones_in_row, check_signal_ranges, IterationWarning, say, format_warning
 from .utils.aslsq_fit import baseline_als_optimized, two_step_extraction
 
-from parallel_processing import init, parallel_process, parallel_process_wo_bar, func, func_wo_bar
+from .parallel_processing import init, parallel_process, parallel_process_wo_bar, func, func_wo_bar
 
 warnings.showwarning = format_warning
 
