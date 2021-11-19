@@ -107,7 +107,7 @@ class saberTraining(object):
             return np.nanmedian(results_list[:,0]) #gmean(cost_function_list)
 
 
-    def single_cost(self, i, weight_1=self.weight_1, weight_2=self.weight_2, get_all=True, dof=4): # , lam1_updt=None, p1_updt=None, lam2_updt=None, p2_updt=None
+    def single_cost(self, i, get_all=True, dof=4): # , lam1_updt=None, p1_updt=None, lam2_updt=None, p2_updt=None
         consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
         mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
         mask = mask_channels(self.v, mask_ranges, pad_channels=2, remove_intervals=None)
@@ -134,7 +134,7 @@ class saberTraining(object):
         squared_residuals = (self.test_data[i][mask] - bg_fit[mask])**2
         residuals = (self.test_data[i][mask] - bg_fit[mask])
         ssr = np.nansum(squared_residuals)
-        cost_function = ssr / (2 * len(self.test_data[i][mask])) + weight_1 * lam1_updt + weight_2 * lam2_updt #penalize large smoothing
+        cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * lam1_updt + self.weight_2 * lam2_updt #penalize large smoothing
         if get_all:    
             chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
             n_samples = len(self.test_data[i][mask])
