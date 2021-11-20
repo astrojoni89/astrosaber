@@ -5,6 +5,7 @@ from scipy import sparse
 from scipy.sparse.linalg import spsolve
 
 from tqdm import tqdm, trange
+from tqdm.utils import _is_utf, _supports_unicode
 import warnings
 import os
 
