@@ -97,8 +97,8 @@ class saberTraining(object):
 
     def objective_function_lambda_set(self, function, lam1, p1, lam2, p2, ncpus=None): #, training_data=None, test_data=None, header=None, check_signal_sigma=None, noise=None, velo_range=None, niters=None, iterations_for_convergence=None, add_residual=None, thresh=None, mask=None, get_all=True, dof=4, 
    
-        global lam1_updt, lam2_updt
-        lam1_updt, lam2_updt = lam1, lam2
+        #global lam1_updt, lam2_updt
+        self.lam1_updt, self.lam2_updt = lam1, lam2
 
         results_list = func_wo_bar(use_ncpus=ncpus, function=function)
    
@@ -113,7 +113,7 @@ class saberTraining(object):
         mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
         mask = mask_channels(self.v, mask_ranges, pad_channels=2, remove_intervals=None)
 
-        bg_fit, _, _, _ = two_step_extraction(lam1_updt, self.p1, lam2_updt, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh)
+        bg_fit, _, _, _ = two_step_extraction(self.lam1_updt, self.p1, self.lam2_updt, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh)
     
         if type(self.noise) is not np.ndarray:
             noise_array = np.ones(len(training_data[i])) * self.noise
