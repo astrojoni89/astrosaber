@@ -92,6 +92,10 @@ class saberTraining(object):
             self.p1 = 0.90
         if self.p2 is None:
             self.p2 = 0.90
+        if self.weight_1 is None:
+            self.weight_1 = 0.0
+        if self.weight_2 is None:
+            self.weight_2 = 0.0
         self.train()
 
 
