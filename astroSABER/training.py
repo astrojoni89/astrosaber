@@ -88,6 +88,10 @@ class saberTraining(object):
 
     def training(self):
         self.prepare_data()
+        if self.p1 is None:
+            self.p1 = 0.90
+        if self.p2 is None:
+            self.p2 = 0.90
         self.train()
 
 
