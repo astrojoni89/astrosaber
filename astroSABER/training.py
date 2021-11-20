@@ -139,7 +139,7 @@ class saberTraining(object):
         squared_residuals = (self.test_data[i][mask] - bg_fit[mask])**2
         residuals = (self.test_data[i][mask] - bg_fit[mask])
         ssr = np.nansum(squared_residuals)
-        cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * lam1_updt + self.weight_2 * lam2_updt #penalize large smoothing
+        cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * self.lam1_updt + self.weight_2 * self.lam2_updt #penalize large smoothing
         if get_all:    
             chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
             n_samples = len(self.test_data[i][mask])
