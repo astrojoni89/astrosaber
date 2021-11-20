@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import pickle
 from astropy.io import fits
