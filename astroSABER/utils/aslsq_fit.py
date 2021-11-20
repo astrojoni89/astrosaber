@@ -10,7 +10,7 @@ from scipy.sparse.linalg import spsolve
 from tqdm import trange
 import warnings
 
-from .aslsq_helper import check_signal_ranges
+from .aslsq_helper import check_signal_ranges, count_ones_in_row
 
 
 #Asymmetric least squares baseline fit from Eilers et al. 2005
