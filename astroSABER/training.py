@@ -278,7 +278,7 @@ class saberTraining(object):
                 converge_logic = (gd.fracdiff_lam1 < tolerance) & (gd.fracdiff_lam2 < tolerance)
 
                 c = count_ones_in_row(converge_logic)
-                say('  ({0:4.3F},{1:4.3F} < {2:4.3F} for {3} iters [{4} required])'.format(gd.fracdiff_lam1[i], gd.fracdiff_lam2[i], tolerance, int(c[i]), self.iterations_for_convergence_training))
+                say('  ({0:4.3F},{1:4.3F} < {2:4.3F} for {3} iters [{4} required])'.format(gd.fracdiff_lam1[i], gd.fracdiff_lam2[i], tolerance, int(c[i]), iterations_for_convergence_training))
 
                 if i in range(2 * window_size, self.iterations, 10):
                     if _supports_unicode(sys.stderr):
@@ -289,7 +289,7 @@ class saberTraining(object):
                         print(offset + ' ʿ/   \ʾ  ')
 
                 if np.any(c > self.iterations_for_convergence_training):
-                    i_converge_training = np.min(np.argwhere(c > self.iterations_for_convergence_training))
+                    i_converge_training = np.min(np.argwhere(c > iterations_for_convergence_training))
                     gd.iter_of_convergence = i_converge_training
                     say('\nStable convergence achieved at iteration: {}'.format(i_converge_training))
                     break
