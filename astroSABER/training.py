@@ -123,10 +123,10 @@ class saberTraining(object):
 
         bg_fit, _, _, _ = two_step_extraction(self.lam1_updt, self.p1, self.lam2_updt, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
     
-        if type(self.noise) is not np.ndarray:
-            noise_array = np.ones(len(training_data[i])) * self.noise
+        if type(self.noise[i]) is not np.ndarray:
+            noise_array = np.ones(len(self.training_data[i])) * self.noise[i]
         else:
-            noise_array = self.noise
+            noise_array = self.noise[i]
         if mask is None:
             mask = np.ones(len(self.training_data[i]))
             mask = mask.astype('bool')
