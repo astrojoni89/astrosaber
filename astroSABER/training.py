@@ -190,7 +190,7 @@ class saberTraining(object):
         if self.learning_rate is None:
             self.learning_rate = 0.01
         if self.eps is None:
-            self.eps = 0.01
+            self.eps = 0.005
         if self.MAD is None:
             self.MAD = 0.03
         if self.mom is None:
@@ -242,16 +242,18 @@ class saberTraining(object):
             gd.lam2_trace[i+1] = gd.lam2_trace[i] - self.learning_rate * gd.D_lam2_trace[i] + momentum_lam2
 
         # lam and p cannot be negative; p needs to be 0<p<1
-            if self.lam1_bounds is not None:
-                if gd.lam1_trace[i+1] < min(self.lam1_bounds):
-                    gd.lam1_trace[i+1] = min(self.lam1_bounds) + 0.05
-                if gd.lam1_trace[i+1] > max(self.lam1_bounds):
-                    gd.lam1_trace[i+1] = max(self.lam1_bounds) - 0.05
-            if self.lam2_bounds is not None:
-                if gd.lam2_trace[i+1] < min(self.lam2_bounds):
-                    gd.lam2_trace[i+1] = min(self.lam2_bounds) + 0.05
-                if gd.lam2_trace[i+1] > max(self.lam2_bounds):
-                    gd.lam2_trace[i+1] = max(self.lam2_bounds) - 0.05
+            if self.lam1_bounds is None:
+                self.lam1_bounds = [0.1,5.0]
+            if gd.lam1_trace[i+1] < min(self.lam1_bounds):
+                gd.lam1_trace[i+1] = min(self.lam1_bounds) + 0.05
+            if gd.lam1_trace[i+1] > max(self.lam1_bounds):
+                gd.lam1_trace[i+1] = max(self.lam1_bounds) - 0.05
+            if self.lam2_bounds is None:
+                self.lam2_bounds = [0.1,5.0]
+            if gd.lam2_trace[i+1] < min(self.lam2_bounds):
+                gd.lam2_trace[i+1] = min(self.lam2_bounds) + 0.05
+            if gd.lam2_trace[i+1] > max(self.lam2_bounds):
+                gd.lam2_trace[i+1] = max(self.lam2_bounds) - 0.05
         
             if gd.lam1_trace[i+1] < 0.:
                 gd.lam1_trace[i+1] = 0.
