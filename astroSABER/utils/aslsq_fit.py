@@ -10,6 +10,8 @@ from scipy.sparse.linalg import spsolve
 from tqdm import trange
 import warnings
 
+from .aslsq_helper import check_signal_ranges
+
 
 #Asymmetric least squares baseline fit from Eilers et al. 2005
 def baseline_als(y, lam, p, niter):
