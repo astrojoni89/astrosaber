@@ -288,7 +288,7 @@ class saberTraining(object):
                         print(offset + '<´(⬬ ⬬)`> ')
                         print(offset + ' ʿ/   \ʾ  ')
 
-                if np.any(c > self.iterations_for_convergence_training):
+                if np.any(c > iterations_for_convergence_training):
                     i_converge_training = np.min(np.argwhere(c > iterations_for_convergence_training))
                     gd.iter_of_convergence = i_converge_training
                     say('\nStable convergence achieved at iteration: {}'.format(i_converge_training))
