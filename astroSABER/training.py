@@ -104,7 +104,7 @@ class saberTraining(object):
         popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps=self.eps, learning_rate=self.learning_rate, mom=self.mom, window_size=5, iterations_for_convergence_training=10, ncpus=self.ncpus)
 
 
-    def objective_function_lambda_set(self, function, lam1, p1, lam2, p2, get_all=True, dof=4, ncpus=None): #, training_data=None, test_data=None, header=None, check_signal_sigma=None, noise=None, velo_range=None, niters=None, iterations_for_convergence=None, add_residual=None, thresh=None, mask=None, get_all=True, dof=4, 
+    def objective_function_lambda_set(self, lam1, p1, lam2, p2, get_all=True, dof=4, ncpus=None): #, training_data=None, test_data=None, header=None, check_signal_sigma=None, noise=None, velo_range=None, niters=None, iterations_for_convergence=None, add_residual=None, thresh=None, mask=None, get_all=True, dof=4, 
    
         #global lam1_updt, lam2_updt
         self.lam1_updt, self.lam2_updt = lam1, lam2
@@ -218,13 +218,13 @@ class saberTraining(object):
 
             # Calls to objective function
             #lam1
-            obj_lam1r, rchi2_lam1r, _ = objective_function(self.single_cost, self.lam1_r, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus) # self.training_data, self.test_data, self.header, self.check_signal_sigma, self.noise, self.velo_range, self.niters, self.iterations_for_convergence, self.add_residual, self.thresh, self.mask, get_all=True, dof=4,
-            obj_lam1l, rchi2_lam1l, _ = objective_function(self.single_cost, self.lam1_l, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus)
+            obj_lam1r, rchi2_lam1r, _ = objective_function(self.lam1_r, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus) # self.training_data, self.test_data, self.header, self.check_signal_sigma, self.noise, self.velo_range, self.niters, self.iterations_for_convergence, self.add_residual, self.thresh, self.mask, get_all=True, dof=4,
+            obj_lam1l, rchi2_lam1l, _ = objective_function(self.lam1_l, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus)
             gd.D_lam1_trace[i] = (obj_lam1r - obj_lam1l) / 2. / self.eps
 
             #lam2
-            obj_lam2r, rchi2_lam2r, _ = objective_function(self.single_cost, self.lam1_c, self.p1, self.lam2_r, self.p2, ncpus=self.ncpus)
-            obj_lam2l, rchi2_lam2l, _ = objective_function(self.single_cost, self.lam1_c, self.p1, self.lam2_l, self.p2, ncpus=self.ncpus)
+            obj_lam2r, rchi2_lam2r, _ = objective_function(self.lam1_c, self.p1, self.lam2_r, self.p2, ncpus=self.ncpus)
+            obj_lam2l, rchi2_lam2l, _ = objective_function(self.lam1_c, self.p1, self.lam2_l, self.p2, ncpus=self.ncpus)
             gd.D_lam2_trace[i] = (obj_lam2r - obj_lam2l) / 2. / self.eps
 
             gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l + rchi2_lam2r + rchi2_lam2l) / 4.
