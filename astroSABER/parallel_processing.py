@@ -133,9 +133,9 @@ def func(use_ncpus=None, function=None):
         if function is None:
             raise ValueError('Have to set function for parallel process.')
         if function == 'cost':
-            results_list = parallel_process(ilist, single_cost_i, n_jobs=use_ncpus)
+            results_list = parallel_process(mp_ilist, single_cost_i, n_jobs=use_ncpus)
         if function == 'hisa':
-            results_list = parallel_process(ilist, lambda_extraction_i, n_jobs=use_ncpus)
+            results_list = parallel_process(mp_ilist, lambda_extraction_i, n_jobs=use_ncpus)
         
     except KeyboardInterrupt:
         print("KeyboardInterrupt... quitting.")
@@ -156,9 +156,9 @@ def func_wo_bar(use_ncpus=None, function=None):
         if function is None:
             raise ValueError('Have to set function for parallel process.')
         if function == 'cost':
-            results_list = parallel_process(ilist, single_cost_i, n_jobs=use_ncpus)
+            results_list = parallel_process(mp_ilist, single_cost_i, n_jobs=use_ncpus)
         if function == 'hisa':
-            results_list = parallel_process(ilist, lambda_extraction_i, n_jobs=use_ncpus)
+            results_list = parallel_process(mp_ilist, lambda_extraction_i, n_jobs=use_ncpus)
     except KeyboardInterrupt:
         print("KeyboardInterrupt... quitting.")
         quit()
