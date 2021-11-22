@@ -25,7 +25,7 @@ warnings.showwarning = format_warning
 
 
 class HisaExtraction(object):
-    def __init__(self, fitsfile, path_to_noise_map=None, path_to_data='.', smoothing='Y', lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence = 3, noise=None, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 10, output_flags = True):
+    def __init__(self, fitsfile, path_to_noise_map=None, path_to_data='.', smoothing='Y', lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence = 3, noise=None, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 10, output_flags = True, baby_yoda = False):
         self.fitsfile = fitsfile
         self.path_to_noise_map = path_to_noise_map
         self.path_to_data = path_to_data
