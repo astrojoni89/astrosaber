@@ -126,8 +126,8 @@ def func(use_ncpus=None, function=None):
     if use_ncpus is None:
         use_ncpus = int(ncpus*0.75)
     print('\nUsing {} of {} cpus'.format(use_ncpus, ncpus))
-    if ilist is None:
-        raise ValueError("Must specify 'ilist'.")
+    if mp_ilist is None:
+        raise ValueError("Must specify 'mp_ilist'.")
     try:
         if function is None:
             raise ValueError('Have to set function for parallel process.')
@@ -149,8 +149,8 @@ def func_wo_bar(use_ncpus=None, function=None):
     if use_ncpus is None:
         use_ncpus = int(ncpus*0.75)
     #print('Using {} of {} cpus'.format(use_ncpus, ncpus))
-    if ilist is None:
-        raise ValueError("Must specify 'ilist'.")
+    if mp_ilist is None:
+        raise ValueError("Must specify 'mp_ilist'.")
     try:
         if function is None:
             raise ValueError('Have to set function for parallel process.')
