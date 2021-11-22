@@ -124,6 +124,7 @@ class HisaExtraction(object):
             for i in fran(pixel_start[0],pixel_end[0],1):
                 for j in range(pixel_start[1],pixel_end[1],1):
                     spectrum = self.image[:,j,i]
+                    '''
                     if check_signal_ranges(spectrum, self.header, sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range):
                         spectrum_prior = baseline_als_optimized(spectrum, self.lam1, self.p1, niter=3)
                         spectrum_firstfit = spectrum_prior
@@ -168,6 +169,7 @@ class HisaExtraction(object):
                         self.iteration_map[j,i] = np.nan
                         #flags
                         self.flag_map[j,i] = 0.
+                    '''
 
             string = 'Done!'
             say(string)
