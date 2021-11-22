@@ -2,22 +2,20 @@ import numpy as np
 import multiprocessing
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
+from .training import saberTraining
 from .utils.aslsq_fit import baseline_als_optimized
 from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
 from tqdm import trange, tqdm
 
 
-def init_old(data):
+def init(data):
     global ilist
     ilist = np.arange(len(data))
     
-def init(mp_info):
-    global mp_ilist, mp_data, mp_params
-    mp_data, mp_params = mp_info
-    mp_ilist = np.arange(len(mp_data))
     
-    
-
+def single_cost_i(i):
+    result = saberTraining.single_cost(i)
+    return result
 
 
 def parallel_process(array, function, n_jobs=4, use_kwargs=False, front_num=3):
