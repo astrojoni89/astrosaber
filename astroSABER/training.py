@@ -72,6 +72,7 @@ class saberTraining(object):
         say(heading)
 
     def prepare_data(self):
+        global ilist
         self.getting_ready()
         self.p = pickle.load(open(self.pickle_file, 'rb'), encoding='latin1')
         self.training_data = self.p['training_data']
@@ -92,7 +93,8 @@ class saberTraining(object):
         if self.weight_2 is None:
             self.weight_2 = 0.0
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
-        init(self.training_data)
+        #init(self.training_data)
+        ilist = np.arange(len(self.training_data))
         string = 'Done!'
         say(string)
 
