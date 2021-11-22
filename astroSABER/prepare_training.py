@@ -140,9 +140,9 @@ class saberPrepare(object):
             self.spectrum_list.append(self.image[:,y,x])
             self.noise_list.append(noise_map[y,x])
             self.thresh_list.append(thresh[y,x])
-        #init(self.spectrum_list)
-        ilist = np.arange(len(self.spectrum_list))
-        results_list = func(use_ncpus=self.ncpus, function=self.two_step_extraction, ilist=ilist) # initiate parallel process
+        init(self.spectrum_list)
+        #ilist = np.arange(len(self.spectrum_list))
+        results_list = func(use_ncpus=self.ncpus, function='lambda_extraction') # initiate parallel process
 
         for i in trange(len(results_list)):
             amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], self.training_set_size).reshape(self.training_set_size,)
