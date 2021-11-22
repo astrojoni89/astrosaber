@@ -17,14 +17,13 @@ def init(mp_info):
     global mp_ilist, mp_data, mp_params
     mp_data, mp_params = mp_info
     mp_ilist = np.arange(len(mp_data))
-    
-    
+      
 def single_cost_i(i):
-    result = saberTraining.single_cost(i)
+    result = saberTraining.single_cost(mp_params[0], i)
     return result
 
 def lambda_extraction_i(i):
-    result = saberPrepare.two_step_extraction(i)
+    result = saberPrepare.two_step_extraction(mp_params[0], i)
     return result
 
 
