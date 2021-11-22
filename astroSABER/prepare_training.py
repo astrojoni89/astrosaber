@@ -141,7 +141,7 @@ class saberPrepare(object):
             self.noise_list.append(noise_map[y,x])
             self.thresh_list.append(thresh[y,x])
         #init(self.spectrum_list)
-        ilist = np.arange(self.spectrum_list)
+        ilist = np.arange(len(self.spectrum_list))
         results_list = func(use_ncpus=self.ncpus, function=self.two_step_extraction, ilist=ilist) # initiate parallel process
 
         for i in trange(len(results_list)):
