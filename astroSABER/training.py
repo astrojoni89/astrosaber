@@ -109,7 +109,7 @@ class saberTraining(object):
         #global lam1_updt, lam2_updt
         self.lam1_updt, self.lam2_updt = lam1, lam2
         import astroSABER.parallel_processing
-        astroSABER.parallel_processing.init(self.training_data)
+        astroSABER.parallel_processing.init([self.training_data, [self]])
         results_list = np.array(astroSABER.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost'))
    
         if get_all:
