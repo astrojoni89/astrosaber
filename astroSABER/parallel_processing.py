@@ -104,13 +104,15 @@ def parallel_process_wo_bar(array, function, n_jobs=4, use_kwargs=False, front_n
     return front + out
 
 
-def func(use_ncpus=None, function=None):
+def func(use_ncpus=None, function=None, ilist=None):
     # Multiprocessing code
     ncpus = multiprocessing.cpu_count()
     # p = multiprocessing.Pool(ncpus, init_worker)
     if use_ncpus is None:
         use_ncpus = int(ncpus*0.75)
     print('\nUsing {} of {} cpus'.format(use_ncpus, ncpus))
+    if ilist is None:
+        raise ValueError("Must specify 'ilist'.")
     try:
         if function is None:
             raise ValueError('Have to set function for parallel process.')
@@ -122,13 +124,15 @@ def func(use_ncpus=None, function=None):
     return np.array(results_list)
 
 
-def func_wo_bar(use_ncpus=None, function=None):
+def func_wo_bar(use_ncpus=None, function=None, ilist=None):
     # Multiprocessing code
     ncpus = multiprocessing.cpu_count()
     # p = multiprocessing.Pool(ncpus, init_worker)
     if use_ncpus is None:
         use_ncpus = int(ncpus*0.75)
     #print('Using {} of {} cpus'.format(use_ncpus, ncpus))
+    if ilist is None:
+        raise ValueError("Must specify 'ilist'.")
     try:
         if function is None:
             raise ValueError('Have to set function for parallel process.')
