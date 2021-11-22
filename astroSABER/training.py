@@ -83,13 +83,6 @@ class saberTraining(object):
         self.v = len(self.p['velocity'])
         if self.p_limit is None:
             self.p_limit = 0.02
-        self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
-        init(self.training_data)
-        string = 'Done!'
-        say(string)
-
-    def training(self):
-        self.prepare_data()
         if self.p1 is None:
             self.p1 = 0.90
         if self.p2 is None:
@@ -98,6 +91,13 @@ class saberTraining(object):
             self.weight_1 = 0.0
         if self.weight_2 is None:
             self.weight_2 = 0.0
+        self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
+        init(self.training_data)
+        string = 'Done!'
+        say(string)
+
+    def training(self):
+        self.prepare_data()
         self.train()
 
 
