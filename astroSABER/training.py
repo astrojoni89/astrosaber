@@ -110,12 +110,12 @@ class saberTraining(object):
         #global lam1_updt, lam2_updt
         self.lam1_updt, self.lam2_updt = lam1, lam2
 
-        results_list = np.array(func_wo_bar(use_ncpus=ncpus, function=function))
+        results_list = func_wo_bar(use_ncpus=ncpus, function=function)
    
         if get_all:
-            return np.nanmedian(results_list[:,0]), np.nanmedian(results_list[:,1]), np.nanmedian(results_list[:,2]) #gmean(cost_function_list),  gmean(rchi2_list)
+            return np.nanmedian(np.array(results_list[:,0])), np.nanmedian(np.array(results_list[:,1])), np.nanmedian(np.array(results_list[:,2])) #gmean(cost_function_list),  gmean(rchi2_list)
         else:
-            return np.nanmedian(results_list[:,0]) #gmean(cost_function_list)
+            return np.nanmedian(np.array(results_list[:,0])) #gmean(cost_function_list)
 
 
     def single_cost(self, i, get_all=True, dof=4): # , lam1_updt=None, p1_updt=None, lam2_updt=None, p2_updt=None
