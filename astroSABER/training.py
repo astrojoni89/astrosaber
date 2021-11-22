@@ -113,9 +113,9 @@ class saberTraining(object):
         results_list = func_wo_bar(use_ncpus=ncpus, function=function)
    
         if get_all:
-            return np.nanmedian(np.array(results_list[:,0])), np.nanmedian(np.array(results_list[:,1])), np.nanmedian(np.array(results_list[:,2])) #gmean(cost_function_list),  gmean(rchi2_list)
+            return np.nanmedian(np.array(results_list)[:,0]), np.nanmedian(np.array(results_list)[:,1]), np.nanmedian(np.array(results_list)[:,2]) #gmean(cost_function_list),  gmean(rchi2_list)
         else:
-            return np.nanmedian(np.array(results_list[:,0])) #gmean(cost_function_list)
+            return np.nanmedian(np.array(results_list)[:,0]) #gmean(cost_function_list)
 
 
     def single_cost(self, i, get_all=True, dof=4): # , lam1_updt=None, p1_updt=None, lam2_updt=None, p2_updt=None
