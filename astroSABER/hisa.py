@@ -96,6 +96,14 @@ class HisaExtraction(object):
             else:
                 noise_map = self.noise * np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
                 thresh = self.sig * noise_map
+                
+        if self.baby_yoda:
+            if _supports_unicode(sys.stderr):
+                fran = yoda
+            else:
+                fran = tqdm
+        else:
+            fran = tqdm
 
         pixel_start=[0,0]
         pixel_end=[self.header['NAXIS1'],self.header['NAXIS2']]
