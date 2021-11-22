@@ -21,7 +21,7 @@ warnings.showwarning = format_warning
 
 
 class saberTraining(object):
-    def __init__(self, pickle_file, path_to_data='.', iterations = 100, lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, eps=None, learning_rate=None, mom=None, niters=20, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
+    def __init__(self, pickle_file, path_to_data='.', iterations=100, lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, eps=None, learning_rate=None, mom=None, niters=20, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
         self.pickle_file = pickle_file
         self.path_to_data = path_to_data
 
@@ -173,7 +173,7 @@ class saberTraining(object):
             self.iter_of_convergence = np.nan
 
 
-    def train_lambda_set(self, objective_function, training_data=None, test_data=None, noise=None, lam1_initial=None, p1=None, lam2_initial=None, p2=None, lam1_bounds=None, lam2_bounds=None, iterations=100, MAD=None, eps=None, learning_rate=None, mom=None, window_size=5, iterations_for_convergence_training=10, mask=None, ncpus=None):
+    def train_lambda_set(self, objective_function, training_data=None, test_data=None, noise=None, lam1_initial=None, p1=None, lam2_initial=None, p2=None, lam1_bounds=None, lam2_bounds=None, iterations=100, MAD=None, eps=None, learning_rate=None, mom=None, window_size=5, iterations_for_convergence_training=10, get_trace=False, mask=None, ncpus=None):
         """
         lam1_initial =
         lam2_initial =
@@ -298,5 +298,7 @@ class saberTraining(object):
                     say('\nStable convergence achieved at iteration: {}'.format(i_converge_training))
                     break
 
-        # Return best-fit alphas, and bookkeeping object
-        return gd.lam1means1[i], gd.lam2means1[i] # gd.lam1_trace, gd.lam2_trace 
+        # Return best-fit lambdas, and bookkeeping object
+        if get_trace:
+            return gd.lam1_trace, gd.lam2_trace
+        return gd.lam1means1[i], gd.lam2means1[i] 
