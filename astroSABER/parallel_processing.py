@@ -3,6 +3,7 @@ import multiprocessing
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from .training import saberTraining
+from .prepare_training import saberPrepare
 from .utils.aslsq_fit import baseline_als_optimized
 from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
 from tqdm import trange, tqdm
@@ -15,6 +16,10 @@ def init(data):
     
 def single_cost_i(i):
     result = saberTraining.single_cost(i)
+    return result
+
+def lambda_extraction_i(i):
+    result = saberPrepare.two_step_extraction(i)
     return result
 
 
@@ -110,7 +115,7 @@ def parallel_process_wo_bar(array, function, n_jobs=4, use_kwargs=False, front_n
     return front + out
 
 
-def func(use_ncpus=None, function=None, ilist=None):
+def func(use_ncpus=None, function=None):
     # Multiprocessing code
     ncpus = multiprocessing.cpu_count()
     # p = multiprocessing.Pool(ncpus, init_worker)
@@ -122,7 +127,10 @@ def func(use_ncpus=None, function=None, ilist=None):
     try:
         if function is None:
             raise ValueError('Have to set function for parallel process.')
-        results_list = parallel_process(ilist, function=function, n_jobs=use_ncpus)
+        if function == 'cost':
+            results_list = parallel_process(ilist, single_cost_i, n_jobs=use_ncpus)
+        if function == 'hisa':
+            results_list = parallel_process(ilist, lambda_extraction_i, n_jobs=use_ncpus)
         
     except KeyboardInterrupt:
         print("KeyboardInterrupt... quitting.")
@@ -130,7 +138,7 @@ def func(use_ncpus=None, function=None, ilist=None):
     return results_list
 
 
-def func_wo_bar(use_ncpus=None, function=None, ilist=None):
+def func_wo_bar(use_ncpus=None, function=None):
     # Multiprocessing code
     ncpus = multiprocessing.cpu_count()
     # p = multiprocessing.Pool(ncpus, init_worker)
@@ -142,7 +150,10 @@ def func_wo_bar(use_ncpus=None, function=None, ilist=None):
     try:
         if function is None:
             raise ValueError('Have to set function for parallel process.')
-        results_list = parallel_process_wo_bar(ilist, function=function, n_jobs=use_ncpus)
+        if function == 'cost':
+            results_list = parallel_process(ilist, single_cost_i, n_jobs=use_ncpus)
+        if function == 'hisa':
+            results_list = parallel_process(ilist, lambda_extraction_i, n_jobs=use_ncpus)
     except KeyboardInterrupt:
         print("KeyboardInterrupt... quitting.")
         quit()
