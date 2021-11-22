@@ -18,6 +18,7 @@ import warnings
 
 from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say, format_warning
 from .utils.aslsq_fit import baseline_als_optimized
+from .utils.grogu import yoda
 
 warnings.showwarning = format_warning
 
