@@ -93,7 +93,7 @@ class saberTraining(object):
             self.weight_2 = 0.0
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
         #init(self.training_data)
-        self.ilist = np.arange(len(self.training_data))
+        #self.ilist = np.arange(len(self.training_data))
         string = 'Done!'
         say(string)
 
@@ -110,8 +110,8 @@ class saberTraining(object):
    
         #global lam1_updt, lam2_updt
         self.lam1_updt, self.lam2_updt = lam1, lam2
-
-        results_list = np.array(func_wo_bar(use_ncpus=ncpus, function=function, ilist=self.ilist))
+        init(self.training_data)
+        results_list = np.array(func_wo_bar(use_ncpus=ncpus, function='cost'))
    
         if get_all:
             return np.nanmedian(results_list[:,0]), np.nanmedian(results_list[:,1]), np.nanmedian(results_list[:,2]) #gmean(cost_function_list),  gmean(rchi2_list)
