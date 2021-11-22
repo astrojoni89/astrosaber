@@ -72,7 +72,6 @@ class saberTraining(object):
         say(heading)
 
     def prepare_data(self):
-        global ilist
         self.getting_ready()
         self.p = pickle.load(open(self.pickle_file, 'rb'), encoding='latin1')
         self.training_data = self.p['training_data']
@@ -94,7 +93,7 @@ class saberTraining(object):
             self.weight_2 = 0.0
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
         #init(self.training_data)
-        ilist = np.arange(len(self.training_data))
+        self.ilist = np.arange(len(self.training_data))
         string = 'Done!'
         say(string)
 
@@ -112,7 +111,7 @@ class saberTraining(object):
         #global lam1_updt, lam2_updt
         self.lam1_updt, self.lam2_updt = lam1, lam2
 
-        results_list = func_wo_bar(use_ncpus=ncpus, function=function)
+        results_list = func_wo_bar(use_ncpus=ncpus, function=function, ilist=self.ilist)
    
         if get_all:
             return np.nanmedian(results_list[:,0]), np.nanmedian(results_list[:,1]), np.nanmedian(results_list[:,2]) #gmean(cost_function_list),  gmean(rchi2_list)
