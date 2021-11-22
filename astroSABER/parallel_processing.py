@@ -9,9 +9,14 @@ from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels,
 from tqdm import trange, tqdm
 
 
-def init(data):
-    global ilist
-    ilist = np.arange(len(data))
+#def init(data):
+#    global ilist
+#    ilist = np.arange(len(data))
+    
+def init(mp_info):
+    global mp_ilist, mp_data, mp_params
+    mp_data, mp_params = mp_info
+    mp_ilist = np.arange(len(mp_data))
     
     
 def single_cost_i(i):
