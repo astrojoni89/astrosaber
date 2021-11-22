@@ -13,7 +13,7 @@ import numpy as np
 from astropy.io import fits
 from astropy import units as u
 
-from tqdm import trange
+from tqdm import tqdm, trange
 import warnings
 
 from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say, format_warning
