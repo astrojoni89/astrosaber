@@ -110,7 +110,7 @@ class saberTraining(object):
         self.lam1_updt, self.lam2_updt = lam1, lam2
         import astroSABER.parallel_processing
         astroSABER.parallel_processing.init(self.training_data)
-        results_list = np.array(func_wo_bar(use_ncpus=ncpus, function='cost'))
+        results_list = np.array(astroSABER.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost'))
    
         if get_all:
             return np.nanmedian(results_list[:,0]), np.nanmedian(results_list[:,1]), np.nanmedian(results_list[:,2]) #gmean(cost_function_list),  gmean(rchi2_list)
