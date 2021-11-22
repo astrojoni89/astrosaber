@@ -139,7 +139,7 @@ class saberPrepare(object):
             self.noise_list.append(noise_map[y,x])
             self.thresh_list.append(thresh[y,x])
         import astroSABER.parallel_processing
-        astroSABER.parallel_processing.init([self.training_data, [self]])
+        astroSABER.parallel_processing.init([self.spectrum_list, [self]])
         #ilist = np.arange(len(self.spectrum_list))
         results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='hisa') # initiate parallel process
 
