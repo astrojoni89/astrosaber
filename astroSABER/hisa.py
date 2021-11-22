@@ -122,7 +122,7 @@ class HisaExtraction(object):
             self.flag_map = np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
             
             print('\n'+'Asymmetric least squares fitting in progress...')
-            for i in fran(pixel_start[0],pixel_end[0],1):
+            for i in fran(range(pixel_start[0],pixel_end[0],1)):
                 for j in range(pixel_start[1],pixel_end[1],1):
                     spectrum = self.image[:,j,i]
                     self.image_asy[:,j,i], self.HISA_map[:,j,i], self.iteration_map[j,i], self.flag_map[j,i] = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=spectrum, header=self.header, check_signal_sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=thresh[j,i])
