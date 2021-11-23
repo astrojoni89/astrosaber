@@ -97,6 +97,10 @@ class saberTraining(object):
 
     def training(self):
         self.prepare_data()
+        string = 'Optimizing smoothing parameters'
+        banner = len(string) * '='
+        heading = '\n' + banner + '\n' + string + '\n' + banner
+        say(heading)
         self.train()
 
 
