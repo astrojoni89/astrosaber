@@ -17,14 +17,14 @@ def main():
     prep = saberPrepare(fitsfile=filename)
 
     ###set the size of the training set
-    prep.training_set_size = 100
+    prep.training_set_size = 50
 
     ###path to noise map (or universal noise value)
     #prep.path_to_noise_map = os.path.join('.', 'dir', 'sub', '*.fits')
     prep.noise = 4. #Kelvin
 
     ###set the expected linewidth of self-absorption features; artificial self-absorption features will be generated from this distribution
-    prep.mean_linewidth = 5. # [km/s]
+    prep.mean_linewidth = 5. # FWHM [km/s]
     prep.std_linewidth = 1. # sigma of the linewidth distribution [km/s]
 
     ###you can always print the prep object and the keyword arguments you can adjust
