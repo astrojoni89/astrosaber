@@ -199,13 +199,13 @@ class saberTraining(object):
 
         tolerance = self.MAD / np.sqrt(window_size)
         
-        if phase == 'one':
+        if self.phase == 'one':
             self.mom /= 3.
             
         if self.lam1_initial is None:
             raise ValueError("'lam1_initial' parameter is required for optimization.")
 
-        if self.lam2_initial is None and phase == 'two':
+        if self.lam2_initial is None and self.phase == 'two':
             raise ValueError("'lam2_initial' parameter is required for two-phase optimization.")
 
         if self.lam1_initial <= self.lam2_initial:
@@ -229,7 +229,7 @@ class saberTraining(object):
             
             gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l) / 2.
             
-            if phase == 'two':
+            if self.phase == 'two':
                 #lam2
                 obj_lam2r, rchi2_lam2r, _ = objective_function(self.lam1_c, self.p1, self.lam2_r, self.p2, ncpus=self.ncpus)
                 obj_lam2l, rchi2_lam2l, _ = objective_function(self.lam1_c, self.p1, self.lam2_l, self.p2, ncpus=self.ncpus)
@@ -287,9 +287,9 @@ class saberTraining(object):
                 gd.fracdiff_lam1[i] = np.abs(gd.lam1means1[i] - gd.lam1means2[i])
                 gd.fracdiff_lam2[i] = np.abs(gd.lam2means1[i] - gd.lam2means2[i])
 
-                if phase == 'two':
+                if self.phase == 'two':
                     converge_logic = (gd.fracdiff_lam1 < tolerance) & (gd.fracdiff_lam2 < tolerance)
-                elif phase == 'one':
+                elif self.phase == 'one':
                     converge_logic = (gd.fracdiff_lam1 < tolerance)
 
                 c = count_ones_in_row(converge_logic)
