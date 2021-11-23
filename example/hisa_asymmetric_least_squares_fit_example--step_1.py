@@ -21,7 +21,7 @@ def main():
 
     ###path to noise map (or universal noise value)
     #prep.path_to_noise_map = os.path.join('.', 'dir', 'sub', '*.fits')
-    prep.noise = 4. #Kelvin
+    prep.noise = 4. # Kelvin
 
     ###set the expected linewidth of self-absorption features; artificial self-absorption features will be generated from this distribution
     prep.mean_linewidth = 5. # FWHM [km/s]
