@@ -78,13 +78,13 @@ class HisaExtraction(object):
         if self.lam1 is None:
             raise TypeError("Need to specify 'lam1' for extraction.")
         if self.p1 is None:
-            raise TypeError("Need to specify 'p1' for extraction.")
+            self.p1 = 0.90
         if not 0<= self.p1 <=1:
             raise ValueError("'p1' has to be in the range [0,1]")
         if self.lam2 is None:
             raise TypeError("Need to specify 'lam2' for extraction.")
         if self.p2 is None:
-            raise TypeError("Need to specify 'p2' for extraction.")
+            self.p2 = 0.90
         if not 0<= self.p2 <=1:
             raise ValueError("'p2' has to be in the range [0,1]")
 
