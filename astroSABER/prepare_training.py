@@ -20,7 +20,7 @@ def gauss_function(x,amp,mu,sigma):
 
 
 class saberPrepare(object):
-    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_linewidth=4.,std_linewidth=1., lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence=3, noise=None, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., output_flags = True, p_limit=None, ncpus=1, suffix='', filename_out=None, seed=111):
+    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_linewidth=4.,std_linewidth=1., lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence=3, noise=None, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, seed=111):
         self.fitsfile = fitsfile
         self.training_set_size = int(training_set_size)
         self.path_to_noise_map = path_to_noise_map
@@ -43,8 +43,6 @@ class saberPrepare(object):
         
         self.velo_range = velo_range
         self.check_signal_sigma = check_signal_sigma
-        
-        self.output_flags = output_flags
 
         self.p_limit = p_limit
 
@@ -57,7 +55,7 @@ class saberPrepare(object):
         self.rng = np.random.default_rng(self.seed)
         
     def __str__(self):
-        return f'saberPrepare:\nfitsfile: {self.fitsfile}\ntraining_set_size: {self.training_set_size}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\noutput_flags: {self.output_flags}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
+        return f'saberPrepare:\nfitsfile: {self.fitsfile}\ntraining_set_size: {self.training_set_size}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nmean_linewidth: {self.mean_linewidth}\nstd_linewidth: {self.std_linewidth}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\noutput_flags: {self.output_flags}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
     
     def getting_ready(self):
         string = 'preparation'
