@@ -126,53 +126,6 @@ class HisaExtraction(object):
                 for j in range(pixel_start[1],pixel_end[1],1):
                     spectrum = self.image[:,j,i]
                     self.image_asy[:,j,i], self.HISA_map[:,j,i], self.iteration_map[j,i], self.flag_map[j,i] = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=spectrum, header=self.header, check_signal_sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=thresh[j,i])
-                    '''
-                    if check_signal_ranges(spectrum, self.header, sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range):
-                        spectrum_prior = baseline_als_optimized(spectrum, self.lam1, self.p1, niter=3)
-                        spectrum_firstfit = spectrum_prior
-                        n = 0
-                        converge_logic = np.array([])
-                        while n < self.niters:
-                            spectrum_prior = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
-                            spectrum_next = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
-                            residual = abs(spectrum_next - spectrum_prior)
-                            if np.any(np.isnan(residual)):
-                                print('Residual contains NaNs') 
-                                residual[np.isnan(residual)] = 0.0
-                            converge_test = (np.all(residual < thresh[j,i]))
-                            converge_logic = np.append(converge_logic,converge_test)
-                            c = count_ones_in_row(converge_logic)
-                            if np.any(c > self.iterations_for_convergence):
-                                i_converge = np.min(np.argwhere(c > self.iterations_for_convergence))
-                                res = abs(spectrum_next - spectrum_firstfit)
-                                if self.add_residual:
-                                    final_spec = spectrum_next + res
-                                else:
-                                    final_spec = spectrum_next
-                                break
-                            else:
-                                n += 1
-                            if n==self.niters:
-                                warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), IterationWarning)
-                                #flags
-                                self.flag_map[j,i] = 0.
-                                res = abs(spectrum_next - spectrum_firstfit)
-                                if self.add_residual:
-                                    final_spec = spectrum_next + res
-                                else:
-                                    final_spec = spectrum_next
-                                i_converge = self.niters
-                        self.image_asy[:,j,i] = final_spec - thresh[j,i]
-                        self.HISA_map[:,j,i] = final_spec - self.image[:,j,i] - thresh[j,i]
-                        self.iteration_map[j,i] = i_converge
-                    else:
-                        self.image_asy[:,j,i] = np.nan
-                        self.HISA_map[:,j,i] = np.nan
-                        self.iteration_map[j,i] = np.nan
-                        #flags
-                        self.flag_map[j,i] = 0.
-                    '''
-
             string = 'Done!'
             say(string)
             self.save_data()
