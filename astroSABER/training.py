@@ -19,11 +19,12 @@ warnings.showwarning = format_warning
 
 
 class saberTraining(object):
-    def __init__(self, pickle_file, path_to_data='.', iterations=100, lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, eps=None, learning_rate=None, mom=None, get_trace=False, niters=20, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
+    def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, eps=None, learning_rate=None, mom=None, get_trace=False, niters=20, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
         self.pickle_file = pickle_file
         self.path_to_data = path_to_data
 
         self.iterations = iterations
+        self.phase = phase
         
         self.lam1_initial = lam1_initial
         self.p1 = p1
@@ -60,7 +61,7 @@ class saberTraining(object):
         self.rng = np.random.default_rng(self.seed)
       
     def __str__(self):
-        return f'saberTraining:\npickle_file: {self.pickle_file}\npath_to_data: {self.path_to_data}\niterations: {self.iterations}\nlam1_initial: {self.lam1_initial}\np1: {self.p1}\nlam2_initial: {self.lam2_initial}\np2: {self.p2}\nweight_1: {self.weight_1}\nweight_2: {self.weight_2}\nlam1_bounds: {self.lam1_bounds}\nlam2_bounds: {self.lam2_bounds}\nMAD: {self.MAD}\neps: {self.eps}\nlearning_rate: {self.learning_rate}\nmom: {self.mom}\nget_trace: {self.get_trace}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
+        return f'saberTraining:\npickle_file: {self.pickle_file}\npath_to_data: {self.path_to_data}\niterations: {self.iterations}\nphase: {self.phase}\nlam1_initial: {self.lam1_initial}\np1: {self.p1}\nlam2_initial: {self.lam2_initial}\np2: {self.p2}\nweight_1: {self.weight_1}\nweight_2: {self.weight_2}\nlam1_bounds: {self.lam1_bounds}\nlam2_bounds: {self.lam2_bounds}\nMAD: {self.MAD}\neps: {self.eps}\nlearning_rate: {self.learning_rate}\nmom: {self.mom}\nget_trace: {self.get_trace}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
 
     def getting_ready(self):
         string = 'preparation'
@@ -197,11 +198,15 @@ class saberTraining(object):
             self.mom = .1
 
         tolerance = self.MAD / np.sqrt(window_size)
-
+        
+        if phase == 'one':
+            self.mom /= 3.
+            
         if self.lam1_initial is None:
-            raise ValueError("'lam1_initial' parameter is required for training.")
-        if self.lam2_initial is None:
-            raise ValueError("'lam2_initial' parameter is required for training.")
+            raise ValueError("'lam1_initial' parameter is required for optimization.")
+
+        if self.lam2_initial is None and phase == 'two':
+            raise ValueError("'lam2_initial' parameter is required for two-phase optimization.")
 
         if self.lam1_initial <= self.lam2_initial:
             raise ValueError("'lam1_initial' has to be greater than 'lam2_initial'")
@@ -221,13 +226,16 @@ class saberTraining(object):
             obj_lam1r, rchi2_lam1r, _ = objective_function(self.lam1_r, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus) # self.training_data, self.test_data, self.header, self.check_signal_sigma, self.noise, self.velo_range, self.niters, self.iterations_for_convergence, self.add_residual, self.thresh, self.mask, get_all=True, dof=4,
             obj_lam1l, rchi2_lam1l, _ = objective_function(self.lam1_l, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus)
             gd.D_lam1_trace[i] = (obj_lam1r - obj_lam1l) / 2. / self.eps
+            
+            gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l) / 2.
+            
+            if phase == 'two':
+                #lam2
+                obj_lam2r, rchi2_lam2r, _ = objective_function(self.lam1_c, self.p1, self.lam2_r, self.p2, ncpus=self.ncpus)
+                obj_lam2l, rchi2_lam2l, _ = objective_function(self.lam1_c, self.p1, self.lam2_l, self.p2, ncpus=self.ncpus)
+                gd.D_lam2_trace[i] = (obj_lam2r - obj_lam2l) / 2. / self.eps
 
-            #lam2
-            obj_lam2r, rchi2_lam2r, _ = objective_function(self.lam1_c, self.p1, self.lam2_r, self.p2, ncpus=self.ncpus)
-            obj_lam2l, rchi2_lam2l, _ = objective_function(self.lam1_c, self.p1, self.lam2_l, self.p2, ncpus=self.ncpus)
-            gd.D_lam2_trace[i] = (obj_lam2r - obj_lam2l) / 2. / self.eps
-
-            gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l + rchi2_lam2r + rchi2_lam2l) / 4.
+                gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l + rchi2_lam2r + rchi2_lam2l) / 4.
 
             if i == 0:
                 momentum_lam1, momentum_lam2 = 0., 0. #, momentum_lam2, momentum_p2 
@@ -279,7 +287,10 @@ class saberTraining(object):
                 gd.fracdiff_lam1[i] = np.abs(gd.lam1means1[i] - gd.lam1means2[i])
                 gd.fracdiff_lam2[i] = np.abs(gd.lam2means1[i] - gd.lam2means2[i])
 
-                converge_logic = (gd.fracdiff_lam1 < tolerance) & (gd.fracdiff_lam2 < tolerance)
+                if phase == 'two':
+                    converge_logic = (gd.fracdiff_lam1 < tolerance) & (gd.fracdiff_lam2 < tolerance)
+                elif phase == 'one':
+                    converge_logic = (gd.fracdiff_lam1 < tolerance)
 
                 c = count_ones_in_row(converge_logic)
                 say('  ({0:4.3F},{1:4.3F} < {2:4.3F} for {3} iters [{4} required])'.format(gd.fracdiff_lam1[i], gd.fracdiff_lam2[i], tolerance, int(c[i]), iterations_for_convergence_training))
