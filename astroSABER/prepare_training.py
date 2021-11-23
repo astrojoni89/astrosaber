@@ -230,7 +230,7 @@ class saberPrepare(object):
         obs_noise = self.rng.normal(0,self.noise_list[i],size=(self.v,))
         mock_emission = bg + obs_noise
 
-        mu_amps_HISA, sigma_amps_HISA = 6*self.noise_list[i], 1*self.noise_list[i]
+        mu_amps_HISA, sigma_amps_HISA = 7*self.noise_list[i], 1*self.noise_list[i]
 
         return mock_emission, mask_ranges, mask, mu_amps_HISA, sigma_amps_HISA
 
