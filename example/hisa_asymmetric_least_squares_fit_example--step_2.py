@@ -11,7 +11,7 @@ from astroSABER.training import saberTraining
 
 def main():
     ###data to use as training and test data
-    filename = 'astrosaber_training/HI_THOR_test_cube-training_set-50_spectra.pickle'
+    filename = 'HI_THOR_test_cube-training_set-50_spectra.pickle'
 
     ###initialize optimization routine
     train = saberTraining(pickle_file=filename)
