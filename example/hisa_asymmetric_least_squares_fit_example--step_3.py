@@ -18,10 +18,8 @@ def main():
     hisa.noise = 4. #Kelvin
 
     ###asymmetric least squares smoothing (Eilers et al. 2005) parameters
-    hisa.lam1 = 0.50
-    hisa.p1 = 0.90
+    hisa.lam1 = 1.00
     hisa.lam2 = 0.50
-    hisa.p2 = 0.90
 
     ###maximum number of iterations (this limit is usually reached for strong continuum sources)
     hisa.niters = 20
