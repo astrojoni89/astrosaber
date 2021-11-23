@@ -19,7 +19,7 @@ warnings.showwarning = format_warning
 
 
 class saberTraining(object):
-    def __init__(self, pickle_file, path_to_data='.', iterations=100, lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, eps=None, learning_rate=None, mom=None, niters=20, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
+    def __init__(self, pickle_file, path_to_data='.', iterations=100, lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, eps=None, learning_rate=None, mom=None, get_trace=False, niters=20, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
         self.pickle_file = pickle_file
         self.path_to_data = path_to_data
 
@@ -38,6 +38,7 @@ class saberTraining(object):
         self.eps = eps
         self.learning_rate = learning_rate
         self.mom = mom
+        self.get_trace = get_trace
         
         self.niters = int(niters)
         self.iterations_for_convergence = int(iterations_for_convergence)
@@ -57,11 +58,9 @@ class saberTraining(object):
         
         self.seed = seed
         self.rng = np.random.default_rng(self.seed)
-
-        
+      
     def __str__(self):
-        return f'saberTraining:\npickle_file: {self.pickle_file}\npath_to_data: {self.path_to_data}\niterations: {self.iterations}\nlam1_initial: {self.lam1_initial}\np1: {self.p1}\nlam2_initial: {self.lam2_initial}\np2: {self.p2}\nweight_1: {self.weight_1}\nweight_2: {self.weight_2}\nlam1_bounds: {self.lam1_bounds}\nlam2_bounds: {self.lam2_bounds}\nMAD: {self.MAD}\neps: {self.eps}\nlearning_rate: {self.learning_rate}\nmom: {self.mom}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
-
+        return f'saberTraining:\npickle_file: {self.pickle_file}\npath_to_data: {self.path_to_data}\niterations: {self.iterations}\nlam1_initial: {self.lam1_initial}\np1: {self.p1}\nlam2_initial: {self.lam2_initial}\np2: {self.p2}\nweight_1: {self.weight_1}\nweight_2: {self.weight_2}\nlam1_bounds: {self.lam1_bounds}\nlam2_bounds: {self.lam2_bounds}\nMAD: {self.MAD}\neps: {self.eps}\nlearning_rate: {self.learning_rate}\nmom: {self.mom}\nget_trace: {self.get_trace}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
 
     def getting_ready(self):
         string = 'preparation'
@@ -101,12 +100,12 @@ class saberTraining(object):
         banner = len(string) * '='
         heading = '\n' + banner + '\n' + string + '\n' + banner
         say(heading)
-        self.train()
-
+        self.popt_lam = self.train()
+        self.save_data()
 
     def train(self):
         popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps=self.eps, learning_rate=self.learning_rate, mom=self.mom, window_size=5, iterations_for_convergence_training=10, ncpus=self.ncpus)
-
+        return popt_lam
 
     def objective_function_lambda_set(self, lam1, p1, lam2, p2, get_all=True, dof=4, ncpus=None): #, training_data=None, test_data=None, header=None, check_signal_sigma=None, noise=None, velo_range=None, niters=None, iterations_for_convergence=None, add_residual=None, thresh=None, mask=None, get_all=True, dof=4, 
    
@@ -120,7 +119,6 @@ class saberTraining(object):
             return np.nanmedian(results_list[:,0]), np.nanmedian(results_list[:,1]), np.nanmedian(results_list[:,2]) #gmean(cost_function_list),  gmean(rchi2_list)
         else:
             return np.nanmedian(results_list[:,0]) #gmean(cost_function_list)
-
 
     def single_cost(self, i, get_all=True, dof=4): # , lam1_updt=None, p1_updt=None, lam2_updt=None, p2_updt=None
         consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
@@ -159,7 +157,6 @@ class saberTraining(object):
         else:
             return cost_function
 
-
     class gradient_descent_lambda_set(object):
         """Bookkeeping object."""
         def __init__(self, iterations):
@@ -175,7 +172,6 @@ class saberTraining(object):
             self.fracdiff_lam1 = np.zeros(iterations) * np.nan
             self.fracdiff_lam2 = np.zeros(iterations) * np.nan
             self.iter_of_convergence = np.nan
-
 
     def train_lambda_set(self, objective_function, training_data=None, test_data=None, noise=None, lam1_initial=None, p1=None, lam2_initial=None, p2=None, lam1_bounds=None, lam2_bounds=None, iterations=100, MAD=None, eps=None, learning_rate=None, mom=None, window_size=5, iterations_for_convergence_training=10, get_trace=False, mask=None, ncpus=None):
         """
@@ -303,6 +299,18 @@ class saberTraining(object):
                     break
 
         # Return best-fit lambdas, and bookkeeping object
-        if get_trace:
+        if self.get_trace:
             return gd.lam1_trace, gd.lam2_trace
-        return gd.lam1means1[i], gd.lam2means1[i] 
+        return gd.lam1means1[i], gd.lam2means1[i]
+    
+        def save_data(self):
+            if self.filename_out is None:
+                if not self.get_trace:
+                    filename_lam = self.pickle_file.split('/')[-1].split('.pickle')[0]+'_lam_opt.txt'
+                else:
+                    filename_lam = self.pickle_file.split('/')[-1].split('.pickle')[0]+'_lam_traces.txt'
+            else:
+                filename_lam = str(self.filename_out) + '.txt'
+            pathname_lam = os.path.join(self.path_to_data, filename_lam)
+            np.savetxt(pathname_lam, self.popt_lam)
+            print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_lam, self.path_to_data))
