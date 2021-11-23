@@ -175,7 +175,6 @@ class saberPrepare(object):
 
         self.save_data()
 
-
     def two_step_extraction(self, i):
         flag = 1.
         if check_signal_ranges(self.spectrum_list[i], self.header, sigma=self.check_signal_sigma, noise=self.noise_list[i], velo_range=self.velo_range):
@@ -235,7 +234,6 @@ class saberPrepare(object):
 
         return mock_emission, mask_ranges, mask, mu_amps_HISA, sigma_amps_HISA
 
-
     def save_data(self):
         if self.filename_out is None:
             filename_out = '{}-training_set-{}_spectra{}.pickle'.format(self.fitsfile.split('/')[-1].split('.fits')[0], self.training_set_size, self.suffix)
@@ -247,4 +245,3 @@ class saberPrepare(object):
         path_to_file = os.path.join(dirname, filename_out)
         pickle.dump(self.mock_data, open(path_to_file, 'wb'), protocol=2)
         say("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_out, dirname))
-
