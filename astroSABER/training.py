@@ -303,14 +303,14 @@ class saberTraining(object):
             return gd.lam1_trace, gd.lam2_trace
         return gd.lam1means1[i], gd.lam2means1[i]
     
-        def save_data(self):
-            if self.filename_out is None:
-                if not self.get_trace:
-                    filename_lam = self.pickle_file.split('/')[-1].split('.pickle')[0]+'_lam_opt.txt'
-                else:
-                    filename_lam = self.pickle_file.split('/')[-1].split('.pickle')[0]+'_lam_traces.txt'
+    def save_data(self):
+        if self.filename_out is None:
+            if not self.get_trace:
+                filename_lam = self.pickle_file.split('/')[-1].split('.pickle')[0]+'_lam_opt.txt'
             else:
-                filename_lam = str(self.filename_out) + '.txt'
-            pathname_lam = os.path.join(self.path_to_data, filename_lam)
-            np.savetxt(pathname_lam, self.popt_lam)
-            print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_lam, self.path_to_data))
+                filename_lam = self.pickle_file.split('/')[-1].split('.pickle')[0]+'_lam_traces.txt'
+        else:
+            filename_lam = str(self.filename_out) + '.txt'
+        pathname_lam = os.path.join(self.path_to_data, filename_lam)
+        np.savetxt(pathname_lam, self.popt_lam)
+        print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_lam, self.path_to_data))
