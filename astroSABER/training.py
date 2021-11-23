@@ -208,7 +208,7 @@ class saberTraining(object):
         if self.lam2_initial is None and self.phase == 'two':
             raise ValueError("'lam2_initial' parameter is required for two-phase optimization.")
 
-        if self.phase == 'two'
+        if self.phase == 'two':
             if self.lam1_initial <= self.lam2_initial:
                 raise ValueError("'lam1_initial' has to be greater than 'lam2_initial'")
 
