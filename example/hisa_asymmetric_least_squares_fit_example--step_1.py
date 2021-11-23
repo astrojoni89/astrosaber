@@ -3,7 +3,7 @@ import numpy as np
 from astropy.io import fits
 from astropy import units as u
 
-from astroSABER.prepare_training import saberPrepare, gauss_function
+from astroSABER.prepare_training import saberPrepare
 
 
 ###step 1: create training data that are generated from 'pure' emission spectra (test_data) with randomly generated (but known) self-absorption features 
