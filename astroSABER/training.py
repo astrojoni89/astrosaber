@@ -12,7 +12,7 @@ import os
 
 from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
 from .utils.aslsq_helper import velocity_axes, count_ones_in_row, check_signal_ranges, IterationWarning, say, format_warning
-from .utils.aslsq_fit import baseline_als_optimized, two_step_extraction
+from .utils.aslsq_fit import baseline_als_optimized, one_step_extraction, two_step_extraction
 
 warnings.showwarning = format_warning
 
@@ -125,8 +125,10 @@ class saberTraining(object):
         consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
         mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
         mask = mask_channels(self.v, mask_ranges, pad_channels=2, remove_intervals=None)
-
-        bg_fit, _, _, _ = two_step_extraction(self.lam1_updt, self.p1, self.lam2_updt, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
+        if self.phase == 'two':
+            bg_fit, _, _, _ = two_step_extraction(self.lam1_updt, self.p1, self.lam2_updt, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
+        elif self.phase == 'one':
+            bg_fit, _, _, _ = one_step_extraction(self.lam1_updt, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
     
         if type(self.noise[i]) is not np.ndarray:
             noise_array = np.ones(len(self.training_data[i])) * self.noise[i]
