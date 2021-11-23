@@ -20,8 +20,8 @@ def main():
     train.ncpus = 4
 
     ###set the initial guesses for the smoothing parameters (better to start low rather than high)
-    train.lam1_initial = 2.00
-    train.lam2_initial = 1.00
+    train.lam1_initial = 1.00
+    train.lam2_initial = 0.90
 
     ###you can always print the train object and the keyword arguments you can adjust
     print(train)
