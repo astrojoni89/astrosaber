@@ -6,6 +6,10 @@ from astropy import units as u
 from astroSABER.hisa import HisaExtraction
 from astroSABER.plotting import plot_spectra
 
+
+###step 3: run the self-absorption extraction with optimal smoothing parameters obtained in step 2 
+
+
 def main():
     ###HI data to extract HISA
     image_HI = 'HI_THOR_test_cube.fits'
@@ -17,7 +21,7 @@ def main():
     #hisa.path_to_noise_map = os.path.join('.', 'dir', 'sub', '*.fits')
     hisa.noise = 4. #Kelvin
 
-    ###asymmetric least squares smoothing (Eilers et al. 2005) parameters
+    ###put optimal asymmetric least squares smoothing parameters here
     hisa.lam1 = 1.00
     hisa.lam2 = 0.50
 
