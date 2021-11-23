@@ -208,8 +208,9 @@ class saberTraining(object):
         if self.lam2_initial is None and self.phase == 'two':
             raise ValueError("'lam2_initial' parameter is required for two-phase optimization.")
 
-        if self.lam1_initial <= self.lam2_initial:
-            raise ValueError("'lam1_initial' has to be greater than 'lam2_initial'")
+        if self.phase == 'two'
+            if self.lam1_initial <= self.lam2_initial:
+                raise ValueError("'lam1_initial' has to be greater than 'lam2_initial'")
 
         # Initialize book-keeping object
         gd = self.gradient_descent_lambda_set(self.iterations)
