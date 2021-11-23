@@ -210,9 +210,9 @@ class saberTraining(object):
         if self.lam2_initial is None and self.phase == 'two':
             raise ValueError("'lam2_initial' parameter is required for two-phase optimization.")
 
-        if self.phase == 'two':
-            if self.lam1_initial <= self.lam2_initial:
-                raise ValueError("'lam1_initial' has to be greater than 'lam2_initial'")
+        #if self.phase == 'two':
+        #    if self.lam1_initial <= self.lam2_initial:
+        #        raise ValueError("'lam1_initial' has to be greater than 'lam2_initial'")
 
         # Initialize book-keeping object
         gd = self.gradient_descent_lambda_set(self.iterations)
@@ -270,9 +270,9 @@ class saberTraining(object):
                 gd.lam1_trace[i+1] = 0.
             if gd.lam2_trace[i+1] < 0.:
                 gd.lam2_trace[i+1] = 0.
-            lam1_bound_i = gd.lam2_trace[i+1]
-            if gd.lam1_trace[i+1] <= lam1_bound_i:
-                gd.lam1_trace[i+1] = gd.lam2_trace[i+1] + 0.05
+            #lam1_bound_i = gd.lam2_trace[i+1]
+            #if gd.lam1_trace[i+1] <= lam1_bound_i:
+            #    gd.lam1_trace[i+1] = gd.lam2_trace[i+1] + 0.05
 
             say('\niter {0}: red.chi square={1:4.2f}, [lam1, lam2]=[{2:.3f}, {3:.3f}], [p1, p2]=[{4:.3f}, {5:.3f}], mom=[{6:.1f}, {7:4.1f}]'.format(i, gd.accuracy_trace[i], np.round(gd.lam1_trace[i], 3), np.round(gd.lam2_trace[i], 3), np.round(p1, 3), np.round(p2, 3), np.round(momentum_lam1, 2), np.round(momentum_lam2, 2)), end=' ')
 
