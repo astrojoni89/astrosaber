@@ -51,6 +51,7 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
         n = 0
         converge_logic = np.array([])
         while n < niters:
+            spectrum_prior = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3)
             spectrum_next = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3)
             residual = abs(spectrum_next - spectrum_prior)
             if np.any(np.isnan(residual)):
