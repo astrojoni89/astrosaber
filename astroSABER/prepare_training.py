@@ -124,9 +124,9 @@ class saberPrepare(object):
         mu_lws_HISA, sigma_lws_HISA = self.mean_linewidth/np.sqrt(8*np.log(2)) / channel_width, self.std_linewidth / channel_width # mean and standard deviation
         mu_ncomps_HISA, sigma_ncomps_HISA = 1, 1 
         lws_HISA = self.rng.normal(mu_lws_HISA, sigma_lws_HISA, self.training_set_size).reshape(self.training_set_size,)
-        ncomps_HISA = self.rng.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size).astype(int)
+        ncomps_HISA = np.around(self.rng.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size)).astype(int)
         #TODO
-        ncomps_HISA[ncomps_HISA<0] = int(1.)
+        ncomps_HISA[ncomps_HISA<=0] = int(1.)
 
         xvals = np.arange(0,self.v,1)
         
