@@ -106,7 +106,7 @@ class saberTraining(object):
         self.save_data()
 
     def train(self):
-        popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps=self.eps, learning_rate=self.learning_rate, mom=self.mom, window_size=5, iterations_for_convergence_training=10, get_trace=False, ncpus=self.ncpus)
+        popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps_l1=self.eps_l1, eps_l2=self.eps_l2, learning_rate=self.learning_rate, mom=self.mom, window_size=5, iterations_for_convergence_training=10, get_trace=False, ncpus=self.ncpus)
         return popt_lam
 
     def objective_function_lambda_set(self, lam1, p1, lam2, p2, get_all=True, dof=4, ncpus=None): #, training_data=None, test_data=None, header=None, check_signal_sigma=None, noise=None, velo_range=None, niters=None, iterations_for_convergence=None, add_residual=None, thresh=None, mask=None, get_all=True, dof=4, 
