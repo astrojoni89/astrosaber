@@ -19,7 +19,7 @@ warnings.showwarning = format_warning
 
 
 class saberTraining(object):
-    def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, eps=None, learning_rate=None, mom=None, get_trace=False, niters=20, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
+    def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, eps_l1=None, eps_l2=None, learning_rate=None, mom=None, get_trace=False, niters=20, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
         self.pickle_file = pickle_file
         self.path_to_data = path_to_data
 
@@ -36,7 +36,8 @@ class saberTraining(object):
         self.lam1_bounds = lam1_bounds
         self.lam2_bounds = lam2_bounds
         self.MAD = MAD
-        self.eps = eps
+        self.eps_l1 = eps_l1
+        self.eps_l2 = eps_l2
         self.learning_rate = learning_rate
         self.mom = mom
         self.get_trace = get_trace
@@ -61,7 +62,7 @@ class saberTraining(object):
         self.rng = np.random.default_rng(self.seed)
       
     def __str__(self):
-        return f'saberTraining:\npickle_file: {self.pickle_file}\npath_to_data: {self.path_to_data}\niterations: {self.iterations}\nphase: {self.phase}\nlam1_initial: {self.lam1_initial}\np1: {self.p1}\nlam2_initial: {self.lam2_initial}\np2: {self.p2}\nweight_1: {self.weight_1}\nweight_2: {self.weight_2}\nlam1_bounds: {self.lam1_bounds}\nlam2_bounds: {self.lam2_bounds}\nMAD: {self.MAD}\neps: {self.eps}\nlearning_rate: {self.learning_rate}\nmom: {self.mom}\nget_trace: {self.get_trace}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
+        return f'saberTraining:\npickle_file: {self.pickle_file}\npath_to_data: {self.path_to_data}\niterations: {self.iterations}\nphase: {self.phase}\nlam1_initial: {self.lam1_initial}\np1: {self.p1}\nlam2_initial: {self.lam2_initial}\np2: {self.p2}\nweight_1: {self.weight_1}\nweight_2: {self.weight_2}\nlam1_bounds: {self.lam1_bounds}\nlam2_bounds: {self.lam2_bounds}\nMAD: {self.MAD}\neps_1: {self.eps_l1}\neps_l2: {self.eps_l2}\nlearning_rate: {self.learning_rate}\nmom: {self.mom}\nget_trace: {self.get_trace}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
 
     def getting_ready(self):
         string = 'preparation'
@@ -195,8 +196,10 @@ class saberTraining(object):
         # Default settings for hyper parameters
         if self.learning_rate is None:
             self.learning_rate = 0.01
-        if self.eps is None:
-            self.eps = 0.05
+        if self.eps_l1 is None:
+            self.eps_l1 = 0.01
+        if self.eps_l2 is None:
+            self.eps_l2 = 0.1
         if self.MAD is None:
             self.MAD = 0.03
         if self.mom is None:
@@ -223,15 +226,15 @@ class saberTraining(object):
         gd.lam2_trace[0] = self.lam2_initial
 
         for i in range(self.iterations):
-            self.lam1_r, self.lam1_c, self.lam1_l = gd.lam1_trace[i] + self.eps, gd.lam1_trace[i], gd.lam1_trace[i] - self.eps
-            self.lam2_r, self.lam2_c, self.lam2_l = gd.lam2_trace[i] + self.eps, gd.lam2_trace[i], gd.lam2_trace[i] - self.eps
+            self.lam1_r, self.lam1_c, self.lam1_l = gd.lam1_trace[i] + self.eps_l1, gd.lam1_trace[i], gd.lam1_trace[i] - self.eps_l1
+            self.lam2_r, self.lam2_c, self.lam2_l = gd.lam2_trace[i] + self.eps_l2, gd.lam2_trace[i], gd.lam2_trace[i] - self.eps_l2
         
 
             # Calls to objective function
             #lam1
             obj_lam1r, rchi2_lam1r, _ = objective_function(self.lam1_r, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus) # self.training_data, self.test_data, self.header, self.check_signal_sigma, self.noise, self.velo_range, self.niters, self.iterations_for_convergence, self.add_residual, self.thresh, self.mask, get_all=True, dof=4,
             obj_lam1l, rchi2_lam1l, _ = objective_function(self.lam1_l, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus)
-            gd.D_lam1_trace[i] = (obj_lam1r - obj_lam1l) / 2. / self.eps
+            gd.D_lam1_trace[i] = (obj_lam1r - obj_lam1l) / 2. / self.eps_l1
             
             gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l) / 2.
             
@@ -239,7 +242,7 @@ class saberTraining(object):
                 #lam2
                 obj_lam2r, rchi2_lam2r, _ = objective_function(self.lam1_c, self.p1, self.lam2_r, self.p2, ncpus=self.ncpus)
                 obj_lam2l, rchi2_lam2l, _ = objective_function(self.lam1_c, self.p1, self.lam2_l, self.p2, ncpus=self.ncpus)
-                gd.D_lam2_trace[i] = (obj_lam2r - obj_lam2l) / 2. / self.eps
+                gd.D_lam2_trace[i] = (obj_lam2r - obj_lam2l) / 2. / self.eps_l2
 
                 gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l + rchi2_lam2r + rchi2_lam2l) / 4.
 
