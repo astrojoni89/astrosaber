@@ -122,7 +122,7 @@ class saberPrepare(object):
         indices = np.column_stack((self.rng.integers(edges,self.header['NAXIS2']-edges+1,self.training_set_size), self.rng.integers(edges,self.header['NAXIS1']-edges+1,self.training_set_size)))
 
         mu_lws_HISA, sigma_lws_HISA = self.mean_linewidth/np.sqrt(8*np.log(2)) / channel_width, self.std_linewidth / channel_width # mean and standard deviation
-        mu_ncomps_HISA, sigma_ncomps_HISA = 1, 1 
+        mu_ncomps_HISA, sigma_ncomps_HISA = 2, 1 
         lws_HISA = self.rng.normal(mu_lws_HISA, sigma_lws_HISA, self.training_set_size).reshape(self.training_set_size,)
         ncomps_HISA = np.around(self.rng.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size)).astype(int)
         #TODO
@@ -145,7 +145,7 @@ class saberPrepare(object):
         for i in trange(len(results_list)):
             amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], self.training_set_size).reshape(self.training_set_size,)
             amps_HISA[amps_HISA<0] = 0.
-            mu_velos_HISA, sigma_velos_HISA = (min(results_list[i][1][:,0]) + max(results_list[i][1][:,1])) / 2., 5. # mean and standard deviation
+            mu_velos_HISA, sigma_velos_HISA = (min(results_list[i][1][:,0]) + max(results_list[i][1][:,1])) / 2., 10. # mean and standard deviation
             velos_HISA = self.rng.normal(mu_velos_HISA, sigma_velos_HISA, self.training_set_size).reshape(self.training_set_size,)
             velos_of_comps_HISA = self.rng.choice(velos_HISA, ncomps_HISA[i])
             amps_of_comps_HISA = self.rng.choice(amps_HISA, ncomps_HISA[i])
