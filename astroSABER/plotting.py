@@ -4,10 +4,12 @@
 # @Date:   2021-03-01
 # @Filename: plotting.py
 # @Last modified by:   syed
-# @Last modified time: 03-03-2021
+# @Last modified time: 07-12-2021
 
 import os
+import sys
 import numpy as np
+import pickle
 
 import matplotlib.pyplot as plt
 
@@ -18,10 +20,25 @@ from tqdm import trange
 from .utils.spectrum_utils import pixel_circle_calculation, pixel_circle_calculation_px, calculate_spectrum
 from .utils.aslsq_helper import find_nearest, velocity_axes, pixel_to_world
 
+
+def pickle_load_file(pathToFile):
+    with open(os.path.join(pathToFile), "rb") as pickle_file:
+        if (sys.version_info > (3, 0)):
+            data = pickle.load(pickle_file, encoding='latin1')
+        else:
+            data = pickle.load(pickle_file)
+    return data
+
 def styles():
     color_list = ['k', 'b', 'b', 'r', 'g']
     draw_list = ['steps-mid', 'default', 'steps-mid', 'steps-mid', 'steps-mid']
     line_list = ['-', '--', '-', '-', '-']
+    return color_list, draw_list, line_list
+
+def styles_pickle():
+    color_list = ['b', 'k', 'r', 'r', 'g']
+    draw_list = ['steps-mid', 'steps-mid', 'default', 'steps-mid', 'steps-mid']
+    line_list = ['-', '-', '-', '-', '-']
     return color_list, draw_list, line_list
 
 def get_figure_params(n_spectra, rowsize, rowbreak):
@@ -39,7 +56,6 @@ def get_figure_params(n_spectra, rowsize, rowbreak):
 
     return cols, rows, rowbreak, colsize
 
-
 def xlabel_from_header(header, vel_unit):
     xlabel = 'Channels'
 
@@ -50,7 +66,6 @@ def xlabel_from_header(header, vel_unit):
         xlabel = '{} [{}]'.format(header['CTYPE3'], vel_unit)
 
     return xlabel
-
 
 def ylabel_from_header(header):
     if header is None:
@@ -66,7 +81,6 @@ def ylabel_from_header(header):
 
     return btype + bunit
 
-
 def add_figure_properties(ax, header=None, fontsize=10, velocity_range=None, vel_unit=u.km/u.s):
     ax.set_xlim(np.amin(velocity_range), np.amax(velocity_range))
     #ax.set_ylim()
@@ -74,7 +88,6 @@ def add_figure_properties(ax, header=None, fontsize=10, velocity_range=None, vel
     ax.set_ylabel(ylabel_from_header(header), fontsize=fontsize)
 
     ax.tick_params(labelsize=fontsize - 2)
-
     
 def scale_fontsize(rowsize):
     rowsize_scale = 4
@@ -83,7 +96,6 @@ def scale_fontsize(rowsize):
     else:
         fontsize = 10 - int(rowsize - rowsize_scale)
     return fontsize
-
 
 def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
     '''
@@ -181,6 +193,51 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                 add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
                 coordinate = pixel_to_world(fitsfiles[0],xValue,yValue)
                 plt.annotate('Glon: {} deg\nGlat: {} deg'.format(round(coordinate[0].item(0),2),round(coordinate[1].item(0),2)), xy=(0.05, 0.85), xycoords='axes fraction', fontsize=fontsize)
+
+    #for axs in fig.axes:
+        #axs.label_outer()
+    fig.tight_layout()
+
+    if not os.path.exists(path_to_plots):
+        os.makedirs(path_to_plots)
+    filename = outfile
+    pathname = os.path.join(path_to_plots, filename)
+    fig.savefig(pathname, dpi=dpi, bbox_inches='tight')
+    #plt.close()
+    print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
+      
+def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
+    '''
+    pickle_file: pickled file to plot spectra from
+    '''
+    
+    print("\nPlotting...")
+    
+    fontsize = scale_fontsize(rowsize)
+    color_list, draw_list, line_list = styles_pickle()
+
+    data = pickle_load_file(pickle_file)
+    training_data = data['training_data']
+    test_data = data['test_data']
+    velocity = data['velocity']
+    if 'header' in data.keys():
+        header = data['header']
+    else:
+        header = None
+        
+    rng = np.random.default_rng(seed)
+    xsize = len(data['training_data'])
+    cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
+    figsize = (cols*colsize, rowbreak*rowsize)
+    fig = plt.figure(figsize=figsize)
+    xValue = rng.integers(0,high=xsize,size=n_spectra)
+        for i in trange(n_spectra):
+            idx = xValue[i]
+            ax = fig.add_subplot(rows,cols,i+1)
+            velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
+            ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0])
+            ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1])
+            add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
 
     #for axs in fig.axes:
         #axs.label_outer()
