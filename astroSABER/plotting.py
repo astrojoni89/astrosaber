@@ -235,9 +235,10 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
         idx = xValue[i]
         ax = fig.add_subplot(rows,cols,i+1)
         velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
-        ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0])
-        ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1])
+        ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
+        ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1], label="observed HI+HISA")
         add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
+        ax.legend(loc=2, fontsize=fontsize-2)
 
     #for axs in fig.axes:
         #axs.label_outer()
@@ -248,7 +249,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     if outfile is not None:
         filename = outfile
     elif outfile is None:
-        filename = pickle_file.split('/')[-1].split('.pickle')[0] + '_{}spectra.pdf'.format(n_spectra)
+        filename = pickle_file.split('/')[-1].split('.pickle')[0] + '_{}.pdf'.format(n_spectra)
     pathname = os.path.join(path_to_plots, filename)
     fig.savefig(pathname, dpi=dpi, bbox_inches='tight')
     #plt.close()
