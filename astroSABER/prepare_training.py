@@ -22,7 +22,7 @@ def gauss_function(x,amp,mu,sigma):
 
 
 class saberPrepare(object):
-    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_linewidth=4.,std_linewidth=1., lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence=3, noise=None, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, seed=111):
+    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_linewidth=4.,std_linewidth=1., lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence=3, noise=None, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, path_to_file='.', seed=111):
         self.fitsfile = fitsfile
         self.training_set_size = int(training_set_size)
         self.path_to_noise_map = path_to_noise_map
@@ -52,6 +52,7 @@ class saberPrepare(object):
 
         self.suffix = suffix
         self.filename_out = filename_out
+        self.path_to_file = path_to_file
         
         self.seed = seed
         self.rng = np.random.default_rng(self.seed)
@@ -177,7 +178,7 @@ class saberPrepare(object):
         self.mock_data['header'] = self.header
 
         self.save_data()
-        plot_pickle_spectra(self.filename_out, outfile='spectra.pdf', ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111)
+        plot_pickle_spectra(self.path_to_file, outfile='spectra.pdf', ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111)
 
     def two_step_extraction(self, i):
         flag = 1.
@@ -240,12 +241,12 @@ class saberPrepare(object):
 
     def save_data(self):
         if self.filename_out is None:
-            self.filename_out = '{}-training_set-{}_spectra{}.pickle'.format(self.fitsfile.split('/')[-1].split('.fits')[0], self.training_set_size, self.suffix)
+            filename_out = '{}-training_set-{}_spectra{}.pickle'.format(self.fitsfile.split('/')[-1].split('.fits')[0], self.training_set_size, self.suffix)
         elif not self.filename_out.endswith('.pickle'):
-            self.filename_out = self.filename_out + '.pickle'
+            filename_out = self.filename_out + '.pickle'
         dirname = os.path.join(self.path_to_data, 'astrosaber_training')
         if not os.path.exists(dirname):
             os.makedirs(dirname)
-        path_to_file = os.path.join(dirname, self.filename_out)
-        pickle.dump(self.mock_data, open(path_to_file, 'wb'), protocol=2)
-        say("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(self.filename_out, dirname))
+        self.path_to_file = os.path.join(dirname, filename_out)
+        pickle.dump(self.mock_data, open(self.path_to_file, 'wb'), protocol=2)
+        say("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_out, dirname))
