@@ -88,13 +88,13 @@ class saberPrepare(object):
         if self.training_set_size <= 0:
             raise ValueError("'training_set_size' has to be >0")
         if self.lam1 is None:
-            self.lam1 = 1.00
+            self.lam1 = 2.00
         if self.p1 is None:
             self.p1 = 0.90
         if not 0<= self.p1 <=1:
             raise ValueError("'p1' has to be in the range [0,1]")
         if self.lam2 is None:
-            self.lam2 = 2.00
+            self.lam2 = 1.00
         if self.p2 is None:
             self.p2 = 0.90
         if not 0<= self.p2 <=1:
