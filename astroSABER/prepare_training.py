@@ -176,7 +176,7 @@ class saberPrepare(object):
         self.mock_data['header'] = self.header
 
         self.save_data()
-        plot_pickle_spectra(self.filename_out, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111)
+        plot_pickle_spectra(self.filename_out, outfile='spectra.pdf', ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111)
 
     def two_step_extraction(self, i):
         flag = 1.
