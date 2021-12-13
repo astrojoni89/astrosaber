@@ -11,6 +11,7 @@ import os
 from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
 from .utils.aslsq_helper import velocity_axes, count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say, format_warning
 from .utils.aslsq_fit import baseline_als_optimized
+from .plotting import plot_pickle_spectra
 
 warnings.showwarning = format_warning
 
@@ -175,6 +176,7 @@ class saberPrepare(object):
         self.mock_data['header'] = self.header
 
         self.save_data()
+        plot_pickle_spectra(self.filename_out, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111)
 
     def two_step_extraction(self, i):
         flag = 1.
@@ -237,12 +239,12 @@ class saberPrepare(object):
 
     def save_data(self):
         if self.filename_out is None:
-            filename_out = '{}-training_set-{}_spectra{}.pickle'.format(self.fitsfile.split('/')[-1].split('.fits')[0], self.training_set_size, self.suffix)
+            self.filename_out = '{}-training_set-{}_spectra{}.pickle'.format(self.fitsfile.split('/')[-1].split('.fits')[0], self.training_set_size, self.suffix)
         elif not self.filename_out.endswith('.pickle'):
-            filename_out = self.filename_out + '.pickle'
+            self.filename_out = self.filename_out + '.pickle'
         dirname = os.path.join(self.path_to_data, 'astrosaber_training')
         if not os.path.exists(dirname):
             os.makedirs(dirname)
-        path_to_file = os.path.join(dirname, filename_out)
+        path_to_file = os.path.join(dirname, self.filename_out)
         pickle.dump(self.mock_data, open(path_to_file, 'wb'), protocol=2)
-        say("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_out, dirname))
+        say("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(self.filename_out, dirname))
