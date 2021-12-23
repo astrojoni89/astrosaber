@@ -236,7 +236,7 @@ class saberTraining(object):
             obj_lam1l, rchi2_lam1l, _ = objective_function(self.lam1_l, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus)
             gd.D_lam1_trace[i] = (obj_lam1r - obj_lam1l) / 2. / self.eps_l1
             
-            gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l) / 2.
+            gd.accuracy_trace[i] =  (obj_lam1r + obj_lam1l) / 2.
             
             if self.phase == 'two':
                 #lam2
@@ -244,7 +244,7 @@ class saberTraining(object):
                 obj_lam2l, rchi2_lam2l, _ = objective_function(self.lam1_c, self.p1, self.lam2_l, self.p2, ncpus=self.ncpus)
                 gd.D_lam2_trace[i] = (obj_lam2r - obj_lam2l) / 2. / self.eps_l2
 
-                gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l + rchi2_lam2r + rchi2_lam2l) / 4.
+                gd.accuracy_trace[i] =  (obj_lam1r + obj_lam1l + obj_lam2r + obj_lam2l) / 4.
 
             if i == 0:
                 momentum_lam1, momentum_lam2 = 0., 0. #, momentum_lam2, momentum_p2 
@@ -280,7 +280,7 @@ class saberTraining(object):
             #if gd.lam1_trace[i+1] <= lam1_bound_i:
             #    gd.lam1_trace[i+1] = gd.lam2_trace[i+1] + 0.05
 
-            say('\niter {0}: red.chi square={1:4.2f}, [lam1, lam2]=[{2:.3f}, {3:.3f}], [p1, p2]=[{4:.3f}, {5:.3f}], mom=[{6:.1f}, {7:4.1f}]'.format(i, gd.accuracy_trace[i], np.round(gd.lam1_trace[i], 3), np.round(gd.lam2_trace[i], 3), np.round(p1, 3), np.round(p2, 3), np.round(momentum_lam1, 2), np.round(momentum_lam2, 2)), end=' ')
+            say('\niter {0}: cost={1:4.2f}, [lam1, lam2]=[{2:.3f}, {3:.3f}], [p1, p2]=[{4:.3f}, {5:.3f}], mom=[{6:.1f}, {7:4.1f}]'.format(i, gd.accuracy_trace[i], np.round(gd.lam1_trace[i], 3), np.round(gd.lam2_trace[i], 3), np.round(p1, 3), np.round(p2, 3), np.round(momentum_lam1, 2), np.round(momentum_lam2, 2)), end=' ')
 
 
     #    if False: (use this to avoid convergence testing)
