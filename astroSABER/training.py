@@ -323,8 +323,8 @@ class saberTraining(object):
 
         # Return best-fit lambdas, and bookkeeping object
         if self.get_trace:
-            return gd.lam1_trace, gd.lam2_trace
-        return gd.lam1means1[i], gd.lam2means1[i]
+            return np.around(gd.lam1_trace, decimals=2), np.around(gd.lam2_trace, decimals=2)
+        return np.around(gd.lam1means1[i], decimals=2), np.around(gd.lam2means1[i], decimals=2)
     
     def save_data(self):
         if self.filename_out is None:
