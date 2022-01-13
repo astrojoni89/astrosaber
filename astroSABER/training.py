@@ -196,11 +196,11 @@ class saberTraining(object):
 
         # Default settings for hyper parameters
         if self.learning_rate_l1 is None:
-            self.learning_rate_l1 = 0.01
+            self.learning_rate_l1 = 0.1
         if self.learning_rate_l2 is None:
-            self.learning_rate_l2 = 0.01
+            self.learning_rate_l2 = 0.05
         if self.eps_l1 is None:
-            self.eps_l1 = 0.01
+            self.eps_l1 = 0.4
         if self.eps_l2 is None:
             self.eps_l2 = 0.1
         if self.MAD is None:
