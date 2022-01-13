@@ -194,7 +194,7 @@ class saberTraining(object):
         iterations_for_convergence_training = number of continuous iterations within threshold tolerence required to achieve convergence
         """
 
-        # Default settings for hyper parameters
+        # Default settings for hyper parameters; these seem to be the most robust hyperparams
         if self.learning_rate_l1 is None:
             self.learning_rate_l1 = 0.1
         if self.learning_rate_l2 is None:
