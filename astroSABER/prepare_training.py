@@ -220,10 +220,7 @@ class saberPrepare(object):
             bg = final_spec - self.thresh_list[i]
             #TODO
             offset_bg = np.nanmean([bg[0], bg[-1]])
-            if np.sign(offset_bg) == 1:
-                bg = bg - offset_bg
-            elif np.sign(offset_bg) == -1:
-                bg = bg + offset_bg
+            bg = bg - offset_bg
             #
             hisa = final_spec - self.spectrum_list[i] - self.thresh_list[i]
             iterations = i_converge
