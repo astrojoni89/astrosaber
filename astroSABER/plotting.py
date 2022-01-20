@@ -255,7 +255,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     #plt.close()
     print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
 
-def plot_training_spectra(pickle_file, training_data, test_data, bg_fits, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
+def plot_training_spectra(pickle_file, lam1, p1, lam2, p2, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
     '''
     pickle_file: pickled file to get x-axis from
     '''
@@ -266,9 +266,8 @@ def plot_training_spectra(pickle_file, training_data, test_data, bg_fits, outfil
     color_list, draw_list, line_list = styles_pickle()
 
     data = pickle_load_file(pickle_file)
-    training_data = training_data
-    test_data = test_data
-    bg_fits = bg_fits
+    training_data = data['training_data']
+    test_data = data['test_data']
     velocity = data['velocity']
     if 'header' in data.keys():
         header = data['header']
