@@ -256,7 +256,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     #plt.close()
     print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
 
-def plot_training_spectra(pickle_file, lam1, p1, lam2, p2, check_signal_sigma=None, noise=None, velo_range=None, niters=50, iterations_for_convergence=None, add_residual=True, thresh=None, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
+def plot_training_spectra(pickle_file, lam1, p1, lam2, p2, phase='two', check_signal_sigma=None, noise=None, velo_range=None, niters=50, iterations_for_convergence=None, add_residual=True, thresh=None, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
     '''
     pickle_file: pickled file to get data from
     '''
@@ -284,9 +284,9 @@ def plot_training_spectra(pickle_file, lam1, p1, lam2, p2, check_signal_sigma=No
     for i in trange(n_spectra):
         idx = xValue[i]
         if phase == 'two':
-            bg_fit, hisa, _, _ = two_step_extraction(lam1, p1, lam2, p2, spectrum=training_data[idx], header=header, check_signal_sigma=check_signal_sigma, noise=noise[idx], velo_range=velo_range, niters=niters, iterations_for_convergence=iterations_for_convergence, add_residual=add_residual, thresh=thresh[idx])
+            bg_fit, hisa, _, _ = two_step_extraction(lam1, p1, lam2, p2, spectrum=training_data[idx], header=header, check_signal_sigma=check_signal_sigma, noise=noise, velo_range=velo_range, niters=niters, iterations_for_convergence=iterations_for_convergence, add_residual=add_residual, thresh=thresh)
         elif phase == 'one':
-            bg_fit, hisa, _, _ = one_step_extraction(lam1, p1, spectrum=training_data[idx], header=header, check_signal_sigma=check_signal_sigma, noise=noise[idx], velo_range=velo_range, niters=niters, iterations_for_convergence=iterations_for_convergence, add_residual=add_residual, thresh=thresh[idx])
+            bg_fit, hisa, _, _ = one_step_extraction(lam1, p1, spectrum=training_data[idx], header=header, check_signal_sigma=check_signal_sigma, noise=noise, velo_range=velo_range, niters=niters, iterations_for_convergence=iterations_for_convergence, add_residual=add_residual, thresh=thresh)
         ax = fig.add_subplot(rows,cols,i+1)
         velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
         ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
