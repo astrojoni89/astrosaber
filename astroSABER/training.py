@@ -21,7 +21,7 @@ warnings.showwarning = format_warning
 
 
 class saberTraining(object):
-    def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, eps_l1=None, eps_l2=None, learning_rate_l1=None, learning_rate_l2=None, mom=None, get_trace=False, niters=50, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
+    def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, eps_l1=None, eps_l2=None, learning_rate_l1=None, learning_rate_l2=None, mom=None, get_trace=False, niters=50, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=12345):
         self.pickle_file = pickle_file
         self.path_to_data = path_to_data
 
@@ -108,7 +108,7 @@ class saberTraining(object):
         self.popt_lam = self.train()
         self.save_data()
         if isinstance(self.popt_lam[0], float):
-            plot_training_spectra(self.pickle_file, self.popt_lam[0], self.p1, self.popt_lam[1], self.p2, phase=self.phase, check_signal_sigma=self.check_signal_sigma, noise=self.noise, velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh, outfile='spectra.pdf', ranges=None, path_to_plots='astrosaber/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=self.seed)
+            plot_training_spectra(self.pickle_file, self.popt_lam[0], self.p1, self.popt_lam[1], self.p2, phase=self.phase, check_signal_sigma=self.check_signal_sigma, noise=self.noise, velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh, outfile=None, ranges=None, path_to_plots='astrosaber/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=self.seed)
 
     def train(self):
         popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps_l1=self.eps_l1, eps_l2=self.eps_l2, learning_rate_l1=self.learning_rate_l1, learning_rate_l2=self.learning_rate_l2, mom=self.mom, window_size=5, iterations_for_convergence_training=10, get_trace=False, ncpus=self.ncpus)
