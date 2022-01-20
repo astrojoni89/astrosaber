@@ -19,6 +19,7 @@ from tqdm import trange
 
 from .utils.spectrum_utils import pixel_circle_calculation, pixel_circle_calculation_px, calculate_spectrum
 from .utils.aslsq_helper import find_nearest, velocity_axes, pixel_to_world
+from .utils.aslsq_fit import two_step_extraction, one_step_extraction
 
 
 def pickle_load_file(pathToFile):
