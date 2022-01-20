@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import pickle
 from astropy.io import fits
+from astropy import units as u
 from scipy import sparse
 from scipy.sparse.linalg import spsolve
 
