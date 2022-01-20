@@ -254,3 +254,54 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     fig.savefig(pathname, dpi=dpi, bbox_inches='tight')
     #plt.close()
     print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
+
+def plot_training_spectra(pickle_file, training_data, test_data, bg_fits, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
+    '''
+    pickle_file: pickled file to get x-axis from
+    '''
+    
+    print("\nPlotting...")
+    
+    fontsize = scale_fontsize(rowsize)
+    color_list, draw_list, line_list = styles_pickle()
+
+    data = pickle_load_file(pickle_file)
+    training_data = training_data
+    test_data = test_data
+    bg_fits = bg_fits
+    velocity = data['velocity']
+    if 'header' in data.keys():
+        header = data['header']
+    else:
+        header = None
+        
+    rng = np.random.default_rng(seed)
+    xsize = len(training_data)
+    cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
+    figsize = (cols*colsize, rowbreak*rowsize)
+    fig = plt.figure(figsize=figsize)
+    xValue = rng.integers(0,high=xsize,size=n_spectra)
+    for i in trange(n_spectra):
+        idx = xValue[i]
+        ax = fig.add_subplot(rows,cols,i+1)
+        velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
+        ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
+        ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1], label="observed HI+HISA")
+        ax.plot(velocity[velo_min:velo_max], bg_fits[idx][velo_min:velo_max], drawstyle=draw_list[2], color=color_list[2], linestyle=line_list[2], label="bg fit")
+        add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
+        ax.legend(loc=2, fontsize=fontsize-2)
+
+    #for axs in fig.axes:
+        #axs.label_outer()
+    fig.tight_layout()
+
+    if not os.path.exists(path_to_plots):
+        os.makedirs(path_to_plots)
+    if outfile is not None:
+        filename = outfile
+    elif outfile is None:
+        filename = pickle_file.split('/')[-1].split('.pickle')[0] + '_{}.pdf'.format(n_spectra)
+    pathname = os.path.join(path_to_plots, filename)
+    fig.savefig(pathname, dpi=dpi, bbox_inches='tight')
+    #plt.close()
+    print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
