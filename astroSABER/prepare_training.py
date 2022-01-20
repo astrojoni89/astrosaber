@@ -148,6 +148,7 @@ class saberPrepare(object):
         for i in trange(len(results_list)):
             #Check for NaNs in the test spectra
             if np.any(np.isnan(results_list[i][0])):
+                print('Mock spectrum contains NaN! Will remove it!')
                 continue
             amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], self.training_set_size).reshape(self.training_set_size,)
             amps_HISA[amps_HISA<0] = 0.
