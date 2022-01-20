@@ -13,6 +13,7 @@ import os
 from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
 from .utils.aslsq_helper import velocity_axes, count_ones_in_row, check_signal_ranges, IterationWarning, say, format_warning
 from .utils.aslsq_fit import baseline_als_optimized, one_step_extraction, two_step_extraction
+from .plotting import plot_training_spectra
 
 warnings.showwarning = format_warning
 
