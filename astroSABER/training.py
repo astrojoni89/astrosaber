@@ -108,6 +108,7 @@ class saberTraining(object):
         say(heading)
         self.popt_lam = self.train()
         self.save_data()
+        plot_training_spectra(self.pickle_file, self.train_data_list, self.test_data_list, self.bg_fit_list, outfile=None, ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=self.seed)
 
     def train(self):
         popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps_l1=self.eps_l1, eps_l2=self.eps_l2, learning_rate_l1=self.learning_rate_l1, learning_rate_l2=self.learning_rate_l2, mom=self.mom, window_size=5, iterations_for_convergence_training=10, get_trace=False, ncpus=self.ncpus)
@@ -325,7 +326,8 @@ class saberTraining(object):
                     gd.iter_of_convergence = i_converge_training
                     say('\nStable convergence achieved at iteration: {}'.format(i_converge_training))
                     break
-
+                    
+        self.train_data_list, self.test_data_list, self.bg_fit_list = train_data_list, test_data_list, bg_fit_list
         # Return best-fit lambdas, and bookkeeping object
         if self.get_trace:
             return np.around(gd.lam1_trace, decimals=2), np.around(gd.lam2_trace, decimals=2)
