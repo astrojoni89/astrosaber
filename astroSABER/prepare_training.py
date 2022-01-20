@@ -146,6 +146,9 @@ class saberPrepare(object):
         results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='hisa') # initiate parallel process
 
         for i in trange(len(results_list)):
+            #Check for NaNs in the test spectra
+            if np.any(np.isnan(results_list[i][0])):
+                continue
             amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], self.training_set_size).reshape(self.training_set_size,)
             amps_HISA[amps_HISA<0] = 0.
             mu_velos_HISA, sigma_velos_HISA = (min(results_list[i][1][:,0]) + max(results_list[i][1][:,1])) / 2., 15. # mean and standard deviation
