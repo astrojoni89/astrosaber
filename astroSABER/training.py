@@ -105,7 +105,7 @@ class saberTraining(object):
         say(heading)
         self.popt_lam = self.train()
         self.save_data()
-        if len(self.popt_lam[0]) == 1:
+        if isinstance(self.popt_lam[0], float):
             plot_training_spectra(self.pickle_file, self.popt_lam[0], self.p1, self.popt_lam[1], self.p2, phase=self.phase, check_signal_sigma=self.check_signal_sigma, noise=self.noise, velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=self.seed)
 
     def train(self):
