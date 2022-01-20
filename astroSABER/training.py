@@ -60,7 +60,9 @@ class saberTraining(object):
         self.filename_out = filename_out
         
         self.seed = seed
-        self.rng = np.random.default_rng(self.seed)
+        self.train_data_list = []
+        self.test_data_list = []
+        self.bg_fit_list = []
       
     def __str__(self):
         return f'saberTraining:\npickle_file: {self.pickle_file}\npath_to_data: {self.path_to_data}\niterations: {self.iterations}\nphase: {self.phase}\nlam1_initial: {self.lam1_initial}\np1: {self.p1}\nlam2_initial: {self.lam2_initial}\np2: {self.p2}\nweight_1: {self.weight_1}\nweight_2: {self.weight_2}\nlam1_bounds: {self.lam1_bounds}\nlam2_bounds: {self.lam2_bounds}\nMAD: {self.MAD}\neps_l1: {self.eps_l1}\neps_l2: {self.eps_l2}\nlearning_rate_l1: {self.learning_rate_l1}\nlearning_rate_l2: {self.learning_rate_l2}\nmom: {self.mom}\nget_trace: {self.get_trace}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
@@ -72,6 +74,7 @@ class saberTraining(object):
         say(heading)
 
     def prepare_data(self):
+        self.rng = np.random.default_rng(self.seed)
         self.getting_ready()
         self.p = pickle.load(open(self.pickle_file, 'rb'), encoding='latin1')
         self.training_data = self.p['training_data']
@@ -119,9 +122,9 @@ class saberTraining(object):
         results_list = np.array(astroSABER.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost'))
    
         if get_all:
-            return np.nanmedian(results_list[:,0]), np.nanmedian(results_list[:,1]), np.nanmedian(results_list[:,2]) #gmean(cost_function_list),  gmean(rchi2_list)
+            return np.nanmedian(results_list[:,0]), np.nanmedian(results_list[:,1]), np.nanmedian(results_list[:,2]), results_list[:,3], results_list[:,4], results_list[:,5]
         else:
-            return np.nanmedian(results_list[:,0]) #gmean(cost_function_list)
+            return np.nanmedian(results_list[:,0])
 
     def single_cost(self, i, get_all=True): # , lam1_updt=None, p1_updt=None, lam2_updt=None, p2_updt=None
         consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
@@ -163,7 +166,7 @@ class saberTraining(object):
             n_samples = len(self.test_data[i][mask])
             rchi2 = chi2 / (n_samples - dof)
             MAD = np.nansum(abs(residuals)) / n_samples
-            return cost_function, rchi2, MAD
+            return cost_function, rchi2, MAD, self.training_data[i], self.test_data[i], bg_fit
         else:
             return cost_function
 
@@ -237,16 +240,16 @@ class saberTraining(object):
 
             # Calls to objective function
             #lam1
-            obj_lam1r, rchi2_lam1r, _ = objective_function(self.lam1_r, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus) # self.training_data, self.test_data, self.header, self.check_signal_sigma, self.noise, self.velo_range, self.niters, self.iterations_for_convergence, self.add_residual, self.thresh, self.mask, get_all=True, dof=4,
-            obj_lam1l, rchi2_lam1l, _ = objective_function(self.lam1_l, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus)
+            obj_lam1r, rchi2_lam1r, _, train_data_list, test_data_list, bg_fit_list = objective_function(self.lam1_r, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus) # self.training_data, self.test_data, self.header, self.check_signal_sigma, self.noise, self.velo_range, self.niters, self.iterations_for_convergence, self.add_residual, self.thresh, self.mask, get_all=True, dof=4,
+            obj_lam1l, rchi2_lam1l, _, train_data_list, test_data_list, bg_fit_list = objective_function(self.lam1_l, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus)
             gd.D_lam1_trace[i] = (obj_lam1r - obj_lam1l) / 2. / self.eps_l1
             
             gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l) / 2.
             
             if self.phase == 'two':
                 #lam2
-                obj_lam2r, rchi2_lam2r, _ = objective_function(self.lam1_c, self.p1, self.lam2_r, self.p2, ncpus=self.ncpus)
-                obj_lam2l, rchi2_lam2l, _ = objective_function(self.lam1_c, self.p1, self.lam2_l, self.p2, ncpus=self.ncpus)
+                obj_lam2r, rchi2_lam2r, _, train_data_list, test_data_list, bg_fit_list = objective_function(self.lam1_c, self.p1, self.lam2_r, self.p2, ncpus=self.ncpus)
+                obj_lam2l, rchi2_lam2l, _, train_data_list, test_data_list, bg_fit_list = objective_function(self.lam1_c, self.p1, self.lam2_l, self.p2, ncpus=self.ncpus)
                 gd.D_lam2_trace[i] = (obj_lam2r - obj_lam2l) / 2. / self.eps_l2
 
                 gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l + rchi2_lam2r + rchi2_lam2l) / 4.
