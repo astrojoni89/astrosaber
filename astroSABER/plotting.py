@@ -284,9 +284,9 @@ def plot_training_spectra(pickle_file, lam1, p1, lam2, p2, phase='two', check_si
     for i in trange(n_spectra):
         idx = xValue[i]
         if phase == 'two':
-            bg_fit, hisa, _, _ = two_step_extraction(lam1, p1, lam2, p2, spectrum=training_data[idx], header=header, check_signal_sigma=check_signal_sigma, noise=noise, velo_range=velo_range, niters=niters, iterations_for_convergence=iterations_for_convergence, add_residual=add_residual, thresh=thresh)
+            bg_fit, hisa, _, _ = two_step_extraction(lam1, p1, lam2, p2, spectrum=training_data[idx], header=header, check_signal_sigma=check_signal_sigma, noise=noise[idx], velo_range=velo_range, niters=niters, iterations_for_convergence=iterations_for_convergence, add_residual=add_residual, thresh=thresh[idx])
         elif phase == 'one':
-            bg_fit, hisa, _, _ = one_step_extraction(lam1, p1, spectrum=training_data[idx], header=header, check_signal_sigma=check_signal_sigma, noise=noise, velo_range=velo_range, niters=niters, iterations_for_convergence=iterations_for_convergence, add_residual=add_residual, thresh=thresh)
+            bg_fit, hisa, _, _ = one_step_extraction(lam1, p1, spectrum=training_data[idx], header=header, check_signal_sigma=check_signal_sigma, noise=noise[idx], velo_range=velo_range, niters=niters, iterations_for_convergence=iterations_for_convergence, add_residual=add_residual, thresh=thresh[idx])
         ax = fig.add_subplot(rows,cols,i+1)
         velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
         ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
