@@ -55,7 +55,6 @@ class saberPrepare(object):
         self.path_to_file = path_to_file
         
         self.seed = seed
-        self.rng = np.random.default_rng(self.seed)
         
     def __str__(self):
         return f'saberPrepare:\nfitsfile: {self.fitsfile}\ntraining_set_size: {self.training_set_size}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nmean_linewidth: {self.mean_linewidth}\nstd_linewidth: {self.std_linewidth}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
@@ -83,6 +82,7 @@ class saberPrepare(object):
         say(string)
 
     def prepare_training(self):
+        self.rng = np.random.default_rng(self.seed)
         self.prepare_data()
 
         if self.training_set_size <= 0:
