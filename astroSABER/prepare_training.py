@@ -162,14 +162,16 @@ class saberPrepare(object):
             lws_of_comps_HISA[np.argwhere(lws_of_comps_HISA<spectral_resolution)] = spectral_resolution
 
             gauss_HISA = np.zeros(shape=(self.v,))
-            consecutive_channels_hisa, ranges_hisa = [], []
+            consecutive_channels_hisa_list, ranges_hisa_list = [], []
             for idx, (c, v, lw, amp) in enumerate(zip(ncomp_HISA,velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA)):
                 gauss_HISA = gauss_HISA + gauss_function(xvals,amp, v, lw)
                 #TODO
-                consecutive_channels_hisa_i, ranges_hisa_i = np.around(lw, decimals=0), [np.around(v - lw/2., decimals=0), np.around(v + lw/2., decimals=0)]
-                consecutive_channels_hisa.append(consecutive_channels_hisa_i)
-                ranges_hisa.append(ranges_hisa_i)
+                consecutive_channels_hisa_i, ranges_hisa_i = np.around(6*lw, decimals=0), [np.around(v - 3*lw, decimals=0), np.around(v + 3*lw, decimals=0)]
+                consecutive_channels_hisa_list.append(consecutive_channels_hisa_i)
+                ranges_hisa_list.append(ranges_hisa_i)
                 
+            consecutive_channels_hisa = np.array(consecutive_channels_hisa_list)
+            ranges_hisa = np.array(ranges_hisa_list)
             mask_ranges_hisa = ranges_hisa[np.where(consecutive_channels_hisa>=self.max_consec_ch)]
             mask_hisa = mask_channels(self.v, mask_ranges_hisa, pad_channels=2, remove_intervals=None)
 
