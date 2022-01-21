@@ -187,7 +187,7 @@ class saberPrepare(object):
             ranges_hisa = np.array(ranges_hisa_list).astype(int).reshape(-1,2)
             sort_indices = np.argsort(ranges_hisa[:, 0])
             ranges_hisa = ranges_hisa[sort_indices]
-            consecutive_channels = ranges_hisa[:, 1] - ranges_hisa[:, 0]
+            consecutive_channels_hisa = ranges_hisa[:, 1] - ranges_hisa[:, 0]
             mask_ranges_hisa = ranges_hisa[np.where(consecutive_channels_hisa>=0)]
             mask_hisa = mask_channels(self.v, mask_ranges_hisa, pad_channels=50, remove_intervals=None)
             ###
