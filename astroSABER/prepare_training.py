@@ -158,7 +158,7 @@ class saberPrepare(object):
             velos_HISA, velos_of_comps_HISA = [], []
             for _ in range(ncomps_HISA[i]):
                 k = 0
-                mu_velos_HISA_k, sigma_velos_HISA_k = (results_list[i][1][k,0] + results_list[i][1][k,1]) / 2., 20. # mean and standard deviation
+                mu_velos_HISA_k, sigma_velos_HISA_k = (results_list[i][1][k,0] + results_list[i][1][k,1]) / 2., (results_list[i][1][k,1] - results_list[i][1][k,0]) # mean and standard deviation
                 if k < len(results_list[i][1][:,0])-1:
                     k += 1
                 velos_HISA_k = self.rng.normal(mu_velos_HISA_k, sigma_velos_HISA_k, samplesize_rng).reshape(samplesize_rng,)
@@ -184,7 +184,7 @@ class saberPrepare(object):
                 ranges_hisa_i = [np.around(v - 3*lw), np.around(v + 3*lw)]
                 ranges_hisa_list.append(ranges_hisa_i)
                 
-            ranges_hisa = ranges_hisa_list#np.array(ranges_hisa_list).astype(int).reshape(-1,2)
+            ranges_hisa = np.array(ranges_hisa_list).astype(int).reshape(-1,2)
             sort_indices = np.argsort(ranges_hisa[:, 0])
             ranges_hisa = ranges_hisa[sort_indices]
             consecutive_channels_hisa = ranges_hisa[:, 1] - ranges_hisa[:, 0]
