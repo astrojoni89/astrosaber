@@ -129,7 +129,7 @@ class saberPrepare(object):
         mu_ncomps_HISA, sigma_ncomps_HISA = 4, 1 
         lws_HISA = self.rng.normal(mu_lws_HISA, sigma_lws_HISA, self.training_set_size).reshape(self.training_set_size,)
         ncomps_HISA = np.around(self.rng.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size)).astype(int)
-        #TODO
+        ###TODO
         ncomps_HISA[ncomps_HISA<=0] = int(1.)
 
         xvals = np.arange(0,self.v,1)
@@ -165,15 +165,18 @@ class saberPrepare(object):
             consecutive_channels_hisa_list, ranges_hisa_list = [], []
             for idx, (c, v, lw, amp) in enumerate(zip(ncomp_HISA,velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA)):
                 gauss_HISA = gauss_HISA + gauss_function(xvals,amp, v, lw)
-                #TODO
+                ###TODO
                 consecutive_channels_hisa_i, ranges_hisa_i = np.around(6*lw, decimals=0), [np.around(v - 3*lw, decimals=0), np.around(v + 3*lw, decimals=0)]
                 consecutive_channels_hisa_list.append(consecutive_channels_hisa_i)
                 ranges_hisa_list.append(ranges_hisa_i)
                 
             consecutive_channels_hisa = np.array(consecutive_channels_hisa_list)
             ranges_hisa = np.array(ranges_hisa_list)
+            sort_indices = np.argsort(ranges_hisa[:, 0])
+            ranges_hisa = ranges_hisa[sort_indices]
             mask_ranges_hisa = ranges_hisa[np.where(consecutive_channels_hisa>=self.max_consec_ch)]
             mask_hisa = mask_channels(self.v, mask_ranges_hisa, pad_channels=2, remove_intervals=None)
+            ###
 
             #limit HISA to HI emission
             for ch in range(len(gauss_HISA)):
