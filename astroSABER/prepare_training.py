@@ -156,7 +156,7 @@ class saberPrepare(object):
             amps_HISA[amps_HISA<0] = 0.
             ###TODO
             velos_HISA, velos_of_comps_HISA = [], []
-            for _ in range(len(ncomps_HISA[i])):
+            for _ in range(ncomps_HISA[i]):
                 k = 0
                 mu_velos_HISA_k, sigma_velos_HISA_k = (results_list[i][1][k,0] + results_list[i][1][k,1]) / 2., 10. # mean and standard deviation
                 if k < len(results_list[i][1][:,0])-1:
