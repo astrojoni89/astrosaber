@@ -78,6 +78,7 @@ class saberTraining(object):
         self.p = pickle.load(open(self.pickle_file, 'rb'), encoding='latin1')
         self.training_data = self.p['training_data']
         self.test_data = self.p['test_data']
+        self.hisa_mask = self.p['hisa_mask']
         self.noise = np.array(self.p['rms_noise'])
         self.thresh = self.sig * self.noise
         self.velocity = self.p['velocity']
