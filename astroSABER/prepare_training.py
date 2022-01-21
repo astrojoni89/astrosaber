@@ -181,7 +181,7 @@ class saberPrepare(object):
             for idx, (c, v, lw, amp) in enumerate(zip(ncomp_HISA,velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA)):
                 gauss_HISA = gauss_HISA + gauss_function(xvals,amp, v, lw)
                 ###TODO
-                consecutive_channels_hisa_i, ranges_hisa_i = np.around(6*lw, decimals=0), [np.around(v - 3*lw, decimals=0), np.around(v + 3*lw, decimals=0)]
+                consecutive_channels_hisa_i, ranges_hisa_i = np.around(6*lw, decimals=0), [np.around(v - 3*lw), np.around(v + 3*lw)]
                 consecutive_channels_hisa_list.append(consecutive_channels_hisa_i)
                 ranges_hisa_list.append(ranges_hisa_i)
                 
