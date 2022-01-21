@@ -178,17 +178,17 @@ class saberPrepare(object):
 
             gauss_HISA = np.zeros(shape=(self.v,))
             consecutive_channels_hisa_list, ranges_hisa_list = [], []
-            for idx, (c, v, lw, amp) in enumerate(zip(ncomp_HISA,velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA)):
-                gauss_HISA = gauss_HISA + gauss_function(xvals,amp, v, lw)
+            for idx, (v, lw, amp) in enumerate(zip(velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA)):
+                gauss_HISA = gauss_HISA + gauss_function(xvals, amp, v, lw)
                 ###TODO
                 consecutive_channels_hisa_i, ranges_hisa_i = np.around(6*lw, decimals=0), [np.around(v - 3*lw), np.around(v + 3*lw)]
                 consecutive_channels_hisa_list.append(consecutive_channels_hisa_i)
                 ranges_hisa_list.append(ranges_hisa_i)
                 
             consecutive_channels_hisa = np.array(consecutive_channels_hisa_list).astype(int)
-            ranges_hisa = np.array(ranges_hisa_list).astype(int)
+            ranges_hisa = np.array(ranges_hisa_list).astype(int).reshape(-1,2)
             sort_indices = np.argsort(ranges_hisa[:, 0])
-            ranges_hisa = ranges_hisa[sort_indices].reshape(-1,2)
+            ranges_hisa = ranges_hisa[sort_indices]
             mask_ranges_hisa = ranges_hisa[np.where(consecutive_channels_hisa>=0)]
             mask_hisa = mask_channels(self.v, mask_ranges_hisa, pad_channels=2, remove_intervals=None)
             ###
