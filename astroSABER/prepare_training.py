@@ -189,7 +189,7 @@ class saberPrepare(object):
             ranges_hisa = ranges_hisa[sort_indices]
             consecutive_channels_hisa = ranges_hisa[:, 1] - ranges_hisa[:, 0]
             mask_ranges_hisa = ranges_hisa[np.where(consecutive_channels_hisa>=0)]
-            mask_hisa = mask_channels(self.v, mask_ranges_hisa, pad_channels=50, remove_intervals=None)
+            mask_hisa = mask_channels(self.v, mask_ranges_hisa, pad_channels=10, remove_intervals=None)
             ###
 
             #limit HISA to HI emission
