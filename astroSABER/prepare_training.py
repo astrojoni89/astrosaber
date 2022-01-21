@@ -122,13 +122,12 @@ class saberPrepare(object):
 
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
         channel_width = self.header['CDELT3'] / 1000.
-        spectral_resolution = 1/np.sqrt(8*np.log(2)) # sigma; unit channel
+        spectral_resolution = 1 / np.sqrt(8*np.log(2)) # unit channel
         edges = int(0.10 * min(self.header['NAXIS1'],self.header['NAXIS2']))
         indices = np.column_stack((self.rng.integers(edges,self.header['NAXIS2']-edges+1,self.training_set_size), self.rng.integers(edges,self.header['NAXIS1']-edges+1,self.training_set_size)))
 
-        mu_lws_HISA, sigma_lws_HISA = self.mean_linewidth/np.sqrt(8*np.log(2)) / channel_width, self.std_linewidth / channel_width # mean and standard deviation
-        mu_ncomps_HISA, sigma_ncomps_HISA = 4, 1 
-        lws_HISA = self.rng.normal(mu_lws_HISA, sigma_lws_HISA, self.training_set_size).reshape(self.training_set_size,)
+        mu_lws_HISA, sigma_lws_HISA = (self.mean_linewidth / channel_width) / np.sqrt(8*np.log(2)), self.std_linewidth / channel_width # mean and standard deviation
+        mu_ncomps_HISA, sigma_ncomps_HISA = 3, 1 
         ncomps_HISA = np.around(self.rng.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size)).astype(int)
         ###TODO
         ncomps_HISA[ncomps_HISA<=0] = int(1.)
@@ -152,10 +151,12 @@ class saberPrepare(object):
             if np.any(np.isnan(results_list[i][0])):
                 print('Mock spectrum contains NaN! Will remove it!')
                 continue
-            amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], self.training_set_size).reshape(self.training_set_size,)
+            samplesize_rng = 10 * ncomps_HISA[i]
+            amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], samplesize_rng).reshape(samplesize_rng,) # self.training_set_size
             amps_HISA[amps_HISA<0] = 0.
             mu_velos_HISA, sigma_velos_HISA = (min(results_list[i][1][:,0]) + max(results_list[i][1][:,1])) / 2., 15. # mean and standard deviation
-            velos_HISA = self.rng.normal(mu_velos_HISA, sigma_velos_HISA, self.training_set_size).reshape(self.training_set_size,)
+            velos_HISA = self.rng.normal(mu_velos_HISA, sigma_velos_HISA, samplesize_rng).reshape(samplesize_rng,) # 
+            lws_HISA = self.rng.normal(mu_lws_HISA, sigma_lws_HISA, samplesize_rng).reshape(samplesize_rng,) # 
             velos_of_comps_HISA = self.rng.choice(velos_HISA, ncomps_HISA[i])
             amps_of_comps_HISA = self.rng.choice(amps_HISA, ncomps_HISA[i])
             lws_of_comps_HISA = self.rng.choice(lws_HISA, ncomps_HISA[i])  
