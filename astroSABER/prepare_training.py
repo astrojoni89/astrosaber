@@ -74,10 +74,11 @@ class saberPrepare(object):
         #self.header_2d = md_header_2d(self.fitsfile)
         self.v = self.header['NAXIS3']
         self.velocity = velocity_axes(self.fitsfile)
-        self.mock_data = {'training_data' : None, 'test_data' : None, 'hisa_spectra' : None, 'rms_noise' : None, 'velocity' : None, 'header' : None}
+        self.mock_data = {'training_data' : None, 'test_data' : None, 'hisa_spectra' : None, 'hisa_mask' : None, 'rms_noise' : None, 'velocity' : None, 'header' : None}
         self.hisa_spectra = []
         self.training_data = []
         self.test_data = []
+        self.hisa_mask = []
         string = 'Done!'
         say(string)
 
@@ -161,8 +162,16 @@ class saberPrepare(object):
             lws_of_comps_HISA[np.argwhere(lws_of_comps_HISA<spectral_resolution)] = spectral_resolution
 
             gauss_HISA = np.zeros(shape=(self.v,))
+            consecutive_channels_hisa, ranges_hisa = [], []
             for idx, (c, v, lw, amp) in enumerate(zip(ncomp_HISA,velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA)):
                 gauss_HISA = gauss_HISA + gauss_function(xvals,amp, v, lw)
+                #TODO
+                consecutive_channels_hisa_i, ranges_hisa_i = np.around(lw, decimals=0), [np.around(v - lw/2., decimals=0), np.around(v + lw/2., decimals=0)]
+                consecutive_channels_hisa.append(consecutive_channels_hisa_i)
+                ranges_hisa.append(ranges_hisa_i)
+                
+            mask_ranges_hisa = ranges_hisa[np.where(consecutive_channels_hisa>=self.max_consec_ch)]
+            mask_hisa = mask_channels(self.v, mask_ranges_hisa, pad_channels=2, remove_intervals=None)
 
             #limit HISA to HI emission
             for ch in range(len(gauss_HISA)):
@@ -173,10 +182,12 @@ class saberPrepare(object):
             self.training_data.append(results_list[i][0] - gauss_HISA)
             self.test_data.append(results_list[i][0])
             self.hisa_spectra.append(gauss_HISA)
+            self.hisa_mask.append(mask_hisa)
 
         self.mock_data['training_data'] = self.training_data
         self.mock_data['test_data'] = self.test_data
         self.mock_data['hisa_spectra'] = self.hisa_spectra
+        self.mock_data['hisa_mask'] = self.hisa_mask
         self.mock_data['rms_noise'] = self.noise_list
         self.mock_data['velocity'] = self.velocity
         self.mock_data['header'] = self.header
