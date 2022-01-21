@@ -339,10 +339,12 @@ class saberTraining(object):
     
     def save_data(self):
         if self.filename_out is None:
+            filename_wext = os.path.basename(self.pickle_file)
+            filename_base, file_extension = os.path.splitext(filename_wext)
             if not self.get_trace:
-                filename_lam = self.pickle_file.split('/')[-1].split('.pickle')[0]+'_lam_opt.txt'
+                filename_lam = filename_base+'_lam_opt.txt'
             else:
-                filename_lam = self.pickle_file.split('/')[-1].split('.pickle')[0]+'_lam_traces.txt'
+                filename_lam = filename_base+'_lam_traces.txt'
         else:
             filename_lam = str(self.filename_out) + '.txt'
         pathname_lam = os.path.join(self.path_to_data, filename_lam)
