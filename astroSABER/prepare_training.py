@@ -190,7 +190,10 @@ class saberPrepare(object):
             consecutive_channels_hisa = ranges_hisa[:, 1] - ranges_hisa[:, 0]
             mask_ranges_hisa = ranges_hisa[np.where(consecutive_channels_hisa>=0)]
             pad = 10
-            mask_ranges_hisa[:,0], mask_ranges_hisa[:,1] = mask_ranges_hisa[:,0] - pad, mask_ranges_hisa[:,1] + pad
+            for j in range(mask_ranges_hisa.shape[0]):
+                lower = max(0, mask_ranges_hisa[j,0] - pad)
+                upper = min(self.v, mask_ranges_hisa[j,1] + pad)
+                mask_ranges_hisa[j,0], mask_ranges_hisa[j,1] = lower, upper
             mask_hisa = mask_channels(self.v, mask_ranges_hisa, pad_channels=pad, remove_intervals=None)
             ###
 
