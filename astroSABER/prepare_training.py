@@ -195,9 +195,10 @@ class saberPrepare(object):
                 lower = max(0, mask_ranges_hisa[j,0] - pad)
                 upper = min(self.v, mask_ranges_hisa[j,1] + pad)
                 mask_ranges_hisa[j,0], mask_ranges_hisa[j,1] = lower, upper
+            '''
             mask_hisa = mask_channels(self.v, mask_ranges_hisa, pad_channels=pad, remove_intervals=None)
             ###
-            '''
+            
             #limit HISA to HI emission
             for ch in range(len(gauss_HISA)):
                 if gauss_HISA[ch]>results_list[i][0][ch]:
