@@ -98,6 +98,11 @@ def scale_fontsize(rowsize):
         fontsize = 10 - int(rowsize - rowsize_scale)
     return fontsize
 
+def plot_signal_ranges(ax, data, idx, fig_channels):
+    if 'signal_ranges' in data.keys():
+        for low, upp in data['signal_ranges'][idx]:
+            ax.axvspan(fig_channels[low], fig_channels[upp - 1], alpha=0.1, color='indianred')
+
 def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
     '''
     fitsfiles: list of fitsfiles to plot spectra from
@@ -292,6 +297,7 @@ def plot_training_spectra(pickle_file, lam1, p1, lam2, p2, phase='two', check_si
         ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
         ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1], label="observed HI+HISA")
         ax.plot(velocity[velo_min:velo_max], bg_fit[velo_min:velo_max], drawstyle=draw_list[2], color=color_list[2], linestyle=line_list[2], label="bg fit")
+        plot_signal_ranges(ax, data, idx, velocity)
         add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
         ax.legend(loc=2, fontsize=fontsize-2)
 
