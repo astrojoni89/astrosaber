@@ -74,11 +74,12 @@ class saberPrepare(object):
         #self.header_2d = md_header_2d(self.fitsfile)
         self.v = self.header['NAXIS3']
         self.velocity = velocity_axes(self.fitsfile)
-        self.mock_data = {'training_data' : None, 'test_data' : None, 'hisa_spectra' : None, 'hisa_mask' : None, 'rms_noise' : None, 'velocity' : None, 'header' : None}
+        self.mock_data = {'training_data' : None, 'test_data' : None, 'hisa_spectra' : None, 'hisa_mask' : None, 'signal_ranges' : None, 'rms_noise' : None, 'velocity' : None, 'header' : None}
         self.hisa_spectra = []
         self.training_data = []
         self.test_data = []
         self.hisa_mask = []
+        self.signal_ranges = []
         string = 'Done!'
         say(string)
 
@@ -188,11 +189,13 @@ class saberPrepare(object):
             self.test_data.append(results_list[i][0])
             self.hisa_spectra.append(gauss_HISA)
             self.hisa_mask.append(mask_hisa)
+            self.signal_ranges.append(mask_ranges_hisa)
 
         self.mock_data['training_data'] = self.training_data
         self.mock_data['test_data'] = self.test_data
         self.mock_data['hisa_spectra'] = self.hisa_spectra
         self.mock_data['hisa_mask'] = self.hisa_mask
+        self.mock_data['signal_ranges'] = self.signal_ranges
         self.mock_data['rms_noise'] = self.noise_list
         self.mock_data['velocity'] = self.velocity
         self.mock_data['header'] = self.header
