@@ -163,10 +163,16 @@ class saberTraining(object):
         ssr = np.nansum(squared_residuals)
         if self.phase == 'two':
             dof = 2
-            cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * self.lam1_updt + self.weight_2 * self.lam2_updt #penalize large smoothing
+            chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
+            n_samples = len(self.test_data[i][mask])
+            cost_function = chi2 / (n_samples - dof)
+            # cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * self.lam1_updt + self.weight_2 * self.lam2_updt #penalize large smoothing
         elif self.phase == 'one':
             dof = 1
-            cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * self.lam1_updt
+            chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
+            n_samples = len(self.test_data[i][mask])
+            cost_function = chi2 / (n_samples - dof)
+            # cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * self.lam1_updt
         if get_all:    
             chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
             n_samples = len(self.test_data[i][mask])
