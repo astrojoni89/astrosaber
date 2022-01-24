@@ -151,7 +151,7 @@ class saberPrepare(object):
             if np.any(np.isnan(results_list[i][0])):
                 print('Mock spectrum contains NaN! Will remove it!')
                 continue
-            samplesize_rng = 20 * ncomps_HISA[i]
+            samplesize_rng = 10 * ncomps_HISA[i]
             amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], samplesize_rng).reshape(samplesize_rng,) # self.training_set_size
             amps_HISA[amps_HISA<0] = 0.
             ###TODO
