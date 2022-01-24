@@ -429,4 +429,4 @@ class saberTraining(object):
         filename_out = filename_base + '_astrosaber_fit.pickle'
         path_to_pickle = os.path.join(self.path_to_data, filename_out)
         pickle.dump(self.p, open(path_to_pickle, 'wb'), protocol=2)
-        say("\n\033[92mSAVED UPDATED PICKLE FILE:\033[0m '{}' in '{}'".format(filename_out, path_to_pickle))
+        say("\n\033[92mSAVED UPDATED PICKLE FILE:\033[0m '{}' in '{}'".format(filename_out, self.path_to_data))
