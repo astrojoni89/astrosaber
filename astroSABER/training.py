@@ -310,16 +310,16 @@ class saberTraining(object):
 
             # Calls to objective function
             #lam1
-            obj_lam1r, rchi2_lam1r, _ = objective_function(self.lam1_r, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus) # self.training_data, self.test_data, self.header, self.check_signal_sigma, self.noise, self.velo_range, self.niters, self.iterations_for_convergence, self.add_residual, self.thresh, self.mask, get_all=True, dof=4,
-            obj_lam1l, rchi2_lam1l, _ = objective_function(self.lam1_l, self.p1, self.lam2_c, self.p2, ncpus=self.ncpus)
+            obj_lam1r, rchi2_lam1r, _ = objective_function(self.lam1_r, self.p1, self.lam2_c, self.p2, get_all=True, ncpus=self.ncpus)
+            obj_lam1l, rchi2_lam1l, _ = objective_function(self.lam1_l, self.p1, self.lam2_c, self.p2, get_all=True, ncpus=self.ncpus)
             gd.D_lam1_trace[i] = (obj_lam1r - obj_lam1l) / 2. / self.eps_l1
             
             gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l) / 2.
             
             if self.phase == 'two':
                 #lam2
-                obj_lam2r, rchi2_lam2r, _ = objective_function(self.lam1_c, self.p1, self.lam2_r, self.p2, ncpus=self.ncpus)
-                obj_lam2l, rchi2_lam2l, _ = objective_function(self.lam1_c, self.p1, self.lam2_l, self.p2, ncpus=self.ncpus)
+                obj_lam2r, rchi2_lam2r, _ = objective_function(self.lam1_c, self.p1, self.lam2_r, self.p2, get_all=True, ncpus=self.ncpus)
+                obj_lam2l, rchi2_lam2l, _ = objective_function(self.lam1_c, self.p1, self.lam2_l, self.p2, get_all=True, ncpus=self.ncpus)
                 gd.D_lam2_trace[i] = (obj_lam2r - obj_lam2l) / 2. / self.eps_l2
 
                 gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l + rchi2_lam2r + rchi2_lam2l) / 4.
