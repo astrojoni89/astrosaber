@@ -102,6 +102,15 @@ def plot_signal_ranges(ax, data, idx, fig_channels):
     if 'signal_ranges' in data.keys():
         for low, upp in data['signal_ranges'][idx]:
             ax.axvspan(fig_channels[low], fig_channels[upp - 1], alpha=0.1, color='indianred')
+            
+def get_title_string(idx, rchi2):
+    rchi2_string = ''
+    if rchi2 is not None:
+        rchi2_string = ', $\\chi_{{red}}^{{2}}$={:.3f}'.format(rchi2)
+        
+    title = 'Idx={}{}{}'.format(
+        idx, rchi2_string)
+    return title
 
 def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
     '''
@@ -262,7 +271,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     #plt.close()
     print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
 
-def plot_training_spectra(pickle_file, lam1, p1, lam2, p2, phase='two', check_signal_sigma=None, noise=None, velo_range=None, niters=50, iterations_for_convergence=None, add_residual=True, thresh=None, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
+def plot_training_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
     '''
     pickle_file: pickled file to get data from
     '''
@@ -275,6 +284,8 @@ def plot_training_spectra(pickle_file, lam1, p1, lam2, p2, phase='two', check_si
     data = pickle_load_file(pickle_file)
     training_data = data['training_data']
     test_data = data['test_data']
+    bg_fit = data['bg_fit']
+    rchi2 = data['rchi2']
     velocity = data['velocity']
     if 'header' in data.keys():
         header = data['header']
@@ -289,16 +300,14 @@ def plot_training_spectra(pickle_file, lam1, p1, lam2, p2, phase='two', check_si
     xValue = rng.integers(0,high=xsize,size=n_spectra)
     for i in trange(n_spectra):
         idx = xValue[i]
-        if phase == 'two':
-            bg_fit, hisa, _, _ = two_step_extraction(lam1, p1, lam2, p2, spectrum=training_data[idx], header=header, check_signal_sigma=check_signal_sigma, noise=noise[idx], velo_range=velo_range, niters=niters, iterations_for_convergence=iterations_for_convergence, add_residual=add_residual, thresh=thresh[idx])
-        elif phase == 'one':
-            bg_fit, hisa, _, _ = one_step_extraction(lam1, p1, spectrum=training_data[idx], header=header, check_signal_sigma=check_signal_sigma, noise=noise[idx], velo_range=velo_range, niters=niters, iterations_for_convergence=iterations_for_convergence, add_residual=add_residual, thresh=thresh[idx])
         ax = fig.add_subplot(rows,cols,i+1)
         velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
         ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
         ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1], label="observed HI+HISA")
-        ax.plot(velocity[velo_min:velo_max], bg_fit[velo_min:velo_max], drawstyle=draw_list[2], color=color_list[2], linestyle=line_list[2], label="bg fit")
+        ax.plot(velocity[velo_min:velo_max], bg_fit[idx][velo_min:velo_max], drawstyle=draw_list[2], color=color_list[2], linestyle=line_list[2], label="bg fit")
         plot_signal_ranges(ax, data, idx, velocity)
+        title = get_title_string(idx, rchi2[idx])
+        ax.set_title(title, fontsize=fontsize)
         add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
         ax.legend(loc=2, fontsize=fontsize-2)
 
