@@ -79,6 +79,8 @@ class saberTraining(object):
         self.training_data = self.p['training_data']
         self.test_data = self.p['test_data']
         self.hisa_mask = self.p['hisa_mask']
+        self.bg_fits = []
+        self.rchi2s = []
         self.noise = np.array(self.p['rms_noise'])
         self.thresh = self.sig * self.noise
         self.velocity = self.p['velocity']
@@ -115,7 +117,7 @@ class saberTraining(object):
         popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps_l1=self.eps_l1, eps_l2=self.eps_l2, learning_rate_l1=self.learning_rate_l1, learning_rate_l2=self.learning_rate_l2, mom=self.mom, window_size=5, iterations_for_convergence_training=10, get_trace=False, ncpus=self.ncpus)
         return popt_lam
 
-    def objective_function_lambda_set(self, lam1, p1, lam2, p2, get_all=True, dof=4, ncpus=None): #, training_data=None, test_data=None, header=None, check_signal_sigma=None, noise=None, velo_range=None, niters=None, iterations_for_convergence=None, add_residual=None, thresh=None, mask=None, get_all=True, dof=4, 
+    def objective_function_lambda_set(self, lam1, p1, lam2, p2, get_all=True, ncpus=None): 
    
         #global lam1_updt, lam2_updt
         self.lam1_updt, self.lam2_updt = lam1, lam2
@@ -128,7 +130,7 @@ class saberTraining(object):
         else:
             return np.nanmedian(results_list[:,0])
 
-    def single_cost(self, i, get_all=True): # , lam1_updt=None, p1_updt=None, lam2_updt=None, p2_updt=None
+    def single_cost(self, i, get_all=True):
         ###TODO
         mask_hisa = self.hisa_mask[i]
         consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
@@ -181,6 +183,60 @@ class saberTraining(object):
             return cost_function, rchi2, MAD
         else:
             return cost_function
+        
+    def single_cost_endofloop(self, i, lam1_final=None, lam2_final=None, get_all=True):
+        ###TODO
+        mask_hisa = self.hisa_mask[i]
+        consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
+        mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
+        mask = mask_channels(self.v, mask_ranges, pad_channels=2, remove_intervals=None)
+        mask = np.logical_and(mask_hisa, mask)
+        ###
+        if self.phase == 'two':
+            bg_fit, _, _, _ = two_step_extraction(lam1_final, self.p1, lam2_final, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
+        elif self.phase == 'one':
+            bg_fit, _, _, _ = one_step_extraction(lam1_final, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
+    
+        if type(self.noise[i]) is not np.ndarray:
+            noise_array = np.ones(len(self.training_data[i])) * self.noise[i]
+        else:
+            noise_array = self.noise[i]
+        if mask is None:
+            mask = np.ones(len(self.training_data[i]))
+            mask = mask.astype('bool')
+        elif len(mask) == 0:
+            mask = np.ones(len(self.training_data[i]))
+            mask = mask.astype('bool')
+        elif np.count_nonzero(mask) == 0:
+            mask = np.ones(len(self.training_data[i]))
+            mask = mask.astype('bool')
+        if any(np.isnan(bg_fit)):
+            bg_fit = np.full((len(self.training_data[i])), np.nan)
+            warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
+    
+        squared_residuals = (self.test_data[i][mask] - bg_fit[mask])**2
+        residuals = (self.test_data[i][mask] - bg_fit[mask])
+        ssr = np.nansum(squared_residuals)
+        if self.phase == 'two':
+            dof = 2
+            chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
+            n_samples = len(self.test_data[i][mask])
+            cost_function = chi2 / (n_samples - dof)
+            # cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * self.lam1_updt + self.weight_2 * self.lam2_updt #penalize large smoothing
+        elif self.phase == 'one':
+            dof = 1
+            chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
+            n_samples = len(self.test_data[i][mask])
+            cost_function = chi2 / (n_samples - dof)
+            # cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * self.lam1_updt
+        if get_all:    
+            chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
+            n_samples = len(self.test_data[i][mask])
+            rchi2 = chi2 / (n_samples - dof)
+            MAD = np.nansum(abs(residuals)) / n_samples
+            return cost_function, rchi2, bg_fit
+        else:
+            return cost_function, bg_fit
 
     class gradient_descent_lambda_set(object):
         """Bookkeeping object."""
@@ -337,7 +393,15 @@ class saberTraining(object):
                     gd.iter_of_convergence = i_converge_training
                     say('\nStable convergence achieved at iteration: {}'.format(i_converge_training))
                     break
-                    
+        
+        for j in range(len(self.training_data)):
+            cost_function_i, bg_fit_i = self.single_cost_endofloop(j, lam1_final=np.around(gd.lam1means1[i], decimals=2), lam2_final=np.around(gd.lam2means1[i], decimals=2), get_all=False)
+            self.bg_fits.append(bg_fit_i)
+            self.rchi2s.append(cost_function_i)
+        self.p['bg_fit'] = self.bg_fits
+        self.p['rchi2'] = self.rchi2s
+        self.save_pickle()
+        
         # Return best-fit lambdas, and bookkeeping object
         if self.get_trace:
             return np.around(gd.lam1_trace, decimals=2), np.around(gd.lam2_trace, decimals=2)
@@ -356,3 +420,11 @@ class saberTraining(object):
         pathname_lam = os.path.join(self.path_to_data, filename_lam)
         np.savetxt(pathname_lam, self.popt_lam)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_lam, self.path_to_data))
+        
+    def save_pickle(self):
+        filename_wext = os.path.basename(self.pickle_file)
+        filename_base, file_extension = os.path.splitext(filename_wext)
+        filename_out = filename_base + '_astrosaber_fit.pickle'
+        path_to_pickle = os.path.join(self.path_to_data, filename_out)
+        pickle.dump(self.p, open(path_to_pickle, 'wb'), protocol=2)
+        say("\n\033[92mSAVED UPDATED PICKLE FILE:\033[0m '{}' in '{}'".format(filename_out, path_to_pickle))
