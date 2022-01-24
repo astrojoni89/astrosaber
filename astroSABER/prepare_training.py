@@ -151,14 +151,14 @@ class saberPrepare(object):
             if np.any(np.isnan(results_list[i][0])):
                 print('Mock spectrum contains NaN! Will remove it!')
                 continue
-            samplesize_rng = 10 * ncomps_HISA[i]
+            samplesize_rng = 20 * ncomps_HISA[i]
             amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], samplesize_rng).reshape(samplesize_rng,) # self.training_set_size
             amps_HISA[amps_HISA<0] = 0.
             ###TODO
             velos_HISA, velos_of_comps_HISA = [], []
             for _ in range(ncomps_HISA[i]):
                 k = 0
-                mu_velos_HISA_k, sigma_velos_HISA_k = (results_list[i][1][k,0] + results_list[i][1][k,1]) / 2., (results_list[i][1][k,1] - results_list[i][1][k,0]) / (np.sqrt(8*np.log(2))) / 6. # mean and standard deviation
+                mu_velos_HISA_k, sigma_velos_HISA_k = (results_list[i][1][k,0] + results_list[i][1][k,1]) / 2., (results_list[i][1][k,1] - results_list[i][1][k,0]) / (np.sqrt(8*np.log(2))) / 4. # mean and standard deviation
                 if k < len(results_list[i][1][:,0])-1:
                     k += 1
                 velos_HISA_k = self.rng.normal(mu_velos_HISA_k, sigma_velos_HISA_k, samplesize_rng).reshape(samplesize_rng,)
