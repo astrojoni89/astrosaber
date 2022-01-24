@@ -4,7 +4,7 @@
 # @Date:   2021-03-01
 # @Filename: plotting.py
 # @Last modified by:   syed
-# @Last modified time: 07-12-2021
+# @Last modified time: 24-01-2022
 
 import os
 import sys
@@ -106,7 +106,7 @@ def plot_signal_ranges(ax, data, idx, fig_channels):
 def get_title_string(idx, rchi2):
     rchi2_string = ''
     if rchi2 is not None:
-        rchi2_string = ', $\\chi_{{red}}^{{2}}$={:.3f}'.format(rchi2)
+        rchi2_string = ', $\\chi_{{red}}^{{2}}$={:.3f}'.format(rchi2[idx])
         
     title = 'Idx={}{}{}'.format(
         idx, rchi2_string)
@@ -235,6 +235,14 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     training_data = data['training_data']
     test_data = data['test_data']
     velocity = data['velocity']
+    if 'bg_fit' in data.keys():
+        bg_fit = data['bg_fit']
+    else:
+        bg_fit = None
+    if 'rchi2' in data.keys():
+        rchi2 = data['rchi2']
+    else:
+        rchi2 = None
     if 'header' in data.keys():
         header = data['header']
     else:
@@ -252,62 +260,13 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
         velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
         ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
         ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1], label="observed HI+HISA")
-        plot_signal_ranges(ax, data, idx, velocity)
-        add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
-        ax.legend(loc=2, fontsize=fontsize-2)
-
-    #for axs in fig.axes:
-        #axs.label_outer()
-    fig.tight_layout()
-
-    if not os.path.exists(path_to_plots):
-        os.makedirs(path_to_plots)
-    if outfile is not None:
-        filename = outfile
-    elif outfile is None:
-        filename = pickle_file.split('/')[-1].split('.pickle')[0] + '_{}.pdf'.format(n_spectra)
-    pathname = os.path.join(path_to_plots, filename)
-    fig.savefig(pathname, dpi=dpi, bbox_inches='tight')
-    #plt.close()
-    print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
-
-def plot_training_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
-    '''
-    pickle_file: pickled file to get data from
-    '''
-    
-    print("\nPlotting...")
-    
-    fontsize = scale_fontsize(rowsize)
-    color_list, draw_list, line_list = styles_pickle()
-
-    data = pickle_load_file(pickle_file)
-    training_data = data['training_data']
-    test_data = data['test_data']
-    bg_fit = data['bg_fit']
-    rchi2 = data['rchi2']
-    velocity = data['velocity']
-    if 'header' in data.keys():
-        header = data['header']
-    else:
-        header = None
+        if bg_fit is not None:
+            ax.plot(velocity[velo_min:velo_max], bg_fit[idx][velo_min:velo_max], drawstyle=draw_list[2], color=color_list[2], linestyle=line_list[2], label="bg fit")
+            plot_signal_ranges(ax, data, idx, velocity)
         
-    rng = np.random.default_rng(seed)
-    xsize = len(training_data)
-    cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
-    figsize = (cols*colsize, rowbreak*rowsize)
-    fig = plt.figure(figsize=figsize)
-    xValue = rng.integers(0,high=xsize,size=n_spectra)
-    for i in trange(n_spectra):
-        idx = xValue[i]
-        ax = fig.add_subplot(rows,cols,i+1)
-        velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
-        ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
-        ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1], label="observed HI+HISA")
-        ax.plot(velocity[velo_min:velo_max], bg_fit[idx][velo_min:velo_max], drawstyle=draw_list[2], color=color_list[2], linestyle=line_list[2], label="bg fit")
-        plot_signal_ranges(ax, data, idx, velocity)
-        title = get_title_string(idx, rchi2[idx])
+        title = get_title_string(idx, rchi2)
         ax.set_title(title, fontsize=fontsize)
+        plot_signal_ranges(ax, data, idx, velocity)
         add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
         ax.legend(loc=2, fontsize=fontsize-2)
 
@@ -320,7 +279,10 @@ def plot_training_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_
     if outfile is not None:
         filename = outfile
     elif outfile is None:
-        filename = pickle_file.split('/')[-1].split('.pickle')[0] + '_astrosaber_fits_{}.pdf'.format(n_spectra)
+        if bg_fit is None:
+            filename = pickle_file.split('/')[-1].split('.pickle')[0] + '_{}.pdf'.format(n_spectra)
+        elif bg_fit is not None:
+            filename = pickle_file.split('/')[-1].split('.pickle')[0] + '_astrosaber_fits_{}.pdf'.format(n_spectra)
     pathname = os.path.join(path_to_plots, filename)
     fig.savefig(pathname, dpi=dpi, bbox_inches='tight')
     #plt.close()
