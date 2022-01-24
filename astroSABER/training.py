@@ -14,7 +14,7 @@ import os
 from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
 from .utils.aslsq_helper import velocity_axes, count_ones_in_row, check_signal_ranges, IterationWarning, say, format_warning
 from .utils.aslsq_fit import baseline_als_optimized, one_step_extraction, two_step_extraction
-from .plotting import plot_training_spectra
+from .plotting import plot_pickle_spectra
 
 warnings.showwarning = format_warning
 
@@ -112,7 +112,7 @@ class saberTraining(object):
         self.save_data()
         self.update_pickle_file(self.training_data, self.popt_lam[0], self.popt_lam[1], bg_fit_list=self.bg_fits, rchi2_list=self.rchi2s)
         if isinstance(self.popt_lam[0], float):
-            plot_training_spectra(self.pickle_file, self.popt_lam[0], self.p1, self.popt_lam[1], self.p2, phase=self.phase, check_signal_sigma=self.check_signal_sigma, noise=self.noise, velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh, outfile=None, ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=self.seed)
+            plot_pickle_spectra(self.pickle_file, outfile=None, ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=self.seed)
 
     def train(self):
         popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps_l1=self.eps_l1, eps_l2=self.eps_l2, learning_rate_l1=self.learning_rate_l1, learning_rate_l2=self.learning_rate_l2, mom=self.mom, window_size=5, iterations_for_convergence_training=10, get_trace=False, ncpus=self.ncpus)
