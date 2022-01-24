@@ -415,7 +415,7 @@ class saberTraining(object):
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_lam, self.path_to_data))
     
     def update_pickle_file(self, training_data, lam1, lam2, bg_fit_list=[], rchi2_list=[]):
-        for j in range(len(self.training_data)):
+        for j in trange(len(self.training_data)):
             cost_function_i, bg_fit_i = self.single_cost_endofloop(j, lam1_final=lam1, lam2_final=lam2, get_all=False)
             bg_fit_list.append(bg_fit_i)
             rchi2_list.append(cost_function_i)
