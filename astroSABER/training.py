@@ -110,6 +110,7 @@ class saberTraining(object):
         say(heading)
         self.popt_lam = self.train()
         self.save_data()
+        self.update_pickle_file(self.training_data, self.popt_lam[0], self.popt_lam[1], bg_fit_list=self.bg_fits, rchi2_list=self.rchi2s)
         if isinstance(self.popt_lam[0], float):
             plot_training_spectra(self.pickle_file, self.popt_lam[0], self.p1, self.popt_lam[1], self.p2, phase=self.phase, check_signal_sigma=self.check_signal_sigma, noise=self.noise, velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh, outfile=None, ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=self.seed)
 
@@ -394,14 +395,6 @@ class saberTraining(object):
                     say('\nStable convergence achieved at iteration: {}'.format(i_converge_training))
                     break
         
-        for j in range(len(self.training_data)):
-            cost_function_i, bg_fit_i = self.single_cost_endofloop(j, lam1_final=np.around(gd.lam1means1[i], decimals=2), lam2_final=np.around(gd.lam2means1[i], decimals=2), get_all=False)
-            self.bg_fits.append(bg_fit_i)
-            self.rchi2s.append(cost_function_i)
-        self.p['bg_fit'] = self.bg_fits
-        self.p['rchi2'] = self.rchi2s
-        self.save_pickle()
-        
         # Return best-fit lambdas, and bookkeeping object
         if self.get_trace:
             return np.around(gd.lam1_trace, decimals=2), np.around(gd.lam2_trace, decimals=2)
@@ -420,7 +413,16 @@ class saberTraining(object):
         pathname_lam = os.path.join(self.path_to_data, filename_lam)
         np.savetxt(pathname_lam, self.popt_lam)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_lam, self.path_to_data))
-        
+    
+    def update_pickle_file(self, training_data, lam1, lam2, bg_fit_list=[], rchi2_list=[]):
+        for j in range(len(self.training_data)):
+            cost_function_i, bg_fit_i = self.single_cost_endofloop(j, lam1_final=lam1, lam2_final=lam2, get_all=False)
+            bg_fit_list.append(bg_fit_i)
+            rchi2_list.append(cost_function_i)
+        self.p['bg_fit'] = bg_fit_list
+        self.p['rchi2'] = rchi2_list
+        self.save_pickle()
+    
     def save_pickle(self):
         filename_wext = os.path.basename(self.pickle_file)
         filename_base, file_extension = os.path.splitext(filename_wext)
