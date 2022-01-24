@@ -108,7 +108,7 @@ def get_title_string(idx, rchi2):
     if rchi2 is not None:
         rchi2_string = ', $\\chi_{{red}}^{{2}}$={:.3f}'.format(rchi2[idx])
         
-    title = 'Idx={}{}{}'.format(
+    title = 'Idx={}{}'.format(
         idx, rchi2_string)
     return title
 
