@@ -21,7 +21,7 @@ warnings.showwarning = format_warning
 
 
 class saberTraining(object):
-    def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, window_size=5, eps_l1=None, eps_l2=None, learning_rate_l1=None, learning_rate_l2=None, mom=None, get_trace=False, niters=50, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
+    def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, window_size=None, eps_l1=None, eps_l2=None, learning_rate_l1=None, learning_rate_l2=None, mom=None, get_trace=False, niters=50, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
         self.pickle_file = pickle_file
         self.path_to_data = path_to_data
 
@@ -278,6 +278,8 @@ class saberTraining(object):
             self.eps_l1 = 0.4
         if self.eps_l2 is None:
             self.eps_l2 = 0.1
+        if self.window_size is None:
+            self.window_size = 10
         if self.MAD is None:
             self.MAD = 0.03
         if self.mom is None:
@@ -362,14 +364,14 @@ class saberTraining(object):
 
 
     #    if False: (use this to avoid convergence testing)
-            if i <= 2 * window_size:
-                say(' (Convergence testing begins in {} iterations)'.format(int(2 * window_size - i)))
+            if i <= 2 * self.window_size:
+                say(' (Convergence testing begins in {} iterations)'.format(int(2 * self.window_size - i)))
             else:
-                gd.lam1means1[i] = np.mean(gd.lam1_trace[i - window_size:i])
-                gd.lam1means2[i] = np.mean(gd.lam1_trace[i - 2 * window_size:i - window_size])
+                gd.lam1means1[i] = np.mean(gd.lam1_trace[i - self.window_size:i])
+                gd.lam1means2[i] = np.mean(gd.lam1_trace[i - 2 * self.window_size:i - self.window_size])
           
-                gd.lam2means1[i] = np.mean(gd.lam2_trace[i - window_size:i])
-                gd.lam2means2[i] = np.mean(gd.lam2_trace[i - 2 * window_size:i - window_size])
+                gd.lam2means1[i] = np.mean(gd.lam2_trace[i - self.window_size:i])
+                gd.lam2means2[i] = np.mean(gd.lam2_trace[i - 2 * self.window_size:i - self.window_size])
 
                 gd.fracdiff_lam1[i] = np.abs(gd.lam1means1[i] - gd.lam1means2[i])
                 gd.fracdiff_lam2[i] = np.abs(gd.lam2means1[i] - gd.lam2means2[i])
@@ -382,7 +384,7 @@ class saberTraining(object):
                 c = count_ones_in_row(converge_logic)
                 say('  ({0:4.3F},{1:4.3F} < {2:4.3F} for {3} iters [{4} required])'.format(gd.fracdiff_lam1[i], gd.fracdiff_lam2[i], tolerance, int(c[i]), iterations_for_convergence_training))
 
-                if i in range(2 * window_size, self.iterations, 10):
+                if i in range(2 * self.window_size, self.iterations, 10):
                     if _supports_unicode(sys.stderr):
                         quote = '    "Much to learn, you still have!"      '
                         offset = ' ' * int(len(quote))
