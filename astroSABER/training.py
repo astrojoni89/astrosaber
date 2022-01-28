@@ -177,6 +177,7 @@ class saberTraining(object):
                 mask_hisa = mask_hisa.astype('bool')
             
             mask = np.logical_and(mask_hisa, mask)
+            assert mask.shape==self.test_data[i].shape
         
             if any(np.isnan(bg_fit)):
                 bg_fit = np.full((len(self.training_data[i])), np.nan)
