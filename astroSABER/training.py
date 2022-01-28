@@ -129,10 +129,10 @@ class saberTraining(object):
         results_list_array = np.array(results_list) # .reshape((len(self.training_data),-1))
    
         if get_all:
-            assert results_list_array.shape == (len(self.training_data),3)
+            assert results_list_array.shape == (len(self.training_data),3), 'Shape is {}'.format(results_list_array.shape)
             return np.nanmedian(results_list_array[:,0]), np.nanmedian(results_list_array[:,1]), np.nanmedian(results_list_array[:,2])
         else:
-            assert results_list_array.shape == (len(self.training_data),1)
+            assert results_list_array.shape == (len(self.training_data),1), 'Shape is {}'.format(results_list_array.shape)
             return np.nanmedian(results_list_array[:,0])
 
     def single_cost(self, i, get_all=True):
