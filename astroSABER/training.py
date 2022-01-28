@@ -176,6 +176,7 @@ class saberTraining(object):
             mask_hisa = mask_hisa.astype('bool')
             
         mask = np.logical_and(mask_hisa, mask)
+        
         if any(np.isnan(bg_fit)):
             bg_fit = np.full((len(self.training_data[i])), np.nan)
             warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
@@ -210,7 +211,6 @@ class saberTraining(object):
         consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
         mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
         mask = mask_channels(self.v, mask_ranges, pad_channels=2, remove_intervals=None)
-        mask = np.logical_and(mask_hisa, mask)
         ###
         if self.phase == 'two':
             bg_fit, _, _, _ = two_step_extraction(lam1_final, self.p1, lam2_final, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
@@ -230,6 +230,19 @@ class saberTraining(object):
         elif np.count_nonzero(mask) == 0:
             mask = np.ones(len(self.training_data[i]))
             mask = mask.astype('bool')
+        #hisa mask
+        if mask_hisa is None:
+            mask_hisa = np.zeros(len(self.training_data[i]))
+            mask_hisa = mask_hisa.astype('bool')
+        elif len(mask_hisa) == 0:
+            mask = np.zeros(len(self.training_data[i]))
+            mask = mask.astype('bool')
+        elif np.count_nonzero(mask_hisa) == 0:
+            mask_hisa = np.zeros(len(self.training_data[i]))
+            mask_hisa = mask_hisa.astype('bool')
+            
+        mask = np.logical_and(mask_hisa, mask)
+        
         if any(np.isnan(bg_fit)):
             bg_fit = np.full((len(self.training_data[i])), np.nan)
             warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
