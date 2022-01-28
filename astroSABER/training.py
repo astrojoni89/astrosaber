@@ -164,6 +164,17 @@ class saberTraining(object):
         elif np.count_nonzero(mask) == 0:
             mask = np.ones(len(self.training_data[i]))
             mask = mask.astype('bool')
+        #hisa mask
+        if mask_hisa is None:
+            mask_hisa = np.zeros(len(self.training_data[i]))
+            mask_hisa = mask_hisa.astype('bool')
+        elif len(mask_hisa) == 0:
+            mask = np.zeros(len(self.training_data[i]))
+            mask = mask.astype('bool')
+        elif np.count_nonzero(mask_hisa) == 0:
+            mask_hisa = np.zeros(len(self.training_data[i]))
+            mask_hisa = mask_hisa.astype('bool')
+            
         mask = np.logical_and(mask_hisa, mask)
         if any(np.isnan(bg_fit)):
             bg_fit = np.full((len(self.training_data[i])), np.nan)
