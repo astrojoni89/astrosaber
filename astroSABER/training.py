@@ -325,7 +325,7 @@ class saberTraining(object):
         if self.learning_rate_l2 is None:
             self.learning_rate_l2 = 0.4
         if self.eps_l1 is None:
-            self.eps_l1 = 0.15
+            self.eps_l1 = 0.2
         if self.eps_l2 is None:
             self.eps_l2 = 0.15
         if self.window_size is None:
