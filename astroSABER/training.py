@@ -207,73 +207,82 @@ class saberTraining(object):
             else:
                 return cost_function
         except:
-            return np.nan, np.nan, np.nan
+            if get_all:
+                return np.nan, np.nan, np.nan
+            else:
+                return np.nan
         
     def single_cost_endofloop(self, i, lam1_final=None, lam2_final=None, get_all=True):
         ###TODO
-        mask_hisa = self.hisa_mask[i]
-        consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
-        mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
-        mask = mask_channels(self.v, mask_ranges, pad_channels=2, remove_intervals=None)
-        ###
-        if self.phase == 'two':
-            bg_fit, _, _, _ = two_step_extraction(lam1_final, self.p1, lam2_final, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
-        elif self.phase == 'one':
-            bg_fit, _, _, _ = one_step_extraction(lam1_final, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
+        try:
+            mask_hisa = self.hisa_mask[i]
+            consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
+            mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
+            mask = mask_channels(self.v, mask_ranges, pad_channels=2, remove_intervals=None)
+            ###
+            if self.phase == 'two':
+                bg_fit, _, _, _ = two_step_extraction(lam1_final, self.p1, lam2_final, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
+            elif self.phase == 'one':
+                bg_fit, _, _, _ = one_step_extraction(lam1_final, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
     
-        if type(self.noise[i]) is not np.ndarray:
-            noise_array = np.ones(len(self.training_data[i])) * self.noise[i]
-        else:
-            noise_array = self.noise[i]
-        if mask is None:
-            mask = np.ones(len(self.training_data[i]))
-            mask = mask.astype('bool')
-        elif len(mask) == 0:
-            mask = np.ones(len(self.training_data[i]))
-            mask = mask.astype('bool')
-        elif np.count_nonzero(mask) == 0:
-            mask = np.ones(len(self.training_data[i]))
-            mask = mask.astype('bool')
-        #hisa mask
-        if mask_hisa is None:
-            mask_hisa = np.zeros(len(self.training_data[i]))
-            mask_hisa = mask_hisa.astype('bool')
-        elif len(mask_hisa) == 0:
-            mask = np.zeros(len(self.training_data[i]))
-            mask = mask.astype('bool')
-        elif np.count_nonzero(mask_hisa) == 0:
-            mask_hisa = np.zeros(len(self.training_data[i]))
-            mask_hisa = mask_hisa.astype('bool')
+            if type(self.noise[i]) is not np.ndarray:
+                noise_array = np.ones(len(self.training_data[i])) * self.noise[i]
+            else:
+                noise_array = self.noise[i]
+            if mask is None:
+                mask = np.ones(len(self.training_data[i]))
+                mask = mask.astype('bool')
+            elif len(mask) == 0:
+                mask = np.ones(len(self.training_data[i]))
+                mask = mask.astype('bool')
+            elif np.count_nonzero(mask) == 0:
+                mask = np.ones(len(self.training_data[i]))
+                mask = mask.astype('bool')
+            #hisa mask
+            if mask_hisa is None:
+                mask_hisa = np.zeros(len(self.training_data[i]))
+                mask_hisa = mask_hisa.astype('bool')
+            elif len(mask_hisa) == 0:
+                mask = np.zeros(len(self.training_data[i]))
+                mask = mask.astype('bool')
+            elif np.count_nonzero(mask_hisa) == 0:
+                mask_hisa = np.zeros(len(self.training_data[i]))
+                mask_hisa = mask_hisa.astype('bool')
             
-        mask = np.logical_and(mask_hisa, mask)
+            mask = np.logical_and(mask_hisa, mask)
         
-        if any(np.isnan(bg_fit)):
-            bg_fit = np.full((len(self.training_data[i])), np.nan)
-            warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
+            if any(np.isnan(bg_fit)):
+                bg_fit = np.full((len(self.training_data[i])), np.nan)
+                warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
     
-        squared_residuals = (self.test_data[i][mask] - bg_fit[mask])**2
-        residuals = (self.test_data[i][mask] - bg_fit[mask])
-        ssr = np.nansum(squared_residuals)
-        if self.phase == 'two':
-            dof = 2
-            chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
-            n_samples = len(self.test_data[i][mask])
-            cost_function = chi2 / (n_samples - dof)
-            # cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * self.lam1_updt + self.weight_2 * self.lam2_updt #penalize large smoothing
-        elif self.phase == 'one':
-            dof = 1
-            chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
-            n_samples = len(self.test_data[i][mask])
-            cost_function = chi2 / (n_samples - dof)
-            # cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * self.lam1_updt
-        if get_all:    
-            chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
-            n_samples = len(self.test_data[i][mask])
-            rchi2 = chi2 / (n_samples - dof)
-            MAD = np.nansum(abs(residuals)) / n_samples
-            return cost_function, rchi2, bg_fit
-        else:
-            return cost_function, bg_fit
+            squared_residuals = (self.test_data[i][mask] - bg_fit[mask])**2
+            residuals = (self.test_data[i][mask] - bg_fit[mask])
+            ssr = np.nansum(squared_residuals)
+            if self.phase == 'two':
+                dof = 2
+                chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
+                n_samples = len(self.test_data[i][mask])
+                cost_function = chi2 / (n_samples - dof)
+                # cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * self.lam1_updt + self.weight_2 * self.lam2_updt #penalize large smoothing
+            elif self.phase == 'one':
+                dof = 1
+                chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
+                n_samples = len(self.test_data[i][mask])
+                cost_function = chi2 / (n_samples - dof)
+                # cost_function = ssr / (2 * len(self.test_data[i][mask])) + self.weight_1 * self.lam1_updt
+            if get_all:    
+                chi2 = np.nansum(squared_residuals / noise_array[mask]**2)
+                n_samples = len(self.test_data[i][mask])
+                rchi2 = chi2 / (n_samples - dof)
+                MAD = np.nansum(abs(residuals)) / n_samples
+                return cost_function, rchi2, bg_fit
+            else:
+                return cost_function, bg_fit
+        except:
+            if get_all:
+                return np.nan, np.nan, np.nan
+            else:
+                return np.nan, np.nan
 
     class gradient_descent_lambda_set(object):
         """Bookkeeping object."""
