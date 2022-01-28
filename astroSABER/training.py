@@ -126,11 +126,13 @@ class saberTraining(object):
         import astroSABER.parallel_processing
         astroSABER.parallel_processing.init([self.training_data, [self]])
         results_list = astroSABER.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')
-        results_list_array = np.array(results_list).reshape((len(self.training_data),-1))
+        results_list_array = np.array(results_list) # .reshape((len(self.training_data),-1))
    
         if get_all:
+            assert results_list_array.shape == (len(self.training_data),3)
             return np.nanmedian(results_list_array[:,0]), np.nanmedian(results_list_array[:,1]), np.nanmedian(results_list_array[:,2])
         else:
+            assert results_list_array.shape == (len(self.training_data),1)
             return np.nanmedian(results_list_array[:,0])
 
     def single_cost(self, i, get_all=True):
