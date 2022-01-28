@@ -271,13 +271,13 @@ class saberTraining(object):
 
         # Default settings for hyper parameters; these seem to be the most robust hyperparams
         if self.learning_rate_l1 is None:
-            self.learning_rate_l1 = 0.3
+            self.learning_rate_l1 = 0.4
         if self.learning_rate_l2 is None:
-            self.learning_rate_l2 = 0.3
+            self.learning_rate_l2 = 0.4
         if self.eps_l1 is None:
-            self.eps_l1 = 0.2
+            self.eps_l1 = 0.15
         if self.eps_l2 is None:
-            self.eps_l2 = 0.1
+            self.eps_l2 = 0.15
         if self.window_size is None:
             self.window_size = 10
         if self.MAD is None:
