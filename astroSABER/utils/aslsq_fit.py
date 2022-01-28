@@ -84,8 +84,8 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
         hisa = final_spec - spectrum - thresh
         iterations = i_converge
     else:
-        bg = np.nan
-        hisa = np.nan
+        bg = np.full_like(spectrum, np.nan)
+        hisa = np.full_like(spectrum, np.nan)
         iterations = np.nan
         #flags
         flag_map = 0.
@@ -133,8 +133,8 @@ def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_si
         hisa = final_spec - spectrum - thresh
         iterations = i_converge
     else:
-        bg = np.nan
-        hisa = np.nan
+        bg = np.full_like(spectrum, np.nan)
+        hisa = np.full_like(spectrum, np.nan)
         iterations = np.nan
         #flags
         flag_map = 0.
