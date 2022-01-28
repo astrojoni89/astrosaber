@@ -125,12 +125,13 @@ class saberTraining(object):
         self.lam1_updt, self.lam2_updt = lam1, lam2
         import astroSABER.parallel_processing
         astroSABER.parallel_processing.init([self.training_data, [self]])
-        results_list = np.array(astroSABER.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')).reshape(len(self.training_data),-1)
+        results_list = astroSABER.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')
+        results_list_array = np.array(results_list).reshape((len(self.training_data),-1))
    
         if get_all:
-            return np.nanmedian(results_list[:,0]), np.nanmedian(results_list[:,1]), np.nanmedian(results_list[:,2])
+            return np.nanmedian(results_list_array[:,0]), np.nanmedian(results_list_array[:,1]), np.nanmedian(results_list_array[:,2])
         else:
-            return np.nanmedian(results_list[:,0])
+            return np.nanmedian(results_list_array[:,0])
 
     def single_cost(self, i, get_all=True):
         ###TODO
