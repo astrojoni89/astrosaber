@@ -128,7 +128,7 @@ class saberTraining(object):
         import astroSABER.parallel_processing
         astroSABER.parallel_processing.init([self.training_data, [self]])
         results_list = astroSABER.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')
-        results_list_array = np.array(results_list, dtype=np.dtype('float,float')) # .reshape((len(self.training_data),-1))
+        results_list_array = np.array(results_list) # .reshape((len(self.training_data),-1))
    
         if get_all:
             self.debug = results_list_array
