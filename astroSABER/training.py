@@ -180,8 +180,11 @@ class saberTraining(object):
             assert mask.shape==self.test_data[i].shape
         
             if any(np.isnan(bg_fit)):
-                bg_fit = np.full((len(self.training_data[i])), np.nan)
                 warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
+                if get_all:
+                    return np.nan, np.nan, np.nan
+                else:
+                    return np.nan, np.nan
     
             squared_residuals = (self.test_data[i][mask] - bg_fit[mask])**2
             residuals = (self.test_data[i][mask] - bg_fit[mask])
@@ -252,8 +255,11 @@ class saberTraining(object):
             mask = np.logical_and(mask_hisa, mask)
         
             if any(np.isnan(bg_fit)):
-                bg_fit = np.full((len(self.training_data[i])), np.nan)
                 warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
+                if get_all:
+                    return np.nan, np.nan, np.nan
+                else:
+                    return np.nan, np.nan
     
             squared_residuals = (self.test_data[i][mask] - bg_fit[mask])**2
             residuals = (self.test_data[i][mask] - bg_fit[mask])
