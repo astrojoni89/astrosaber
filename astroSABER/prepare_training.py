@@ -155,7 +155,7 @@ class saberPrepare(object):
             amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], samplesize_rng).reshape(samplesize_rng,) # self.training_set_size
             amps_HISA[amps_HISA<0] = 0.
             ###TODO
-            velos_HISA, velos_of_comps_HISA = [], []
+            velos_of_comps_HISA = []
             for _ in range(ncomps_HISA[i]):
                 k = 0
                 mu_velos_HISA_k, sigma_velos_HISA_k = (results_list[i][1][k,0] + results_list[i][1][k,1]) / 2., (results_list[i][1][k,1] - results_list[i][1][k,0]) / (np.sqrt(8*np.log(2))) / 4. # mean and standard deviation
@@ -163,14 +163,10 @@ class saberPrepare(object):
                     k += 1
                 velos_HISA_k = self.rng.normal(mu_velos_HISA_k, sigma_velos_HISA_k, samplesize_rng).reshape(samplesize_rng,)
                 velos_of_comps_HISA_k = self.rng.choice(velos_HISA_k, 1)
-                velos_HISA.append(velos_HISA_k)
-                velos_of_comps_HISA.append(velos_of_comps_HISA_k)
-            velos_HISA = np.array(velos_HISA)
-            velos_of_comps_HISA = np.array(velos_of_comps_HISA)
-            #velos_HISA = self.rng.normal(mu_velos_HISA, sigma_velos_HISA, samplesize_rng).reshape(samplesize_rng,) # 
-            ###
+                if not velos_of_comps_HISA_k < 0. or velos_of_comps_HISA_k > self.v:
+                    velos_of_comps_HISA.append(velos_of_comps_HISA_k)
+            velos_of_comps_HISA = np.array(velos_of_comps_HISA) 
             lws_HISA = self.rng.normal(mu_lws_HISA, sigma_lws_HISA, samplesize_rng).reshape(samplesize_rng,) # 
-            #velos_of_comps_HISA = self.rng.choice(velos_HISA, ncomps_HISA[i])
             amps_of_comps_HISA = self.rng.choice(amps_HISA, ncomps_HISA[i])
             lws_of_comps_HISA = self.rng.choice(lws_HISA, ncomps_HISA[i])  
             ncomp_HISA = np.arange(0,ncomps_HISA[i]+1,1)
