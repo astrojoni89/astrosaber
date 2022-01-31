@@ -178,6 +178,7 @@ class saberPrepare(object):
             gauss_HISA = np.zeros(shape=(self.v,))
             ranges_hisa_list = []
             for idx, (v, lw, amp) in enumerate(zip(velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA)):
+                self.debug_data = [velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA]
                 gauss_HISA = gauss_HISA + gauss_function(xvals, amp, v, lw)
                 ###TODO
                 ranges_hisa_i = [np.around(v - 3*lw), np.around(v + 3*lw)]
