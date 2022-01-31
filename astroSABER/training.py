@@ -18,7 +18,7 @@ from .plotting import plot_pickle_spectra
 
 warnings.showwarning = format_warning
 
-
+np.seterr('raise')
 
 class saberTraining(object):
     def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, window_size=None, eps_l1=None, eps_l2=None, learning_rate_l1=None, learning_rate_l2=None, mom=None, get_trace=False, niters=50, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
