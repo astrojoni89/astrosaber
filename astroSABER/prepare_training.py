@@ -17,13 +17,6 @@ from .plotting import plot_pickle_spectra
 warnings.showwarning = format_warning
 np.seterr('raise')
 
-def gauss_function(x,amp,mu,sigma):
-    return amp * np.exp(-(x-mu)**2/(2*sigma**2))
-
-
-def gauss_function_alt(x,amp,sigma):
-    return amp * np.exp(-x**2/(2*sigma**2))
-
 
 
 class saberPrepare(object):
@@ -182,9 +175,9 @@ class saberPrepare(object):
             gauss_HISA = np.zeros(shape=(self.v,))
             ranges_hisa_list = []
             for idx, (v, lw, amp) in enumerate(zip(velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA)):
-                delta_v = xvals - mu
-                delta_v[np.where(np.abs(delta_v)>7*lw)] = 0.
-                gauss_HISA = gauss_HISA + gauss_function_alt(delta_v, amp, lw)
+                exp_arg = 0.5 * ((xvals - v) / lw)**2
+                exp_arg[np.where(exp_arg>100.)] = 100.
+                gauss_HISA = gauss_HISA + amp * np.exp(-exp_arg)
                 ###TODO
                 ranges_hisa_i = [np.around(v - 3*lw), np.around(v + 3*lw)]
                 ranges_hisa_list.append(ranges_hisa_i)
