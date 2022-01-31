@@ -170,8 +170,8 @@ class saberTraining(object):
                 mask_hisa = np.zeros(len(self.training_data[i]))
                 mask_hisa = mask_hisa.astype('bool')
             elif len(mask_hisa) == 0:
-                mask = np.zeros(len(self.training_data[i]))
-                mask = mask.astype('bool')
+                mask_hisa = np.zeros(len(self.training_data[i]))
+                mask_hisa = mask_hisa.astype('bool')
             elif np.count_nonzero(mask_hisa) == 0:
                 mask_hisa = np.zeros(len(self.training_data[i]))
                 mask_hisa = mask_hisa.astype('bool')
@@ -246,8 +246,8 @@ class saberTraining(object):
                 mask_hisa = np.zeros(len(self.training_data[i]))
                 mask_hisa = mask_hisa.astype('bool')
             elif len(mask_hisa) == 0:
-                mask = np.zeros(len(self.training_data[i]))
-                mask = mask.astype('bool')
+                mask_hisa = np.zeros(len(self.training_data[i]))
+                mask_hisa = mask_hisa.astype('bool')
             elif np.count_nonzero(mask_hisa) == 0:
                 mask_hisa = np.zeros(len(self.training_data[i]))
                 mask_hisa = mask_hisa.astype('bool')
