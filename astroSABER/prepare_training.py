@@ -15,6 +15,7 @@ from .utils.aslsq_fit import baseline_als_optimized
 from .plotting import plot_pickle_spectra
 
 warnings.showwarning = format_warning
+np.seterr('raise')
 
 def gauss_function(x,amp,mu,sigma):
     return amp * np.exp(-(x-mu)**2/(2*sigma**2))
