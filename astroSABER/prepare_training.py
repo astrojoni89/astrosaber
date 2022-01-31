@@ -21,6 +21,10 @@ def gauss_function(x,amp,mu,sigma):
     return amp * np.exp(-(x-mu)**2/(2*sigma**2))
 
 
+def gauss_function_alt(x,amp,sigma):
+    return amp * np.exp(-x**2/(2*sigma**2))
+
+
 
 class saberPrepare(object):
     def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_linewidth=4.,std_linewidth=1., lam1=None, p1=None, lam2=None, p2=None, niters=50, iterations_for_convergence=3, noise=None, add_residual = False, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, path_to_file='.', seed=111):
@@ -178,8 +182,9 @@ class saberPrepare(object):
             gauss_HISA = np.zeros(shape=(self.v,))
             ranges_hisa_list = []
             for idx, (v, lw, amp) in enumerate(zip(velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA)):
-                self.debug_data = [velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA]
-                gauss_HISA = gauss_HISA + gauss_function(xvals, amp, v, lw)
+                delta_v = xvals - mu
+                delta_v[np.where(np.abs(delta_v)>7*lw)] = 0.
+                gauss_HISA = gauss_HISA + gauss_function_alt(delta_v, amp, lw)
                 ###TODO
                 ranges_hisa_i = [np.around(v - 3*lw), np.around(v + 3*lw)]
                 ranges_hisa_list.append(ranges_hisa_i)
