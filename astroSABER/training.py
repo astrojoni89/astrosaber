@@ -438,7 +438,7 @@ class saberTraining(object):
                         offset = ' ' * int(len(quote))
                         print('\n' + quote + '    ﹏    ') 
                         print(offset + '\033[92m<´(\033[0m⬬ ⬬\033[92m)`> ')
-                        print(offset + ' \033[92mʿ\033[0m/   \\033[92mʾ  ')
+                        print(offset + ' \033[92mʿ\033[0m/   \\\033[92mʾ  ')
 
                 if np.any(c > iterations_for_convergence_training):
                     i_converge_training = np.min(np.argwhere(c > iterations_for_convergence_training))
