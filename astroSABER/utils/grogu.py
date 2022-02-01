@@ -150,7 +150,7 @@ Please use `tqdm_gui(...)` instead of `tqdm(..., gui=True)`
                 tqdm.write(offset + '    `````  `````')               
                 tqdm.write(offset + '                              ﹏    ') 
                 tqdm.write(offset + '                          \033[92m<´(\033[0m⬬ ⬬\033[92m)`> ')
-                tqdm.write(offset + '                           \033[92mʿ\033[0m/   \\033[92mʾ  ')
+                tqdm.write(offset + '                           \033[92mʿ\033[0m/   \\\033[92mʾ\033[0m  ')
 
             # Closing the progress bar.
             # Update some internal variables for close().
