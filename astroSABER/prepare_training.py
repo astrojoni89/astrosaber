@@ -222,9 +222,8 @@ class saberPrepare(object):
         if check_signal_ranges(self.spectrum_list[i], self.header, sigma=self.check_signal_sigma, noise=self.noise_list[i], velo_range=self.velo_range):
             spectrum_prior = baseline_als_optimized(self.spectrum_list[i], self.lam1, self.p1, niter=3)
             spectrum_firstfit = spectrum_prior
-            n = 0
             converge_logic = np.array([])
-            while n < self.niters:
+            for n in range(niters+1):
                 spectrum_prior = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
                 spectrum_next = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
                 residual = abs(spectrum_next - spectrum_prior)
@@ -242,9 +241,7 @@ class saberPrepare(object):
                     else:
                         final_spec = spectrum_next
                     break
-                else:
-                    n += 1
-                if n==self.niters:
+                elif n==self.niters:
                     warnings.warn('Maximum number of iterations reached. Fit did not converge.', IterationWarning)
                     #flags
                     flag = 0.
@@ -254,6 +251,7 @@ class saberPrepare(object):
                     else:
                         final_spec = spectrum_next
                     i_converge = self.niters
+                    break
             bg = final_spec - self.thresh_list[i]
             #TODO
             offset_bg = np.nanmean([bg[0], bg[-1]])
