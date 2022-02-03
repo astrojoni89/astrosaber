@@ -447,7 +447,7 @@ class saberTraining(object):
                     break
                 
                 # If gradient descent does not converge, decrease step size toward the end of the loop
-                if i == int(0.75*self.iterations):
+                if i == int(0.75*self.iterations-iterations_for_convergence_training):
                     say('\nDecreasing step size now...')
                     self.learning_rate_l1 = 0.5 * self.learning_rate_l1
                     self.learning_rate_l2 = 0.5 * self.learning_rate_l2
