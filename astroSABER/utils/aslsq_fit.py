@@ -48,9 +48,8 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
         spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3)
         spectrum_firstfit = spectrum_prior
-        n = 0
         converge_logic = np.array([])
-        while n < niters:
+        for n in range(niters+1):
             spectrum_prior = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3)
             spectrum_next = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3)
             residual = abs(spectrum_next - spectrum_prior)
@@ -68,9 +67,7 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
                 else:
                     final_spec = spectrum_next
                 break
-            else:
-                n += 1
-            if n==niters:
+            elif n==niters:
                 warnings.warn('Maximum number of iterations reached. Fit did not converge.', IterationWarning)
                 #flags
                 flag_map = 0.
@@ -80,6 +77,7 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
                 else:
                     final_spec = spectrum_next
                 i_converge = niters
+                break
         bg = final_spec - thresh
         hisa = final_spec - spectrum - thresh
         iterations = i_converge
@@ -97,9 +95,8 @@ def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_si
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
         spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3)
         spectrum_firstfit = spectrum_prior
-        n = 0
         converge_logic = np.array([])
-        while n < niters:
+        for n in range(niters+1):
             spectrum_prior = baseline_als_optimized(spectrum_prior, lam2, p2, niter=3)
             spectrum_next = baseline_als_optimized(spectrum_prior, lam2, p2, niter=3)
             residual = abs(spectrum_next - spectrum_prior)
@@ -117,9 +114,7 @@ def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_si
                 else:
                     final_spec = spectrum_next
                 break
-            else:
-                n += 1
-            if n==niters:
+            elif n==niters:
                 warnings.warn('Maximum number of iterations reached. Fit did not converge.', IterationWarning)
                 #flags
                 flag_map = 0.
@@ -129,6 +124,7 @@ def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_si
                 else:
                     final_spec = spectrum_next
                 i_converge = niters
+                break
         bg = final_spec - thresh
         hisa = final_spec - spectrum - thresh
         iterations = i_converge
