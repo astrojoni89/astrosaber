@@ -448,8 +448,9 @@ class saberTraining(object):
                 
                 # If gradient descent does not converge, decrease step size toward the end of the loop
                 if i == int(0.75*self.iterations):
+                    say('\nDecreasing step size now...')
                     self.learning_rate_l1 = 0.5 * self.learning_rate_l1
-                    self.learning_rate_l1 = 0.5 * self.learning_rate_l1
+                    self.learning_rate_l2 = 0.5 * self.learning_rate_l2
         
         # Return best-fit lambdas, and bookkeeping object
         if self.get_trace:
