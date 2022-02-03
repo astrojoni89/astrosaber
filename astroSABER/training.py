@@ -445,6 +445,11 @@ class saberTraining(object):
                     gd.iter_of_convergence = i_converge_training
                     say('\nStable convergence achieved at iteration: {}'.format(i_converge_training))
                     break
+                
+                # If gradient descent does not converge, decrease step size toward the end of the loop
+                if i == int(0.75*self.iterations):
+                    self.learning_rate_l1 = 0.5 * self.learning_rate_l1
+                    self.learning_rate_l1 = 0.5 * self.learning_rate_l1
         
         # Return best-fit lambdas, and bookkeeping object
         if self.get_trace:
