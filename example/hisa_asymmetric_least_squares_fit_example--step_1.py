@@ -24,7 +24,7 @@ def main():
     prep.noise = 4. # Kelvin
 
     ###set the expected linewidth of self-absorption features; artificial self-absorption features will be generated from this distribution
-    prep.mean_linewidth = 5. # FWHM [km/s]
+    prep.mean_linewidth = 4. # FWHM [km/s]
     prep.std_linewidth = 1. # standard deviation of the linewidth distribution [km/s]
 
     ###you can always print the prep object and the keyword arguments you can adjust
