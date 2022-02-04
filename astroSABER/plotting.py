@@ -145,7 +145,10 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
             for i in trange(n_spectra):
                 temp_header = fits.getheader(fitsfiles[0])
                 px_scale = abs(temp_header['CDELT1'])
-                edge = int(np.ceil((radius/3600) / px_scale))
+                if not isinstance(radius, str):
+                    edge = int(np.ceil((radius/3600) / px_scale))
+                else:
+                    edge = 0.1 * min(xsize, ysize)
                 xValue = random.randint(edge+1,xsize-edge-1)
                 yValue = random.randint(edge+1,ysize-edge-1)
                 ax = fig.add_subplot(rows,cols,i+1)
