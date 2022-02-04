@@ -2,7 +2,7 @@
 # @Date:   2021-01
 # @Filename: hisa.py
 # @Last modified by:   syed
-# @Last modified time: 09-09-2021
+# @Last modified time: 04-02-2022
 
 '''hisa extraction'''
 
@@ -13,22 +13,25 @@ import numpy as np
 from astropy.io import fits
 from astropy import units as u
 
-from tqdm import trange
+from tqdm import tqdm
+from tqdm.utils import _is_utf, _supports_unicode
 import warnings
 
 from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say, format_warning
-from .utils.aslsq_fit import baseline_als_optimized
+from .utils.aslsq_fit import baseline_als_optimized, two_step_extraction, one_step_extraction
+from .utils.grogu import yoda
 
 warnings.showwarning = format_warning
 
 
 
 class HisaExtraction(object):
-    def __init__(self, fitsfile, path_to_noise_map=None, path_to_data='.', smoothing='Y', lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence = 3, noise=None, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 10, output_flags = True):
+    def __init__(self, fitsfile, path_to_noise_map=None, path_to_data='.', smoothing='Y', phase='two', lam1=None, p1=None, lam2=None, p2=None, niters=50, iterations_for_convergence = 3, noise=None, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., output_flags = True, baby_yoda = False):
         self.fitsfile = fitsfile
         self.path_to_noise_map = path_to_noise_map
         self.path_to_data = path_to_data
         self.smoothing = smoothing
+        self.phase = phase
         
         self.lam1 = lam1
         self.p1 = p1
@@ -36,7 +39,7 @@ class HisaExtraction(object):
         self.p2 = p2
         
         self.niters = int(niters)
-        self.iterations_for_convergence = iterations_for_convergence
+        self.iterations_for_convergence = int(iterations_for_convergence)
         
         self.noise = noise
         self.add_residual = add_residual
@@ -47,8 +50,10 @@ class HisaExtraction(object):
         
         self.output_flags = output_flags
         
+        self.baby_yoda = baby_yoda #NO IDEA WHAT THIS DOES
+        
     def __str__(self):
-        return f'HisaExtraction:\nfitsfile: {self.fitsfile}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nsmoothing: {self.smoothing}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\noutput_flags: {self.output_flags}'
+        return f'HisaExtraction:\nfitsfile: {self.fitsfile}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nsmoothing: {self.smoothing}\nphase: {self.phase}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\noutput_flags: {self.output_flags}'
 
     def getting_ready(self):
         string = 'preparation'
@@ -74,13 +79,13 @@ class HisaExtraction(object):
         if self.lam1 is None:
             raise TypeError("Need to specify 'lam1' for extraction.")
         if self.p1 is None:
-            raise TypeError("Need to specify 'p1' for extraction.")
+            self.p1 = 0.90
         if not 0<= self.p1 <=1:
             raise ValueError("'p1' has to be in the range [0,1]")
         if self.lam2 is None:
             raise TypeError("Need to specify 'lam2' for extraction.")
         if self.p2 is None:
-            raise TypeError("Need to specify 'p2' for extraction.")
+            self.p2 = 0.90
         if not 0<= self.p2 <=1:
             raise ValueError("'p2' has to be in the range [0,1]")
 
@@ -93,6 +98,14 @@ class HisaExtraction(object):
             else:
                 noise_map = self.noise * np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
                 thresh = self.sig * noise_map
+                
+        if self.baby_yoda:
+            if _supports_unicode(sys.stderr):
+                fran = yoda
+            else:
+                fran = tqdm
+        else:
+            fran = tqdm
 
         pixel_start=[0,0]
         pixel_end=[self.header['NAXIS1'],self.header['NAXIS2']]
@@ -110,53 +123,13 @@ class HisaExtraction(object):
             self.flag_map = np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
             
             print('\n'+'Asymmetric least squares fitting in progress...')
-            for i in trange(pixel_start[0],pixel_end[0],1):
+            for i in fran(range(pixel_start[0],pixel_end[0],1)):
                 for j in range(pixel_start[1],pixel_end[1],1):
                     spectrum = self.image[:,j,i]
-                    if check_signal_ranges(spectrum, self.header, sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range):
-                        spectrum_prior = baseline_als_optimized(spectrum, self.lam1, self.p1, niter=3)
-                        spectrum_firstfit = spectrum_prior
-                        n = 0
-                        converge_logic = np.array([])
-                        while n < self.niters:
-                            spectrum_prior = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
-                            spectrum_next = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
-                            residual = abs(spectrum_next - spectrum_prior)
-                            if np.any(np.isnan(residual)):
-                                print('Residual contains NaNs') 
-                                residual[np.isnan(residual)] = 0.0
-                            converge_test = (np.all(residual < thresh[j,i]))
-                            converge_logic = np.append(converge_logic,converge_test)
-                            c = count_ones_in_row(converge_logic)
-                            if np.any(c > self.iterations_for_convergence):
-                                i_converge = np.min(np.argwhere(c > self.iterations_for_convergence))
-                                res = abs(spectrum_next - spectrum_firstfit)
-                                if self.add_residual:
-                                    final_spec = spectrum_next + res
-                                else:
-                                    final_spec = spectrum_next
-                                break
-                            else:
-                                n += 1
-                            if n==self.niters:
-                                warnings.warn('Pixel (x,y)=({},{}). Maximum number of iterations reached. Fit did not converge.'.format(i,j), IterationWarning)
-                                #flags
-                                self.flag_map[j,i] = 0.
-                                res = abs(spectrum_next - spectrum_firstfit)
-                                if self.add_residual:
-                                    final_spec = spectrum_next + res
-                                else:
-                                    final_spec = spectrum_next
-                        self.image_asy[:,j,i] = final_spec - thresh[j,i]
-                        self.HISA_map[:,j,i] = final_spec - self.image[:,j,i] - thresh[j,i]
-                        self.iteration_map[j,i] = i_converge
-                    else:
-                        self.image_asy[:,j,i] = np.nan
-                        self.HISA_map[:,j,i] = np.nan
-                        self.iteration_map[j,i] = np.nan
-                        #flags
-                        self.flag_map[j,i] = 0.
-
+                    if self.phase == 'two':
+                        self.image_asy[:,j,i], self.HISA_map[:,j,i], self.iteration_map[j,i], self.flag_map[j,i] = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=spectrum, header=self.header, check_signal_sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=thresh[j,i])
+                    elif self.phase == 'one':
+                        self.image_asy[:,j,i], self.HISA_map[:,j,i], self.iteration_map[j,i], self.flag_map[j,i] = one_step_extraction(self.lam1, self.p1, spectrum=spectrum, header=self.header, check_signal_sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=thresh[j,i])
             string = 'Done!'
             say(string)
             self.save_data()
