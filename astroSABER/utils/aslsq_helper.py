@@ -27,13 +27,16 @@ def velocity_axes(name):
 
 
 def pixel_to_world(fitsfile,x,y,ch=0):
-    w = WCS(fitsfile)
-    if w.wcs.naxis == 3:
-        return w.all_pix2world(x, y, ch, 1)
-    elif w.wcs.naxis == 2:
-        return w.all_pix2world(x, y, 1)
-    else:
-        raise ValueError('Something wrong with the header.')
+    try:
+        w = WCS(fitsfile)
+        if w.wcs.naxis == 3:
+            return w.all_pix2world(x, y, ch, 1)
+        elif w.wcs.naxis == 2:
+            return w.all_pix2world(x, y, 1)
+        else:
+            raise ValueError('Something wrong with the header.')
+    except:
+	return [np.array([x]), np.array([y])]
 
 
 #taken from Lindner (2014) & Riener (2019); GaussPy(+)
