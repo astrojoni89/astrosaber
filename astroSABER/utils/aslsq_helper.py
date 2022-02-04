@@ -36,7 +36,7 @@ def pixel_to_world(fitsfile,x,y,ch=0):
         else:
             raise ValueError('Something wrong with the header.')
     except:
-	return [x, y]
+	return [np.array([x]), np.array([y])]
 
 
 #taken from Lindner (2014) & Riener (2019); GaussPy(+)
