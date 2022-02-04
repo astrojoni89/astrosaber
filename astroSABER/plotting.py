@@ -149,8 +149,8 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                     edge = int(np.ceil((radius/3600) / px_scale))
                 else:
                     edge = 0.1 * min(xsize, ysize)
-                xValue = random.randint(edge+1,xsize-edge-1)
-                yValue = random.randint(edge+1,ysize-edge-1)
+                xValue = random.randint(edge+1,xsize-edge)
+                yValue = random.randint(edge+1,ysize-edge)
                 ax = fig.add_subplot(rows,cols,i+1)
                 for idx, fitsfile in enumerate(fitsfiles):
                     pixel_array = pixel_circle_calculation_px(fitsfile,x=xValue,y=yValue,r=radius)
