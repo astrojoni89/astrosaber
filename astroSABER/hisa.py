@@ -2,7 +2,7 @@
 # @Date:   2021-01
 # @Filename: hisa.py
 # @Last modified by:   syed
-# @Last modified time: 04-02-2022
+# @Last modified time: 05-02-2022
 
 '''hisa extraction'''
 
@@ -170,96 +170,14 @@ class HisaExtraction(object):
         else:
             raise Exception("No smoothing applied. Set smoothing to 'Y'")
         
+        
     def two_step_extraction_single(self, i):
-        flag_map = 1.
-        if check_signal_ranges(self.list_data[i][1], self.header, sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range):
-            spectrum_prior = baseline_als_optimized(self.list_data[i][1], self.lam1, self.p1, niter=3)
-            spectrum_firstfit = spectrum_prior
-            converge_logic = np.array([])
-            for n in range(self.niters+1):
-                spectrum_prior = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
-                spectrum_next = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
-                residual = abs(spectrum_next - spectrum_prior)
-                if np.any(np.isnan(residual)):
-                    print('Residual contains NaNs') 
-                    residual[np.isnan(residual)] = 0.0
-                converge_test = (np.all(residual < self.list_data_thresh[i][1]))
-                converge_logic = np.append(converge_logic,converge_test)
-                c = count_ones_in_row(converge_logic)
-                if np.any(c > self.iterations_for_convergence):
-                    i_converge = np.min(np.argwhere(c > self.iterations_for_convergence))
-                    res = abs(spectrum_next - spectrum_firstfit)
-                    if self.add_residual:
-                        final_spec = spectrum_next + res
-                    else:
-                        final_spec = spectrum_next
-                    break
-                elif n==self.niters:
-                    warnings.warn('Maximum number of iterations reached. Fit did not converge.', IterationWarning)
-                    #flags
-                    flag_map = 0.
-                    res = abs(spectrum_next - spectrum_firstfit)
-                    if self.add_residual:
-                        final_spec = spectrum_next + res
-                    else:
-                        final_spec = spectrum_next
-                    i_converge = self.niters
-                    break
-            bg = final_spec - self.list_data_thresh[i][1]
-            hisa = final_spec - self.list_data[i][1] - self.list_data_thresh[i][1]
-            iterations = i_converge
-        else:
-            bg = np.full_like(self.list_data[i][1], np.nan)
-            hisa = np.full_like(self.list_data[i][1], np.nan)
-            iterations = np.nan
-            #flags
-            flag_map = 0.
+        bg, hisa, iterations, flag_map = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.list_data[i][1], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.list_data_thresh[i][1])
         return self.list_data[i][0], bg, hisa, iterations, flag_map
     
+    
     def one_step_extraction_single(self, i):
-        flag_map = 1.
-        if check_signal_ranges(self.list_data[i][1], self.header, sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range):
-            spectrum_prior = baseline_als_optimized(self.list_data[i][1], self.lam1, self.p1, niter=3)
-            spectrum_firstfit = spectrum_prior
-            converge_logic = np.array([])
-            for n in range(self.niters+1):
-                spectrum_prior = baseline_als_optimized(spectrum_prior, self.lam1, self.p1, niter=3)
-                spectrum_next = baseline_als_optimized(spectrum_prior, self.lam1, self.p1, niter=3)
-                residual = abs(spectrum_next - spectrum_prior)
-                if np.any(np.isnan(residual)):
-                    print('Residual contains NaNs') 
-                    residual[np.isnan(residual)] = 0.0
-                converge_test = (np.all(residual < self.list_data_thresh[i][1]))
-                converge_logic = np.append(converge_logic,converge_test)
-                c = count_ones_in_row(converge_logic)
-                if np.any(c > self.iterations_for_convergence):
-                    i_converge = np.min(np.argwhere(c > self.iterations_for_convergence))
-                    res = abs(spectrum_next - spectrum_firstfit)
-                    if self.add_residual:
-                        final_spec = spectrum_next + res
-                    else:
-                        final_spec = spectrum_next
-                    break
-                elif n==self.niters:
-                    warnings.warn('Maximum number of iterations reached. Fit did not converge.', IterationWarning)
-                    #flags
-                    flag_map = 0.
-                    res = abs(spectrum_next - spectrum_firstfit)
-                    if self.add_residual:
-                        final_spec = spectrum_next + res
-                    else:
-                        final_spec = spectrum_next
-                    i_converge = self.niters
-                    break
-            bg = final_spec - self.list_data_thresh[i][1]
-            hisa = final_spec - self.list_data[i][1] - self.list_data_thresh[i][1]
-            iterations = i_converge
-        else:
-            bg = np.full_like(self.list_data[i][1], np.nan)
-            hisa = np.full_like(self.list_data[i][1], np.nan)
-            iterations = np.nan
-            #flags
-            flag_map = 0.
+        bg, hisa, iterations, flag_map = one_step_extraction(self.lam1, self.p1, spectrum=self.list_data[i][1], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.list_data_thresh[i][1])
         return self.list_data[i][0], bg, hisa, iterations, flag_map
        
         
