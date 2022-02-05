@@ -146,7 +146,7 @@ class HisaExtraction(object):
             #flags
             self.flag_map = np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
             
-            print('\n'+'Asymmetric least squares fitting in progress...')
+            print('\n'+'Asymmetric least squares fitting in progress...'+'\n')
             
             if self.phase == 'two':
                 import astroSABER.parallel_processing
@@ -158,6 +158,7 @@ class HisaExtraction(object):
                 astroSABER.parallel_processing.init([self.list_data, [self]])
                 results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='one_step')
                 
+            print('\n'+'Unraveling data and writing into cubes...'+'\n')
             for k in fran(range(len(results_list))):
                 (j, i) = np.unravel_index(results_list[k][0], (self.HISA_map.shape[1], self.HISA_map.shape[2]))   
                 self.image_asy[:,j,i], self.HISA_map[:,j,i], self.iteration_map[j,i], self.flag_map[j,i] = results_list[k][1], results_list[k][2], results_list[k][3], results_list[k][4]
