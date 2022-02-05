@@ -11,7 +11,7 @@ import os
 
 from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
 from .utils.aslsq_helper import velocity_axes, count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say, format_warning
-from .utils.aslsq_fit import baseline_als_optimized
+from .utils.aslsq_fit import baseline_als_optimized, two_step_extraction
 from .plotting import plot_pickle_spectra
 
 warnings.showwarning = format_warning
@@ -217,57 +217,12 @@ class saberPrepare(object):
         self.save_data()
         plot_pickle_spectra(self.path_to_file, outfile=None, ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=self.seed)
 
-    def two_step_extraction(self, i):
-        flag = 1.
-        if check_signal_ranges(self.spectrum_list[i], self.header, sigma=self.check_signal_sigma, noise=self.noise_list[i], velo_range=self.velo_range):
-            spectrum_prior = baseline_als_optimized(self.spectrum_list[i], self.lam1, self.p1, niter=3)
-            spectrum_firstfit = spectrum_prior
-            converge_logic = np.array([])
-            for n in range(niters+1):
-                spectrum_prior = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
-                spectrum_next = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
-                residual = abs(spectrum_next - spectrum_prior)
-                if np.any(np.isnan(residual)):
-                    print('Residual contains NaNs') 
-                    residual[np.isnan(residual)] = 0.0
-                converge_test = (np.all(residual < self.thresh_list[i]))
-                converge_logic = np.append(converge_logic,converge_test)
-                c = count_ones_in_row(converge_logic)
-                if np.any(c > self.iterations_for_convergence):
-                    i_converge = np.min(np.argwhere(c > self.iterations_for_convergence))
-                    res = abs(spectrum_next - spectrum_firstfit)
-                    if self.add_residual:
-                        final_spec = spectrum_next + res
-                    else:
-                        final_spec = spectrum_next
-                    break
-                elif n==self.niters:
-                    warnings.warn('Maximum number of iterations reached. Fit did not converge.', IterationWarning)
-                    #flags
-                    flag = 0.
-                    res = abs(spectrum_next - spectrum_firstfit)
-                    if self.add_residual:
-                        final_spec = spectrum_next + res
-                    else:
-                        final_spec = spectrum_next
-                    i_converge = self.niters
-                    break
-            bg = final_spec - self.thresh_list[i]
-            #TODO
-            offset_bg = np.nanmean([bg[0], bg[-1]])
-            bg = bg - offset_bg
-            #
-            hisa = final_spec - self.spectrum_list[i] - self.thresh_list[i]
-            iterations = i_converge
-        else:
-            bg = np.nan
-            hisa = np.nan
-            iterations = np.nan
-            #flags
-            flag = 0.
-
+    def two_step_extraction_prepare(self, i):
+        bg, _, _, _  = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.spectrum_list[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise_list[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh_list[i])
+        offset_bg = np.nanmean([bg[0], bg[-1]])
+        bg = bg - offset_bg
+        
         consecutive_channels, ranges = determine_peaks(spectrum=self.spectrum_list[i], peak='positive', amp_threshold=None)
-        #amp_values, ranges = determine_peaks(spectrum=data[:,y,x], peak='positive', amp_threshold=6*self.noise_list[i])
         mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
         mask = mask_channels(self.v, mask_ranges, pad_channels=-5, remove_intervals=None)
         
