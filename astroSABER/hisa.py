@@ -21,8 +21,6 @@ from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ra
 from .utils.aslsq_fit import baseline_als_optimized, two_step_extraction, one_step_extraction
 from .utils.grogu import yoda
 
-import astroSABER.parallel_processing
-
 warnings.showwarning = format_warning
 
 
@@ -151,12 +149,12 @@ class HisaExtraction(object):
             print('\n'+'Asymmetric least squares fitting in progress...')
             
             if self.phase == 'two':
-                    
+                import astroSABER.parallel_processing
                 astroSABER.parallel_processing.init([self.list_data, [self]])
                 results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='two_step') 
                     
             elif self.phase == 'one':
-                
+                import astroSABER.parallel_processing
                 astroSABER.parallel_processing.init([self.list_data, [self]])
                 results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='one_step')
                 
