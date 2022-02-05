@@ -4,6 +4,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from .training import saberTraining
 from .prepare_training import saberPrepare
+from .hisa import HisaExtraction
 from .utils.aslsq_fit import baseline_als_optimized
 from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
 from tqdm import trange, tqdm
@@ -24,6 +25,14 @@ def single_cost_i(i):
 
 def lambda_extraction_i(i):
     result = saberPrepare.two_step_extraction(mp_params[0], i)
+    return result
+
+def two_step_i(i):
+    result = HisaExtraction.two_step_extraction_single(mp_params[0], i)
+    return result
+
+def one_step_i(i):
+    result = HisaExtraction.one_step_extraction_single(mp_params[0], i)
     return result
 
 
@@ -131,6 +140,10 @@ def func(use_ncpus=None, function=None):
     try:
         if function is None:
             raise ValueError('Have to set function for parallel process.')
+        if function == 'two_step':
+            results_list = parallel_process(mp_ilist, two_step_i, n_jobs=use_ncpus)
+        if function == 'one_step':
+            results_list = parallel_process(mp_ilist, one_step_i, n_jobs=use_ncpus)
         if function == 'cost':
             results_list = parallel_process(mp_ilist, single_cost_i, n_jobs=use_ncpus)
         if function == 'hisa':
@@ -154,6 +167,10 @@ def func_wo_bar(use_ncpus=None, function=None):
     try:
         if function is None:
             raise ValueError('Have to set function for parallel process.')
+        if function == 'two_step':
+            results_list = parallel_process(mp_ilist, two_step_i, n_jobs=use_ncpus)
+        if function == 'one_step':
+            results_list = parallel_process(mp_ilist, one_step_i, n_jobs=use_ncpus)
         if function == 'cost':
             results_list = parallel_process_wo_bar(mp_ilist, single_cost_i, n_jobs=use_ncpus)
         if function == 'hisa':
