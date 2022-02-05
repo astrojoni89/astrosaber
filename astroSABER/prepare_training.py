@@ -223,7 +223,7 @@ class saberPrepare(object):
             spectrum_prior = baseline_als_optimized(self.spectrum_list[i], self.lam1, self.p1, niter=3)
             spectrum_firstfit = spectrum_prior
             converge_logic = np.array([])
-            for n in range(niters+1):
+            for n in range(self.niters+1):
                 spectrum_prior = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
                 spectrum_next = baseline_als_optimized(spectrum_prior, self.lam2, self.p2, niter=3)
                 residual = abs(spectrum_next - spectrum_prior)
