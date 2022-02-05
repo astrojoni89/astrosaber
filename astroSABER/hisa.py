@@ -74,7 +74,7 @@ class HisaExtraction(object):
         self.list_data = []
         for y in range(self.image.shape[1]): 
             for x in range(self.image.shape[2]):
-                idx_1 = np.ravel_multi_index((y,x), dims=(self.image.shape[1], self.image.shape[2]))
+                idx_1d = np.ravel_multi_index((y,x), dims=(self.image.shape[1], self.image.shape[2]))
                 self.list_data.append([idx_1d, self.image[:,y,x]])
         
         string = 'Done!'
@@ -100,12 +100,26 @@ class HisaExtraction(object):
         if self.path_to_noise_map is not None:
             noise_map = fits.getdata(self.path_to_noise_map)
             thresh = self.sig * noise_map
+            self.list_data_noise = []
+                self.list_data_thresh = []
+                for y in range(noise_map.shape[0]):
+                    for x in range(noise_map.shape[1]):
+                        idx_1d = np.ravel_multi_index((y,x), dims=(noise_map.shape[0], noise_map.shape[1]))
+                        self.list_data_noise.append([idx_1d, noise_map[y,x]])
+                        self.list_data_thresh.append([idx_1d, thresh[y,x]])
         else:
             if self.noise is None:
                raise TypeError("Need to specify 'noise' if no path to noise map is given.") 
             else:
                 noise_map = self.noise * np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
                 thresh = self.sig * noise_map
+                self.list_data_noise = []
+                self.list_data_thresh = []
+                for y in range(noise_map.shape[0]):
+                    for x in range(noise_map.shape[1]):
+                        idx_1d = np.ravel_multi_index((y,x), dims=(noise_map.shape[0], noise_map.shape[1]))
+                        self.list_data_noise.append([idx_1d, noise_map[y,x]])
+                        self.list_data_thresh.append([idx_1d, thresh[y,x]])
                 
         if self.baby_yoda:
             if _supports_unicode(sys.stderr):
@@ -131,13 +145,22 @@ class HisaExtraction(object):
             self.flag_map = np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
             
             print('\n'+'Asymmetric least squares fitting in progress...')
-            for i in fran(range(pixel_start[0],pixel_end[0],1)):
-                for j in range(pixel_start[1],pixel_end[1],1):
-                    spectrum = self.image[:,j,i]
-                    if self.phase == 'two':
-                        self.image_asy[:,j,i], self.HISA_map[:,j,i], self.iteration_map[j,i], self.flag_map[j,i] = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=spectrum, header=self.header, check_signal_sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=thresh[j,i])
-                    elif self.phase == 'one':
-                        self.image_asy[:,j,i], self.HISA_map[:,j,i], self.iteration_map[j,i], self.flag_map[j,i] = one_step_extraction(self.lam1, self.p1, spectrum=spectrum, header=self.header, check_signal_sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=thresh[j,i])
+            
+            if self.phase == 'two':
+                    
+                astroSABER.parallel_processing.init([self.list_data, [self]])
+                results_list = astroSABER.parallel_processing.func(use_ncpus=ncpus, function='two_step')
+                    
+                    self.image_asy[:,j,i], self.HISA_map[:,j,i], self.iteration_map[j,i], self.flag_map[j,i] = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=spectrum, header=self.header, check_signal_sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=thresh[j,i])
+            elif self.phase == 'one':
+                
+                astroSABER.parallel_processing.init([self.list_data, [self]])
+                results_list = astroSABER.parallel_processing.func(use_ncpus=ncpus, function='one_step')
+                
+                    self.image_asy[:,j,i], self.HISA_map[:,j,i], self.iteration_map[j,i], self.flag_map[j,i] = one_step_extraction(self.lam1, self.p1, spectrum=spectrum, header=self.header, check_signal_sigma=self.check_signal_sigma, noise=noise_map[j,i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=thresh[j,i])
+            
+            
+            
             string = 'Done!'
             say(string)
             self.save_data()
