@@ -143,7 +143,7 @@ class HisaExtraction(object):
             #flags
             self.flag_map = np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
             
-            print('\n'+'Asymmetric least squares fitting in progress...'+'\n')
+            print('\n'+'Asymmetric least squares fitting in progress...')
             
             if self.phase == 'two':
                 import astroSABER.parallel_processing
