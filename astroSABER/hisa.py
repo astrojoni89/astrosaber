@@ -69,6 +69,13 @@ class HisaExtraction(object):
         self.header = fits.getheader(self.fitsfile)
         self.header_2d = md_header_2d(self.fitsfile)
         self.v = self.header['NAXIS3']
+        
+        #serialize data to have a list of spectra
+        self.list_data = []
+        for y in range(self.image.shape[1]): 
+            for x in range(self.image.shape[2]):
+                self.list_data.append(self.image[:,y,x])
+        
         string = 'Done!'
         say(string)
 
