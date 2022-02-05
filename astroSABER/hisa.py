@@ -103,12 +103,12 @@ class HisaExtraction(object):
             noise_map = fits.getdata(self.path_to_noise_map)
             thresh = self.sig * noise_map
             self.list_data_noise = []
-                self.list_data_thresh = []
-                for y in range(noise_map.shape[0]):
-                    for x in range(noise_map.shape[1]):
-                        idx_1d = np.ravel_multi_index((y,x), dims=(noise_map.shape[0], noise_map.shape[1]))
-                        self.list_data_noise.append([idx_1d, noise_map[y,x]])
-                        self.list_data_thresh.append([idx_1d, thresh[y,x]])
+            self.list_data_thresh = []
+            for y in range(noise_map.shape[0]):
+                for x in range(noise_map.shape[1]):
+                    idx_1d = np.ravel_multi_index((y,x), dims=(noise_map.shape[0], noise_map.shape[1]))
+                    self.list_data_noise.append([idx_1d, noise_map[y,x]])
+                    self.list_data_thresh.append([idx_1d, thresh[y,x]])
         else:
             if self.noise is None:
                raise TypeError("Need to specify 'noise' if no path to noise map is given.") 
