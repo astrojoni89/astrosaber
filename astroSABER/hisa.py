@@ -74,7 +74,8 @@ class HisaExtraction(object):
         self.list_data = []
         for y in range(self.image.shape[1]): 
             for x in range(self.image.shape[2]):
-                self.list_data.append(self.image[:,y,x])
+                idx_1 = np.ravel_multi_index((y,x), dims=(self.image.shape[1], self.image.shape[2]))
+                self.list_data.append([idx_1d, self.image[:,y,x]])
         
         string = 'Done!'
         say(string)
