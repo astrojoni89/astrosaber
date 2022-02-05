@@ -131,9 +131,6 @@ class HisaExtraction(object):
         else:
             fran = tqdm
 
-        #pixel_start=[0,0]
-        #pixel_end=[self.header['NAXIS1'],self.header['NAXIS2']]
-
         if self.smoothing=='Y':
             string = 'hisa extraction'
             banner = len(string) * '='
