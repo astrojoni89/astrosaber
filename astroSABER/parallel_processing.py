@@ -10,9 +10,6 @@ from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels,
 from tqdm import trange, tqdm
 
 
-#def init(data):
-#    global ilist
-#    ilist = np.arange(len(data))
     
 def init(mp_info):
     global mp_ilist, mp_data, mp_params
@@ -24,7 +21,7 @@ def single_cost_i(i):
     return result
 
 def lambda_extraction_i(i):
-    result = saberPrepare.two_step_extraction(mp_params[0], i)
+    result = saberPrepare.two_step_extraction_prepare(mp_params[0], i)
     return result
 
 def two_step_i(i):
