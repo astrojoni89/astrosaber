@@ -21,7 +21,7 @@ from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ra
 from .utils.aslsq_fit import baseline_als_optimized, two_step_extraction, one_step_extraction
 from .utils.grogu import yoda
 
-import .parallel_processing
+import astroSABER.parallel_processing
 
 warnings.showwarning = format_warning
 
@@ -152,12 +152,12 @@ class HisaExtraction(object):
             
             if self.phase == 'two':
                     
-                parallel_processing.init([self.list_data, [self]])
+                astroSABER.parallel_processing.init([self.list_data, [self]])
                 results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='two_step') 
                     
             elif self.phase == 'one':
                 
-                parallel_processing.init([self.list_data, [self]])
+                astroSABER.parallel_processing.init([self.list_data, [self]])
                 results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='one_step')
                 
             for k in fran(range(len(results_list))):
