@@ -62,7 +62,7 @@ def parallel_process(array, function, n_jobs=4, use_kwargs=False, front_num=3):
             futures = [pool.submit(function, a) for a in array[front_num:]] # , lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt
         kwargs = {
             'total': len(futures),
-            'unit': ' spec',
+            'unit': 'spec',
             'unit_scale': True,
             'leave': True
         }
