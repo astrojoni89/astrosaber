@@ -155,8 +155,8 @@ class HisaExtraction(object):
                 astroSABER.parallel_processing.init([self.list_data, [self]])
                 results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='one_step')
                 
-            print('\n'+'Unraveling data and writing into cubes...'+'\n')
-            for k in fran(range(len(results_list))):
+            print('\n'+'Unraveling data and writing into cubes...')
+            for k in fran(range(len(results_list)), unit='spectra', unit_scale=True):
                 (j, i) = np.unravel_index(results_list[k][0], (self.HISA_map.shape[1], self.HISA_map.shape[2]))   
                 self.image_asy[:,j,i], self.HISA_map[:,j,i], self.iteration_map[j,i], self.flag_map[j,i] = results_list[k][1], results_list[k][2], results_list[k][3], results_list[k][4]
             
