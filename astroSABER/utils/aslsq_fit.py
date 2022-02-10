@@ -43,7 +43,7 @@ def baseline_als_optimized(y, lam, p, niter):
     return z
 
 
-def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=50, iterations_for_convergence=3, add_residual=True, thresh=None):
+def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=50, iterations_for_convergence=3, add_residual=False, thresh=None):
     flag_map = 1.
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
         spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3)
