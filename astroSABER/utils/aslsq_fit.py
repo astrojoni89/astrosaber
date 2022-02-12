@@ -10,6 +10,7 @@ from scipy.sparse.linalg import spsolve
 from tqdm import trange
 import warnings
 
+from .quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
 from .aslsq_helper import check_signal_ranges, count_ones_in_row, IterationWarning, say, format_warning
 
 warnings.showwarning = format_warning
