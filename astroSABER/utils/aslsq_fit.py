@@ -94,7 +94,7 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
     return bg, hisa, iterations, flag_map
 
 
-def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=50, iterations_for_convergence=3, add_residual=True, thresh=None):
+def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=50, iterations_for_convergence=3, add_residual=True, thresh=None, p_limit=0.02):
     flag_map = 1.
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
         spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3)
@@ -133,6 +133,7 @@ def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_si
                 i_converge = niters
                 break
         # TODO
+        max_consec_ch = get_max_consecutive_channels(len(spectrum), p_limit)
         consecutive_channels, ranges = determine_peaks(spectrum, peak='both', amp_threshold=None)
         mask_ranges = ranges[np.where(consecutive_channels>=max_consec_ch)]
         mask = mask_channels(len(spectrum), mask_ranges, pad_channels=2, remove_intervals=None)
