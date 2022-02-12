@@ -132,8 +132,18 @@ def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_si
                     final_spec = spectrum_next
                 i_converge = niters
                 break
-        bg = final_spec - thresh
-        hisa = final_spec - spectrum - thresh
+        # TODO
+        consecutive_channels, ranges = determine_peaks(spectrum, peak='both', amp_threshold=None)
+        mask_ranges = ranges[np.where(consecutive_channels>=max_consec_ch)]
+        mask = mask_channels(len(spectrum), mask_ranges, pad_channels=2, remove_intervals=None)
+        if np.all(mask):
+            noise_fit_offset = thresh
+        else:
+            noise_range = np.invert(mask)
+            noise_fit_offset = np.nanmean(final_spec[noise_range])
+        #
+        bg = final_spec - noise_fit_offset
+        hisa = final_spec - spectrum - noise_fit_offset
         iterations = i_converge
     else:
         bg = np.full_like(spectrum, np.nan)
