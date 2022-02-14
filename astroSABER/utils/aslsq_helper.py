@@ -69,6 +69,8 @@ def check_signal(spectrum, sigma, noise):
 
 #check if there is signal in at least xy neighboring channels corresponding to velo_range [km/s]: default 10 channels
 def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=None):
+    if header is None: # fallback to fit all spectra if no header is given
+        return True
     vdelt = header['CDELT3'] / 1000.
     if sigma is None:
         sigma = 5
