@@ -94,8 +94,8 @@ class HisaExtraction(object):
             self.p1 = 0.90
         if not 0<= self.p1 <=1:
             raise ValueError("'p1' has to be in the range [0,1]")
-        if self.lam2 is None:
-            raise TypeError("Need to specify 'lam2' for extraction.")
+        if self.lam2 is None and self.phase=='two':
+            raise TypeError("Need to specify 'lam2' for two-phase extraction.")
         if self.p2 is None:
             self.p2 = 0.90
         if not 0<= self.p2 <=1:
