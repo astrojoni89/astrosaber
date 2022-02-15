@@ -207,7 +207,8 @@ class saberTraining(object):
                 return cost_function, rchi2, MAD
             else:
                 return cost_function
-        except:
+        except Exception as e:
+            print(e)
             if get_all:
                 return np.nan, np.nan, np.nan
             else:
@@ -282,7 +283,8 @@ class saberTraining(object):
                 return cost_function, rchi2, bg_fit
             else:
                 return cost_function, bg_fit
-        except:
+        except Exception as e:
+            print(e)
             if get_all:
                 return np.nan, np.nan, np.nan
             else:
