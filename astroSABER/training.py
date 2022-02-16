@@ -149,7 +149,9 @@ class saberTraining(object):
                 bg_fit, _, _, _ = two_step_extraction(self.lam1_updt, self.p1, self.lam2_updt, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
             elif self.phase == 'one':
                 bg_fit, _, _, _ = one_step_extraction(self.lam1_updt, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
-    
+            #TODO; for simulated noise-less data
+            if self.noise[i] == 0.:
+                self.noise[i] = 1.
             if type(self.noise[i]) is not np.ndarray:
                 noise_array = np.ones(len(self.training_data[i])) * self.noise[i]
             else:
@@ -226,7 +228,9 @@ class saberTraining(object):
                 bg_fit, _, _, _ = two_step_extraction(lam1_final, self.p1, lam2_final, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
             elif self.phase == 'one':
                 bg_fit, _, _, _ = one_step_extraction(lam1_final, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
-    
+            #TODO; for simulated noise-less data
+            if self.noise[i] == 0.:
+                self.noise[i] = 1.
             if type(self.noise[i]) is not np.ndarray:
                 noise_array = np.ones(len(self.training_data[i])) * self.noise[i]
             else:
