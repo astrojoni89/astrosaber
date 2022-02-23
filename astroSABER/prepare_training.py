@@ -74,10 +74,14 @@ class saberPrepare(object):
         #self.header_2d = md_header_2d(self.fitsfile)
         self.v = self.header['NAXIS3']
         self.velocity = velocity_axes(self.fitsfile)
-        self.mock_data = {'training_data' : None, 'test_data' : None, 'hisa_spectra' : None, 'hisa_mask' : None, 'signal_ranges' : None, 'rms_noise' : None, 'velocity' : None, 'header' : None}
+        self.mock_data = {'training_data' : None, 'test_data' : None, 'hisa_spectra' : None, 'location' : None, 'amplitudes' : None, 'fwhms' : None, 'means' : None, 'hisa_mask' : None, 'signal_ranges' : None, 'rms_noise' : None, 'velocity' : None, 'header' : None}
         self.hisa_spectra = []
         self.training_data = []
         self.test_data = []
+        self.location = []
+        self.amplitudes = []
+        self.fwhms = []
+        self.means = []
         self.hisa_mask = []
         self.signal_ranges = []
         string = 'Done!'
@@ -135,10 +139,12 @@ class saberPrepare(object):
         xvals = np.arange(0,self.v,1)
         
         self.spectrum_list = []
+        self.location = []
         self.noise_list = []
         self.thresh_list = []
         for idx, (y, x) in enumerate(zip(indices[:,0], indices[:,1])):
             self.spectrum_list.append(self.image[:,y,x])
+            self.location.append((y,x))
             self.noise_list.append(noise_map[y,x])
             self.thresh_list.append(thresh[y,x])
         import astroSABER.parallel_processing
@@ -147,6 +153,9 @@ class saberPrepare(object):
         results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='hisa') # initiate parallel process
 
         for i in trange(len(results_list)):
+            amp_list = []
+            fwhm_list = []
+            mean_list = []
             #Check for NaNs in the test spectra
             if np.any(np.isnan(results_list[i][0])):
                 print('Mock spectrum contains NaN! Will remove it!')
@@ -183,6 +192,9 @@ class saberPrepare(object):
                 gauss_HISA = gauss_HISA + amp * np.exp(-exp_arg)
                 ranges_hisa_i = [np.around(v - 3*lw), np.around(v + 3*lw)]
                 ranges_hisa_list.append(ranges_hisa_i)
+                amp_list.append(amp)
+                fwhm_list.append(lw * channel_width * np.sqrt(8*np.log(2)))
+                mean_list.append(((self.header['CRVAL3'] - self.header['CRPIX3'] * self.header['CDELT3']) + (v+1) * self.header['CDELT3']) / 1000.)
             gauss_HISA[np.where(gauss_HISA<1e-5)] = 0.
                 
             ranges_hisa = np.array(ranges_hisa_list).astype(int).reshape(-1,2)
@@ -202,12 +214,19 @@ class saberPrepare(object):
             self.training_data.append(results_list[i][0] - gauss_HISA)
             self.test_data.append(results_list[i][0])
             self.hisa_spectra.append(gauss_HISA)
+            self.amplitudes.append(amp_list)
+            self.fwhms.append(fwhm_list)
+            self.means.append(mean_list)
             self.hisa_mask.append(mask_hisa)
             self.signal_ranges.append(mask_ranges_hisa)
 
         self.mock_data['training_data'] = self.training_data
         self.mock_data['test_data'] = self.test_data
         self.mock_data['hisa_spectra'] = self.hisa_spectra
+        self.mock_data['location'] = self.location
+        self.mock_data['amplitudes'] = self.amplitudes
+        self.mock_data['fwhms'] = self.fwhms
+        self.mock_data['means'] = self.means
         self.mock_data['hisa_mask'] = self.hisa_mask
         self.mock_data['signal_ranges'] = self.signal_ranges
         self.mock_data['rms_noise'] = self.noise_list
