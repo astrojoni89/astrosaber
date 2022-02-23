@@ -183,7 +183,7 @@ class saberPrepare(object):
             amps_of_comps_HISA = self.rng.choice(amps_HISA, ncomps_HISA[i])
             lws_of_comps_HISA = self.rng.choice(lws_HISA, ncomps_HISA[i])  
             ncomp_HISA = np.arange(0,ncomps_HISA[i]+1,1)
-            lws_of_comps_HISA[np.where(lws_of_comps_HISA<3*spectral_resolution)] = 3*spectral_resolution
+            lws_of_comps_HISA[np.where(lws_of_comps_HISA<spectral_resolution)] = spectral_resolution
 
             gauss_HISA = np.zeros(shape=(self.v,))
             ranges_hisa_list = []
