@@ -20,14 +20,18 @@ np.seterr('raise')
 
 
 class saberPrepare(object):
-    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_linewidth=4.,std_linewidth=1., lam1=None, p1=None, lam2=None, p2=None, niters=50, iterations_for_convergence=3, noise=None, add_residual = False, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, path_to_file='.', seed=111):
+    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_amp_snr=6., std_amp_snr=1., mean_linewidth=4., std_linewidth=1., mean_ncomponent=2, std_ncomponent=1, lam1=None, p1=None, lam2=None, p2=None, niters=50, iterations_for_convergence=3, noise=None, add_residual = False, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, path_to_file='.', seed=111):
         self.fitsfile = fitsfile
         self.training_set_size = int(training_set_size)
         self.path_to_noise_map = path_to_noise_map
         self.path_to_data = path_to_data
 
+        self.mean_amp_snr = mean_amp_snr
+        self.std_amp_snr = std_amp_snr
         self.mean_linewidth = mean_linewidth
         self.std_linewidth = std_linewidth
+        self.mean_ncomponent = mean_ncomponent
+        self.std_ncomponent = std_ncomponent
         
         self.lam1 = lam1
         self.p1 = p1
@@ -57,7 +61,7 @@ class saberPrepare(object):
         self.debug_data = None # for debugging
         
     def __str__(self):
-        return f'saberPrepare:\nfitsfile: {self.fitsfile}\ntraining_set_size: {self.training_set_size}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nmean_linewidth: {self.mean_linewidth}\nstd_linewidth: {self.std_linewidth}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
+        return f'saberPrepare:\nfitsfile: {self.fitsfile}\ntraining_set_size: {self.training_set_size}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nmean_amp_snr: {self.mean_amp_snr}\nstd_amp_snr: {self.std_amp_snr}\nmean_linewidth: {self.mean_linewidth}\nstd_linewidth: {self.std_linewidth}\nmean_ncomponent: {self.mean_ncomponent}\nstd_ncomponent: {self.std_ncomponent}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
     
     def getting_ready(self):
         string = 'preparation'
@@ -131,7 +135,7 @@ class saberPrepare(object):
         indices = np.column_stack((self.rng.integers(edges,self.header['NAXIS2']-edges+1,self.training_set_size), self.rng.integers(edges,self.header['NAXIS1']-edges+1,self.training_set_size)))
 
         mu_lws_HISA, sigma_lws_HISA = (self.mean_linewidth / channel_width) / np.sqrt(8*np.log(2)), self.std_linewidth / channel_width # mean and standard deviation
-        mu_ncomps_HISA, sigma_ncomps_HISA = 2, 1 
+        mu_ncomps_HISA, sigma_ncomps_HISA = self.mean_ncomponent, self.std_ncomponent 
         ncomps_HISA = np.around(self.rng.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size)).astype(int)
         ###TODO
         ncomps_HISA[ncomps_HISA<=0] = int(1.)
@@ -160,7 +164,7 @@ class saberPrepare(object):
             if np.any(np.isnan(results_list[i][0])):
                 print('Mock spectrum contains NaN! Will remove it!')
                 continue
-            samplesize_rng = 10 * ncomps_HISA[i]
+            samplesize_rng = 50 * ncomps_HISA[i]
             amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], samplesize_rng).reshape(samplesize_rng,) # self.training_set_size
             amps_HISA[amps_HISA<0] = 0.
             ###TODO
@@ -248,7 +252,7 @@ class saberPrepare(object):
         obs_noise = self.rng.normal(0,self.noise_list[i],size=(self.v,))
         mock_emission = bg + obs_noise
 
-        mu_amps_HISA, sigma_amps_HISA = 6*self.noise_list[i], 1*self.noise_list[i]
+        mu_amps_HISA, sigma_amps_HISA = self.mean_amp_snr*self.noise_list[i], self.std_amp_snr*self.noise_list[i]
 
         return mock_emission, mask_ranges, mask, mu_amps_HISA, sigma_amps_HISA
 
