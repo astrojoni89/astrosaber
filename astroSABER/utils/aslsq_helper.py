@@ -27,7 +27,7 @@ def velocity_axes(name):
 
 
 def merge_range_lists(ranges):
-    ranges.sort(key=lambda interval: interval[0])
+    list(ranges).sort(key=lambda interval: interval[0])
     merged_ranges = [ranges[0]]
     for current in ranges:
         previous = merged_ranges[-1]
@@ -35,7 +35,7 @@ def merge_range_lists(ranges):
             previous[1] = max(previous[1], current[1])
         else:
             merged_ranges.append(current)
-    return merged_ranges
+    return np.array(merged_ranges)
 
 
 def pixel_to_world(fitsfile,x,y,ch=0):
