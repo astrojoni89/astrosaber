@@ -26,7 +26,7 @@ def velocity_axes(name):
 	return velocity
 
 
-def merge_range_lists(ranges):
+def merge_ranges(ranges):
     list(ranges).sort(key=lambda interval: interval[0])
     merged_ranges = [ranges[0]]
     for current in ranges:
