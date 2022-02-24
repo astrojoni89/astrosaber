@@ -26,6 +26,18 @@ def velocity_axes(name):
 	return velocity
 
 
+def merge_ranges(ranges):
+    list(ranges).sort(key=lambda interval: interval[0])
+    merged_ranges = [ranges[0]]
+    for current in ranges:
+        previous = merged_ranges[-1]
+        if current[0] <= previous[1]:
+            previous[1] = max(previous[1], current[1])
+        else:
+            merged_ranges.append(current)
+    return np.array(merged_ranges)
+
+
 def pixel_to_world(fitsfile,x,y,ch=0):
     try:
         w = WCS(fitsfile)

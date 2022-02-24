@@ -18,7 +18,7 @@ from astropy import units as u
 from tqdm import trange
 
 from .utils.spectrum_utils import pixel_circle_calculation, pixel_circle_calculation_px, calculate_spectrum
-from .utils.aslsq_helper import find_nearest, velocity_axes, pixel_to_world
+from .utils.aslsq_helper import find_nearest, velocity_axes, pixel_to_world, merge_ranges
 from .utils.aslsq_fit import two_step_extraction, one_step_extraction
 
 
@@ -100,7 +100,8 @@ def scale_fontsize(rowsize):
 
 def plot_signal_ranges(ax, data, idx, fig_channels):
     if 'signal_ranges' in data.keys():
-        for low, upp in data['signal_ranges'][idx]:
+        merged_signal_ranges = merge_ranges(data['signal_ranges'][idx]) # to merge overlapping ranges
+        for low, upp in merged_signal_ranges:
             ax.axvspan(fig_channels[low], fig_channels[upp - 1], alpha=0.1, color='indianred')
             
 def get_title_string(idx, rchi2):
