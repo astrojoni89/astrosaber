@@ -257,7 +257,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
     figsize = (cols*colsize, rowbreak*rowsize)
     fig = plt.figure(figsize=figsize)
-    xValue = rng.integers(0,high=xsize,size=n_spectra)
+    xValue = rng.choice(xsize,size=n_spectra,replace=False)
     for i in trange(n_spectra):
         idx = xValue[i]
         ax = fig.add_subplot(rows,cols,i+1)
