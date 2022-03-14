@@ -78,7 +78,8 @@ class saberTraining(object):
     def prepare_data(self):
         self.rng = np.random.default_rng(self.seed)
         self.getting_ready()
-        self.p = pickle.load(open(self.pickle_file, 'rb'), encoding='latin1')
+        input_path = os.path.join(self.path_to_data, self.pickle_file)
+        self.p = pickle.load(open(input_path, 'rb'), encoding='latin1')
         self.training_data = self.p['training_data']
         self.test_data = self.p['test_data']
         self.hisa_mask = self.p['hisa_mask']
@@ -471,8 +472,10 @@ class saberTraining(object):
                 filename_lam = filename_base+'_lam_opt.txt'
             else:
                 filename_lam = filename_base+'_lam_traces.txt'
-        else:
+        elif not self.filename_out.endswith('.txt'):
             filename_lam = str(self.filename_out) + '.txt'
+        else:
+            filename_lam = str(self.filename_out)
         pathname_lam = os.path.join(self.path_to_data, filename_lam)
         np.savetxt(pathname_lam, self.popt_lam)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_lam, self.path_to_data))
