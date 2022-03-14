@@ -143,7 +143,7 @@ class saberPrepare(object):
             ncomps_HISA = np.around(self.rng.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size)).astype(int)
             ncomps_HISA[ncomps_HISA<=0] = int(1.)
         else:
-            fix_velocities_indices = np.array([find_nearest(self.velocity,e) for e in self.velocities_indices]) 
+            fix_velocities_indices = np.array([find_nearest(self.velocity,e) for e in self.fix_velocities]) 
             ncomps_HISA = np.full(self.training_set_size, len(fix_velocities_indices)).reshape(self.training_set_size).astype(int)
 
         xvals = np.arange(0,self.v,1)
