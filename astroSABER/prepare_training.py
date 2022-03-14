@@ -10,7 +10,7 @@ import warnings
 import os
 
 from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
-from .utils.aslsq_helper import velocity_axes, count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say, format_warning
+from .utils.aslsq_helper import find_nearest, velocity_axes, count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say, format_warning
 from .utils.aslsq_fit import baseline_als_optimized, two_step_extraction
 from .plotting import plot_pickle_spectra
 
@@ -20,7 +20,7 @@ np.seterr('raise')
 
 
 class saberPrepare(object):
-    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_amp_snr=7., std_amp_snr=1., mean_linewidth=4., std_linewidth=1., mean_ncomponent=2, std_ncomponent=1, lam1=None, p1=None, lam2=None, p2=None, niters=50, iterations_for_convergence=3, noise=None, add_residual = False, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, path_to_file='.', seed=111):
+    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_amp_snr=7., std_amp_snr=1., mean_linewidth=4., std_linewidth=1., mean_ncomponent=2, std_ncomponent=1, fix_velocities=None, lam1=None, p1=None, lam2=None, p2=None, niters=50, iterations_for_convergence=3, noise=None, add_residual = False, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, path_to_file='.', seed=111):
         self.fitsfile = fitsfile
         self.training_set_size = int(training_set_size)
         self.path_to_noise_map = path_to_noise_map
@@ -32,6 +32,8 @@ class saberPrepare(object):
         self.std_linewidth = std_linewidth
         self.mean_ncomponent = mean_ncomponent
         self.std_ncomponent = std_ncomponent
+        
+        self.fix_velocities = fix_velocities
         
         self.lam1 = lam1
         self.p1 = p1
@@ -135,10 +137,14 @@ class saberPrepare(object):
         indices = np.column_stack((self.rng.integers(edges,self.header['NAXIS2']-edges+1,self.training_set_size), self.rng.integers(edges,self.header['NAXIS1']-edges+1,self.training_set_size)))
 
         mu_lws_HISA, sigma_lws_HISA = (self.mean_linewidth / channel_width) / np.sqrt(8*np.log(2)), self.std_linewidth / channel_width # mean and standard deviation
-        mu_ncomps_HISA, sigma_ncomps_HISA = self.mean_ncomponent, self.std_ncomponent 
-        ncomps_HISA = np.around(self.rng.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size)).astype(int)
-        ###TODO
-        ncomps_HISA[ncomps_HISA<=0] = int(1.)
+        # TODO
+        if self.fix_velocities is None:
+            mu_ncomps_HISA, sigma_ncomps_HISA = self.mean_ncomponent, self.std_ncomponent
+            ncomps_HISA = np.around(self.rng.normal(mu_ncomps_HISA, sigma_ncomps_HISA, self.training_set_size).reshape(self.training_set_size)).astype(int)
+            ncomps_HISA[ncomps_HISA<=0] = int(1.)
+        else:
+            fix_velocities_indices = np.array([find_nearest(self.velocity,e) for e in self.velocities_indices]) 
+            ncomps_HISA = np.full(self.training_set_size, len(fix_velocities_indices)).reshape(self.training_set_size)).astype(int)
 
         xvals = np.arange(0,self.v,1)
         
@@ -167,14 +173,16 @@ class saberPrepare(object):
             samplesize_rng = 50 * ncomps_HISA[i]
             amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], samplesize_rng).reshape(samplesize_rng,) # self.training_set_size
             amps_HISA[amps_HISA<0] = 0.
-            ###TODO
             velos_of_comps_HISA = []
-            for _ in range(ncomps_HISA[i]):
-                k = 0
-                mu_velos_HISA_k, sigma_velos_HISA_k = (results_list[i][1][k,0] + results_list[i][1][k,1]) / 2., (results_list[i][1][k,1] - results_list[i][1][k,0]) / (np.sqrt(8*np.log(2))) / 3. # mean and standard deviation
-                if k < len(results_list[i][1][:,0])-1:
-                    k += 1
-                velos_HISA_k = self.rng.normal(mu_velos_HISA_k, sigma_velos_HISA_k, samplesize_rng).reshape(samplesize_rng,)
+            for j in range(ncomps_HISA[i]):
+                if self.fix_velocities is None:
+                    k = 0
+                    mu_velos_HISA_k, sigma_velos_HISA_k = (results_list[i][1][k,0] + results_list[i][1][k,1]) / 2., (results_list[i][1][k,1] - results_list[i][1][k,0]) / (np.sqrt(8*np.log(2))) / 3. # mean and standard deviation
+                    if k < len(results_list[i][1][:,0])-1:
+                        k += 1
+                    velos_HISA_k = self.rng.normal(mu_velos_HISA_k, sigma_velos_HISA_k, samplesize_rng).reshape(samplesize_rng,)
+                else:
+                    velos_HISA_k = self.rng.normal(fix_velocities_indices[j], 1, samplesize_rng).reshape(samplesize_rng,)
                 velos_of_comps_HISA_k = self.rng.choice(velos_HISA_k, 1)
                 if not velos_of_comps_HISA_k < 0. or velos_of_comps_HISA_k > self.v:
                     velos_of_comps_HISA.append(velos_of_comps_HISA_k)
