@@ -30,7 +30,7 @@ def baseline_als(y, lam, p, niter):
 
 
 #optimized version; this should be faster by a factor ~1.5
-def baseline_als_optimized(y, lam, p, niter):
+def baseline_als_optimized(y, lam, p, niter, mask=None):
     L = len(y)
     D = sparse.diags([1,-2,1],[0,-1,-2], shape=(L,L-2))
     D = lam * D.dot(D.transpose())
@@ -41,18 +41,26 @@ def baseline_als_optimized(y, lam, p, niter):
         Z = W + D
         z = spsolve(Z, w*y)
         w = p * (y > z) + (1-p) * (y < z)
+        if mask is not None:
+            w[np.invert(mask)] = 0.5
     return z
 
 
 def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=50, iterations_for_convergence=3, add_residual=False, thresh=None, p_limit=0.02):
     flag_map = 1.
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
-        spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3)
+        # TODO
+        max_consec_ch = get_max_consecutive_channels(len(spectrum), p_limit)
+        consecutive_channels, ranges = determine_peaks(spectrum, peak='both', amp_threshold=None)
+        mask_ranges = ranges[np.where(consecutive_channels>=max_consec_ch)]
+        mask = mask_channels(len(spectrum), mask_ranges, pad_channels=2, remove_intervals=None)
+
+        spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3, mask=mask)
         spectrum_firstfit = spectrum_prior
         converge_logic = np.array([])
         for n in range(niters+1):
-            spectrum_prior = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3)
-            spectrum_next = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3)
+            spectrum_prior = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3, mask=mask)
+            spectrum_next = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3, mask=mask)
             residual = abs(spectrum_next - spectrum_prior)
             if np.any(np.isnan(residual)):
                 print('Residual contains NaNs') 
@@ -82,17 +90,11 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
                     final_spec = spectrum_next
                 i_converge = niters
                 break
-        # TODO
-        max_consec_ch = get_max_consecutive_channels(len(spectrum), p_limit)
-        consecutive_channels, ranges = determine_peaks(spectrum, peak='both', amp_threshold=None)
-        mask_ranges = ranges[np.where(consecutive_channels>=max_consec_ch)]
-        mask = mask_channels(len(spectrum), mask_ranges, pad_channels=2, remove_intervals=None)
         if np.all(mask):
             noise_fit_offset = thresh
         else:
             noise_range = np.invert(mask)
             noise_fit_offset = np.nanmean(final_spec[noise_range])
-        #
         bg = final_spec - noise_fit_offset
         hisa = final_spec - spectrum - noise_fit_offset
         iterations = i_converge
@@ -108,12 +110,18 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
 def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=50, iterations_for_convergence=3, add_residual=True, thresh=None, p_limit=0.02):
     flag_map = 1.
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
-        spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3)
+        # TODO
+        max_consec_ch = get_max_consecutive_channels(len(spectrum), p_limit)
+        consecutive_channels, ranges = determine_peaks(spectrum, peak='both', amp_threshold=None)
+        mask_ranges = ranges[np.where(consecutive_channels>=max_consec_ch)]
+        mask = mask_channels(len(spectrum), mask_ranges, pad_channels=2, remove_intervals=None)
+
+        spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3, mask=mask)
         spectrum_firstfit = spectrum_prior
         converge_logic = np.array([])
         for n in range(niters+1):
-            spectrum_prior = baseline_als_optimized(spectrum_prior, lam2, p2, niter=3)
-            spectrum_next = baseline_als_optimized(spectrum_prior, lam2, p2, niter=3)
+            spectrum_prior = baseline_als_optimized(spectrum_prior, lam2, p2, niter=3, mask=mask)
+            spectrum_next = baseline_als_optimized(spectrum_prior, lam2, p2, niter=3, mask=mask)
             residual = abs(spectrum_next - spectrum_prior)
             if np.any(np.isnan(residual)):
                 print('Residual contains NaNs') 
@@ -143,17 +151,11 @@ def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_si
                     final_spec = spectrum_next
                 i_converge = niters
                 break
-        # TODO
-        max_consec_ch = get_max_consecutive_channels(len(spectrum), p_limit)
-        consecutive_channels, ranges = determine_peaks(spectrum, peak='both', amp_threshold=None)
-        mask_ranges = ranges[np.where(consecutive_channels>=max_consec_ch)]
-        mask = mask_channels(len(spectrum), mask_ranges, pad_channels=2, remove_intervals=None)
         if np.all(mask):
             noise_fit_offset = thresh
         else:
             noise_range = np.invert(mask)
             noise_fit_offset = np.nanmean(final_spec[noise_range])
-        #
         bg = final_spec - noise_fit_offset
         hisa = final_spec - spectrum - noise_fit_offset
         iterations = i_converge
