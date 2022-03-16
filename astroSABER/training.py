@@ -213,6 +213,7 @@ class saberTraining(object):
                 return cost_function
         except Exception as e:
             print(e)
+            print('We are here')
             if get_all:
                 return np.nan, np.nan, np.nan
             else:
