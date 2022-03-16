@@ -53,7 +53,7 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
         max_consec_ch = get_max_consecutive_channels(len(spectrum), p_limit)
         consecutive_channels, ranges = determine_peaks(spectrum, peak='both', amp_threshold=None)
         mask_ranges = ranges[np.where(consecutive_channels>=max_consec_ch)]
-        mask = mask_channels(len(spectrum), mask_ranges, pad_channels=2, remove_intervals=None)
+        mask = mask_channels(len(spectrum), mask_ranges, pad_channels=3, remove_intervals=None)
 
         spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3, mask=mask)
         spectrum_firstfit = spectrum_prior
@@ -114,7 +114,7 @@ def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_si
         max_consec_ch = get_max_consecutive_channels(len(spectrum), p_limit)
         consecutive_channels, ranges = determine_peaks(spectrum, peak='both', amp_threshold=None)
         mask_ranges = ranges[np.where(consecutive_channels>=max_consec_ch)]
-        mask = mask_channels(len(spectrum), mask_ranges, pad_channels=2, remove_intervals=None)
+        mask = mask_channels(len(spectrum), mask_ranges, pad_channels=3, remove_intervals=None)
 
         spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3, mask=mask)
         spectrum_firstfit = spectrum_prior
