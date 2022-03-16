@@ -46,7 +46,7 @@ def baseline_als_optimized(y, lam, p, niter, mask=None):
     return z
 
 
-def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=50, iterations_for_convergence=3, add_residual=False, thresh=None, p_limit=0.02):
+def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=20, iterations_for_convergence=3, add_residual=False, thresh=None, p_limit=0.02):
     flag_map = 1.
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
         # TODO
@@ -107,7 +107,7 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
     return bg, hisa, iterations, flag_map
 
 
-def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=50, iterations_for_convergence=3, add_residual=True, thresh=None, p_limit=0.02):
+def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=20, iterations_for_convergence=3, add_residual=True, thresh=None, p_limit=0.02):
     flag_map = 1.
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
         # TODO
