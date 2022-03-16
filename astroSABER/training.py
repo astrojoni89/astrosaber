@@ -137,6 +137,7 @@ class saberTraining(object):
         else:
             assert results_list_array.shape == (len(self.training_data),1), 'Shape is {}'.format(results_list_array.shape)
             return np.nanmedian(results_list_array[:,0])
+        self.debug_data = results_list_array
 
     def single_cost(self, i, get_all=True):
         ###TODO
