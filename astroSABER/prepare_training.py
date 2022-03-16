@@ -133,7 +133,7 @@ class saberPrepare(object):
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
         channel_width = self.header['CDELT3'] / 1000.
         spectral_resolution = 1 / np.sqrt(8*np.log(2)) # unit channel
-        edges = int(0.10 * min(self.header['NAXIS1'],self.header['NAXIS2']))
+        edges = int(0.2 * min(self.header['NAXIS1'],self.header['NAXIS2']))
         indices = np.column_stack((self.rng.integers(edges,self.header['NAXIS2']-edges+1,self.training_set_size), self.rng.integers(edges,self.header['NAXIS1']-edges+1,self.training_set_size)))
 
         mu_lws_HISA, sigma_lws_HISA = (self.mean_linewidth / channel_width) / np.sqrt(8*np.log(2)), self.std_linewidth / channel_width # mean and standard deviation
