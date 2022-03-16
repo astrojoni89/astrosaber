@@ -134,7 +134,6 @@ class saberTraining(object):
         if get_all:
             assert results_list_array.shape == (len(self.training_data),3), 'Shape is {}'.format(results_list_array.shape)
             return np.nanmedian(results_list_array[:,0]), np.nanmedian(results_list_array[:,1]), np.nanmedian(results_list_array[:,2])
-            self.debug_data = results_list_array[:,0]
         else:
             assert results_list_array.shape == (len(self.training_data),1), 'Shape is {}'.format(results_list_array.shape)
             return np.nanmedian(results_list_array[:,0])
@@ -180,7 +179,7 @@ class saberTraining(object):
             
             mask = np.logical_and(mask_hisa, mask)
             assert mask.shape==self.test_data[i].shape
-            print(i)
+
             if any(np.isnan(bg_fit)):
                 warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
                 if get_all:
@@ -214,7 +213,6 @@ class saberTraining(object):
             
         except Exception as e:
             print(e)
-            print('We are here')
             if get_all:
                 return np.nan, np.nan, np.nan
             else:
