@@ -55,12 +55,12 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
         mask_ranges = ranges[np.where(consecutive_channels>=max_consec_ch)]
         mask = mask_channels(len(spectrum), mask_ranges, pad_channels=2, remove_intervals=None)
 
-        spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3, mask=None)
+        spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3, mask=mask)
         spectrum_firstfit = spectrum_prior
         converge_logic = np.array([])
         for n in range(niters+1):
-            spectrum_prior = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3, mask=None)
-            spectrum_next = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3, mask=None)
+            spectrum_prior = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3, mask=mask)
+            spectrum_next = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3, mask=mask)
             residual = abs(spectrum_next - spectrum_prior)
             if np.any(np.isnan(residual)):
                 print('Residual contains NaNs') 
@@ -116,12 +116,12 @@ def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_si
         mask_ranges = ranges[np.where(consecutive_channels>=max_consec_ch)]
         mask = mask_channels(len(spectrum), mask_ranges, pad_channels=2, remove_intervals=None)
 
-        spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3, mask=None)
+        spectrum_prior = baseline_als_optimized(spectrum, lam1, p1, niter=3, mask=mask)
         spectrum_firstfit = spectrum_prior
         converge_logic = np.array([])
         for n in range(niters+1):
-            spectrum_prior = baseline_als_optimized(spectrum_prior, lam2, p2, niter=3, mask=None)
-            spectrum_next = baseline_als_optimized(spectrum_prior, lam2, p2, niter=3, mask=None)
+            spectrum_prior = baseline_als_optimized(spectrum_prior, lam2, p2, niter=3, mask=mask)
+            spectrum_next = baseline_als_optimized(spectrum_prior, lam2, p2, niter=3, mask=mask)
             residual = abs(spectrum_next - spectrum_prior)
             if np.any(np.isnan(residual)):
                 print('Residual contains NaNs') 
