@@ -172,11 +172,11 @@ def mask_channels(n_channels, ranges, pad_channels=None, remove_intervals=None):
     for (lower, upper) in ranges:
         if pad_channels is not None:
             lower = max(0, lower - pad_channels)
-            upper = min(n_channels, upper + pad_channels)
-        mask[lower:upper] = 1
+            upper = min(n_channels, upper+1 + pad_channels)
+        mask[lower:upper+1] = 1
 
     if remove_intervals is not None:
         for (low, upp) in remove_intervals:
-            mask[low:upp] = 0
+            mask[low:upp+1] = 0
 
     return mask.astype('bool')
