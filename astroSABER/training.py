@@ -152,7 +152,6 @@ class saberTraining(object):
             elif self.phase == 'one':
                 bg_fit, _, _, _ = one_step_extraction(self.lam1_updt, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
             #TODO; for simulated noise-less data
-            print('Works until here')
             if self.noise[i] == 0.:
                 self.noise[i] = 1.
             if type(self.noise[i]) is not np.ndarray:
@@ -181,7 +180,7 @@ class saberTraining(object):
             
             mask = np.logical_and(mask_hisa, mask)
             assert mask.shape==self.test_data[i].shape
-        
+            print('Works until here')
             if any(np.isnan(bg_fit)):
                 warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
                 if get_all:
