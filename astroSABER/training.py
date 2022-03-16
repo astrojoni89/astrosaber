@@ -187,7 +187,7 @@ class saberTraining(object):
                     return np.nan, np.nan, np.nan
                 else:
                     return np.nan, np.nan
-            print('Works until here')
+            
             squared_residuals = (self.test_data[i][mask] - bg_fit[mask])**2
             residuals = (self.test_data[i][mask] - bg_fit[mask])
             ssr = np.nansum(squared_residuals)
@@ -211,6 +211,7 @@ class saberTraining(object):
                 return cost_function, rchi2, MAD
             else:
                 return cost_function
+            print('Works until here')
         except Exception as e:
             print(e)
             print('We are here')
