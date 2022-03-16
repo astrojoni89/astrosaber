@@ -20,7 +20,7 @@ np.seterr('raise')
 
 
 class saberPrepare(object):
-    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_amp_snr=7., std_amp_snr=1., mean_linewidth=4., std_linewidth=1., mean_ncomponent=2, std_ncomponent=1, fix_velocities=None, lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence=3, noise=None, add_residual = False, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, path_to_file='.', seed=111):
+    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_amp_snr=7., std_amp_snr=1., mean_linewidth=4., std_linewidth=1., mean_ncomponent=2., std_ncomponent=0.5, fix_velocities=None, lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence=3, noise=None, add_residual = False, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, path_to_file='.', seed=111):
         self.fitsfile = fitsfile
         self.training_set_size = int(training_set_size)
         self.path_to_noise_map = path_to_noise_map
@@ -177,7 +177,7 @@ class saberPrepare(object):
             for j in range(ncomps_HISA[i]):
                 if self.fix_velocities is None:
                     k = 0
-                    mu_velos_HISA_k, sigma_velos_HISA_k = (results_list[i][1][k,0] + results_list[i][1][k,1]) / 2., (results_list[i][1][k,1] - results_list[i][1][k,0]) / (np.sqrt(8*np.log(2))) / 3. # mean and standard deviation
+                    mu_velos_HISA_k, sigma_velos_HISA_k = (results_list[i][1][k,0] + results_list[i][1][k,1]) / 2., (results_list[i][1][k,1] - results_list[i][1][k,0]) / (np.sqrt(8*np.log(2))) / 4. # mean and standard deviation
                     if k < len(results_list[i][1][:,0])-1:
                         k += 1
                     velos_HISA_k = self.rng.normal(mu_velos_HISA_k, sigma_velos_HISA_k, samplesize_rng).reshape(samplesize_rng,)
