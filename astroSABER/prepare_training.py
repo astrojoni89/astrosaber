@@ -106,7 +106,7 @@ class saberPrepare(object):
         if not 0<= self.p1 <=1:
             raise ValueError("'p1' has to be in the range [0,1]")
         if self.lam2 is None:
-            self.lam2 = 1.00
+            self.lam2 = 2.00
         if self.p2 is None:
             self.p2 = 0.90
         if not 0<= self.p2 <=1:
