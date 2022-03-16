@@ -211,7 +211,7 @@ class saberTraining(object):
                 return cost_function, rchi2, MAD
             else:
                 return cost_function
-            print('Works until here')
+            print(i)
         except Exception as e:
             print(e)
             print('We are here')
