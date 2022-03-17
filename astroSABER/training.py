@@ -342,9 +342,9 @@ class saberTraining(object):
 
         # Default settings for hyper parameters; these seem to be the most robust hyperparams
         if self.learning_rate_l1 is None:
-            self.learning_rate_l1 = 0.3
+            self.learning_rate_l1 = 0.25
         if self.learning_rate_l2 is None:
-            self.learning_rate_l2 = 0.3
+            self.learning_rate_l2 = 0.25
         if self.eps_l1 is None:
             self.eps_l1 = 0.05
         if self.eps_l2 is None:
@@ -470,7 +470,7 @@ class saberTraining(object):
                     break
                 
                 # If gradient descent does not converge, decrease step size toward the end of the loop
-                if i == int(0.75*self.iterations-iterations_for_convergence_training):
+                if i == int(0.67*self.iterations-iterations_for_convergence_training):
                     say('\nDecreasing step size now...')
                     self.learning_rate_l1 = 0.5 * self.learning_rate_l1
                     self.learning_rate_l2 = 0.5 * self.learning_rate_l2
