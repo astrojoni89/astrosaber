@@ -251,7 +251,7 @@ class saberPrepare(object):
     def two_step_extraction_prepare(self, i):
         bg, _, _, _  = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.spectrum_list[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise_list[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh_list[i])
         
-        consecutive_channels, ranges = determine_peaks(spectrum=self.spectrum_list[i], peak='positive', amp_threshold=None)
+        consecutive_channels, ranges = determine_peaks(spectrum=self.spectrum_list[i], peak='both', amp_threshold=None)
         mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
         mask = mask_channels(self.v, mask_ranges, pad_channels=-5, remove_intervals=None)
         
