@@ -181,6 +181,7 @@ class saberTraining(object):
             assert mask.shape==self.test_data[i].shape
             if not any(mask):
                 warnings.warn('Signal mask is empty.', IterationWarning)
+                print(i)
                 if get_all:
                     return np.nan, np.nan, np.nan
                 else:
