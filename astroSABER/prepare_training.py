@@ -172,7 +172,7 @@ class saberPrepare(object):
                 continue
             samplesize_rng = 50 * ncomps_HISA[i]
             amps_HISA = self.rng.normal(results_list[i][3], results_list[i][4], samplesize_rng).reshape(samplesize_rng,) # self.training_set_size
-            amps_HISA[amps_HISA<0] = 0.
+            amps_HISA[amps_HISA<3.*self.noise_list[i]] = 3*self.noise_list[i]
             velos_of_comps_HISA = []
             for j in range(ncomps_HISA[i]):
                 if self.fix_velocities is None:
@@ -202,9 +202,11 @@ class saberPrepare(object):
             for idx, (v, lw, amp) in enumerate(zip(velos_of_comps_HISA,lws_of_comps_HISA,amps_of_comps_HISA)):
                 exp_arg = 0.5 * ((xvals - v) / lw)**2
                 exp_arg[np.where(exp_arg>100.)] = 100.
-                #limit HISA to HI emission
-                if amp>results_list[i][0][int(np.around(v))]:
-                    amp = results_list[i][0][int(np.around(v))]
+                #limit HISA to 3sigma of HI emission
+                if results_list[i][0][int(np.around(v))] - amp < 3*self.noise_list[i]:
+                    amp = results_list[i][0][int(np.around(v))] - 3*self.noise_list[i]
+                #if amp>results_list[i][0][int(np.around(v))]:
+                #    amp = results_list[i][0][int(np.around(v))]
                 gauss_HISA = gauss_HISA + amp * np.exp(-exp_arg)
                 ranges_hisa_i = [np.around(v - 3*lw), np.around(v + 3*lw)]
                 ranges_hisa_list.append(ranges_hisa_i)
