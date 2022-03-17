@@ -142,9 +142,9 @@ class saberTraining(object):
         ###TODO
         try:
             mask_hisa = self.hisa_mask[i]
-            consecutive_channels, ranges = determine_peaks(self.test_data[i], peak='both', amp_threshold=None)
+            consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
             mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
-            mask = mask_channels(self.v, mask_ranges, pad_channels=2, remove_intervals=None)
+            mask = mask_channels(self.v, mask_ranges, pad_channels=3, remove_intervals=None)
             ###
             if self.phase == 'two':
                 bg_fit, _, _, _ = two_step_extraction(self.lam1_updt, self.p1, self.lam2_updt, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
@@ -229,9 +229,9 @@ class saberTraining(object):
         ###TODO
         try:
             mask_hisa = self.hisa_mask[i]
-            consecutive_channels, ranges = determine_peaks(self.test_data[i], peak='both', amp_threshold=None)
+            consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
             mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
-            mask = mask_channels(self.v, mask_ranges, pad_channels=2, remove_intervals=None)
+            mask = mask_channels(self.v, mask_ranges, pad_channels=3, remove_intervals=None)
             ###
             if self.phase == 'two':
                 bg_fit, _, _, _ = two_step_extraction(lam1_final, self.p1, lam2_final, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
@@ -265,6 +265,14 @@ class saberTraining(object):
                 mask_hisa = mask_hisa.astype('bool')
             
             mask = np.logical_and(mask_hisa, mask)
+            assert mask.shape==self.test_data[i].shape
+            if not any(mask):
+                warnings.warn('Signal mask is empty.', IterationWarning)
+                print(i)
+                if get_all:
+                    return np.nan, np.nan, np.nan
+                else:
+                    return np.nan, np.nan
         
             if any(np.isnan(bg_fit)):
                 warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
