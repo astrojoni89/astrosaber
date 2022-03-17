@@ -261,7 +261,7 @@ class saberPrepare(object):
         
         pad_ch = 5
         consecutive_channels, ranges = determine_peaks(spectrum=self.spectrum_list[i], peak='positive', amp_threshold=None)
-        mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch+pad_ch)]
+        mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch+2*pad_ch)]
         mask = mask_channels(self.v, mask_ranges, pad_channels=-1*pad_ch, remove_intervals=None)
         
         obs_noise = self.rng.normal(0,self.noise_list[i],size=(self.v,))
