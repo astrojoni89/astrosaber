@@ -223,7 +223,10 @@ class saberPrepare(object):
             mask_hisa = mask_channels(self.v, mask_ranges_hisa, pad_channels=pad, remove_intervals=None)
             #mask HISA where no HI emission
             gauss_HISA[np.invert(results_list[i][2])] = 0.   
-
+            
+            if not mask_ranges_hisa:
+                print('This spectrum contains no hisa, so will discard it.')
+                continue
             self.training_data.append(results_list[i][0] - gauss_HISA)
             self.test_data.append(results_list[i][0])
             self.hisa_spectra.append(gauss_HISA)
