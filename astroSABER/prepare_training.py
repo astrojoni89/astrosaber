@@ -123,7 +123,7 @@ class saberPrepare(object):
                 thresh = self.sig * noise_map
 
         if self.p_limit is None:
-            self.p_limit = 0.02
+            self.p_limit = 0.01
             
         string = 'creating training data'
         banner = len(string) * '='
