@@ -161,7 +161,7 @@ class saberPrepare(object):
         astroSABER.parallel_processing.init([self.spectrum_list, [self]])
         #ilist = np.arange(len(self.spectrum_list))
         results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='hisa') # initiate parallel process
-
+        self.debug_data = results_list
         for i in trange(len(results_list)):
             amp_list = []
             fwhm_list = []
