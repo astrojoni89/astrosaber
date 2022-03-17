@@ -161,6 +161,7 @@ class saberPrepare(object):
         astroSABER.parallel_processing.init([self.spectrum_list, [self]])
         #ilist = np.arange(len(self.spectrum_list))
         results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='hisa') # initiate parallel process
+        
         self.debug_data = results_list
         for i in trange(len(results_list)):
             amp_list = []
@@ -267,7 +268,7 @@ class saberPrepare(object):
 
         mu_amps_HISA, sigma_amps_HISA = self.mean_amp_snr*self.noise_list[i], self.std_amp_snr*self.noise_list[i]
 
-        return mock_emission, mask_ranges, mask, mu_amps_HISA, sigma_amps_HISA
+        return mock_emission, mask_ranges, mask, mu_amps_HISA, sigma_amps_HISA, i
 
     def save_data(self):
         if self.filename_out is None:
