@@ -91,7 +91,7 @@ class saberTraining(object):
         self.header = self.p['header']
         self.v = len(self.p['velocity'])
         if self.p_limit is None:
-            self.p_limit = 0.02
+            self.p_limit = 0.01
         if self.p1 is None:
             self.p1 = 0.90
         if self.p2 is None:
