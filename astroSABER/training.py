@@ -179,6 +179,12 @@ class saberTraining(object):
             
             mask = np.logical_and(mask_hisa, mask)
             assert mask.shape==self.test_data[i].shape
+            if not any(mask):
+                warnings.warn('Signal mask is empty.', IterationWarning)
+                if get_all:
+                    return np.nan, np.nan, np.nan
+                else:
+                    return np.nan, np.nan
 
             if any(np.isnan(bg_fit)):
                 warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
