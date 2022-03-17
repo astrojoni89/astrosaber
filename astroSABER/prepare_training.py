@@ -178,10 +178,10 @@ class saberPrepare(object):
                 if self.fix_velocities is None:
                     k = 0
                     mu_velos_HISA_k, sigma_velos_HISA_k = (results_list[i][1][k,0] + results_list[i][1][k,1]) / 2., (results_list[i][1][k,1] - results_list[i][1][k,0]) / (np.sqrt(8*np.log(2))) / 3. # mean and standard deviation
-                    if k < len(results_list[i][1][:,0])-1:
-                        k += 1
                     #velos_HISA_k = self.rng.normal(mu_velos_HISA_k, sigma_velos_HISA_k, samplesize_rng).reshape(samplesize_rng,)
                     velos_HISA_k = self.rng.integers(low=results_list[i][1][k,0], high=results_list[i][1][k,1], endpoint=True, size=samplesize_rng)
+                    if k < len(results_list[i][1][:,0])-1:
+                        k += 1
                 else:
                     velos_HISA_k = self.rng.normal(fix_velocities_indices[j], 1, samplesize_rng).reshape(samplesize_rng,)
                 velos_of_comps_HISA_k = self.rng.choice(velos_HISA_k, 1)
