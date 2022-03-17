@@ -142,7 +142,7 @@ class saberTraining(object):
         ###TODO
         try:
             mask_hisa = self.hisa_mask[i]
-            consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
+            consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='positive', amp_threshold=None)
             mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
             mask = mask_channels(self.v, mask_ranges, pad_channels=3, remove_intervals=None)
             ###
@@ -229,7 +229,7 @@ class saberTraining(object):
         ###TODO
         try:
             mask_hisa = self.hisa_mask[i]
-            consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
+            consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='positive', amp_threshold=None)
             mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
             mask = mask_channels(self.v, mask_ranges, pad_channels=3, remove_intervals=None)
             ###
