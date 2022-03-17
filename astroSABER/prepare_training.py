@@ -185,9 +185,6 @@ class saberPrepare(object):
                 else:
                     velos_HISA_k = self.rng.normal(fix_velocities_indices[j], 1, samplesize_rng).reshape(samplesize_rng,)
                 velos_of_comps_HISA_k = self.rng.choice(velos_HISA_k, 1)
-                if velos_of_comps_HISA_k < ((results_list[i][1][k,0] + results_list[i][1][k,1]) / 2.) - ((results_list[i][1][k,1] - results_list[i][1][k,0]) / (np.sqrt(8*np.log(2)))) or velos_of_comps_HISA_k > ((results_list[i][1][k,0] + results_list[i][1][k,1]) / 2.) + ((results_list[i][1][k,1] - results_list[i][1][k,0]) / (np.sqrt(8*np.log(2)))):
-                    print('hisa signal outside emission range')
-                    velos_of_comps_HISA_k = self.rng.choice(velos_HISA_k, 1)
                 if not (velos_of_comps_HISA_k < 0 or velos_of_comps_HISA_k > self.v):
                     velos_of_comps_HISA.append(velos_of_comps_HISA_k)
             velos_of_comps_HISA = np.array(velos_of_comps_HISA) 
