@@ -31,9 +31,9 @@ def pickle_load_file(pathToFile):
     return data
 
 def styles():
-    color_list = ['k', 'b', 'b', 'r', 'g']
+    color_list = ['k', 'r', 'r', 'b', 'g']
     draw_list = ['steps-mid', 'default', 'steps-mid', 'steps-mid', 'steps-mid']
-    line_list = ['-', '--', '-', '-', '-']
+    line_list = ['-', '-', '-', '-', '-']
     return color_list, draw_list, line_list
 
 def styles_pickle():
@@ -43,7 +43,8 @@ def styles_pickle():
     return color_list, draw_list, line_list
 
 def get_figure_params(n_spectra, rowsize, rowbreak):
-    colsize = 1.3 * rowsize
+    golden_ratio = (1 + np.sqrt(5)) / 2.
+    colsize = golden_ratio * rowsize
     cols = int(np.sqrt(n_spectra))
     rows = int(n_spectra / (cols))
     if n_spectra % cols != 0:
