@@ -101,8 +101,6 @@ class saberTraining(object):
         if self.weight_2 is None:
             self.weight_2 = 0.0
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
-        #init(self.training_data)
-        #self.ilist = np.arange(len(self.training_data))
         string = 'Done!'
         say(string)
 
@@ -124,12 +122,11 @@ class saberTraining(object):
 
     def objective_function_lambda_set(self, lam1, p1, lam2, p2, get_all=True, ncpus=None): 
    
-        #global lam1_updt, lam2_updt
         self.lam1_updt, self.lam2_updt = lam1, lam2
         import astroSABER.parallel_processing
         astroSABER.parallel_processing.init([self.training_data, [self]])
         results_list = astroSABER.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')
-        results_list_array = np.array(results_list) # .reshape((len(self.training_data),-1))
+        results_list_array = np.array(results_list)
    
         if get_all:
             assert results_list_array.shape == (len(self.training_data),3), 'Shape is {}'.format(results_list_array.shape)
@@ -367,10 +364,6 @@ class saberTraining(object):
         if self.lam2_initial is None and self.phase == 'two':
             raise ValueError("'lam2_initial' parameter is required for two-phase optimization.")
 
-        #if self.phase == 'two':
-        #    if self.lam1_initial <= self.lam2_initial:
-        #        raise ValueError("'lam1_initial' has to be greater than 'lam2_initial'")
-
         # Initialize book-keeping object
         gd = self.gradient_descent_lambda_set(self.iterations)
         gd.lam1_trace[0] = self.lam1_initial
@@ -398,7 +391,7 @@ class saberTraining(object):
                 gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l + rchi2_lam2r + rchi2_lam2l) / 4.
 
             if i == 0:
-                momentum_lam1, momentum_lam2 = 0., 0. #, momentum_lam2, momentum_p2 
+                momentum_lam1, momentum_lam2 = 0., 0.
             else:
                 if self.mom < 0 or self.mom > 1:
                     raise ValueError("'mom' must be between zero and one")
@@ -409,32 +402,28 @@ class saberTraining(object):
             gd.lam1_trace[i+1] = gd.lam1_trace[i] - self.learning_rate_l1 * gd.D_lam1_trace[i] + momentum_lam1
             gd.lam2_trace[i+1] = gd.lam2_trace[i] - self.learning_rate_l2 * gd.D_lam2_trace[i] + momentum_lam2
 
-        # lam and p cannot be negative; p needs to be 0<p<1
+            # lam cannot be negative; keep lambda within bounds
             if self.lam1_bounds is None:
                 self.lam1_bounds = [0.1,10.0]
             if gd.lam1_trace[i+1] < min(self.lam1_bounds):
-                gd.lam1_trace[i+1] = min(self.lam1_bounds) + 0.05
+                gd.lam1_trace[i+1] = min(self.lam1_bounds) + 0.5
             if gd.lam1_trace[i+1] > max(self.lam1_bounds):
-                gd.lam1_trace[i+1] = max(self.lam1_bounds) - 0.05
+                gd.lam1_trace[i+1] = max(self.lam1_bounds) - 0.5
             if self.lam2_bounds is None:
                 self.lam2_bounds = [0.1,10.0]
             if gd.lam2_trace[i+1] < min(self.lam2_bounds):
-                gd.lam2_trace[i+1] = min(self.lam2_bounds) + 0.05
+                gd.lam2_trace[i+1] = min(self.lam2_bounds) + 0.5
             if gd.lam2_trace[i+1] > max(self.lam2_bounds):
-                gd.lam2_trace[i+1] = max(self.lam2_bounds) - 0.05
+                gd.lam2_trace[i+1] = max(self.lam2_bounds) - 0.5
         
             if gd.lam1_trace[i+1] < 0.:
                 gd.lam1_trace[i+1] = 0.
             if gd.lam2_trace[i+1] < 0.:
                 gd.lam2_trace[i+1] = 0.
-            #lam1_bound_i = gd.lam2_trace[i+1]
-            #if gd.lam1_trace[i+1] <= lam1_bound_i:
-            #    gd.lam1_trace[i+1] = gd.lam2_trace[i+1] + 0.05
 
             say('\niter {0}: red.chi2={1:4.2f}, [lam1, lam2]=[{2:.3f}, {3:.3f}], [p1, p2]=[{4:.3f}, {5:.3f}], mom=[{6:.2f}, {7:4.2f}]'.format(i, gd.accuracy_trace[i], np.round(gd.lam1_trace[i], 3), np.round(gd.lam2_trace[i], 3), np.round(p1, 3), np.round(p2, 3), np.round(momentum_lam1, 2), np.round(momentum_lam2, 2)), end=' ')
 
-
-    #    if False: (use this to avoid convergence testing)
+            # if False: (use this to avoid convergence testing)
             if i <= 2 * self.window_size:
                 say(' (Convergence testing begins in {} iterations)'.format(int(2 * self.window_size - i)))
             else:
