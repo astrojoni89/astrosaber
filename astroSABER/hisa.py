@@ -189,6 +189,8 @@ class HisaExtraction(object):
         #flags
         filename_flags = self.fitsfile.split('/')[-1].split('.fits')[0]+'_flags.fits'
         
+        if not os.path.exists(self.path_to_data):
+            os.makedirs(self.path_to_data)
         pathname_bg = os.path.join(self.path_to_data, filename_bg)
         fits.writeto(pathname_bg, self.image_asy, header=self.header, overwrite=True)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_bg, self.path_to_data))
