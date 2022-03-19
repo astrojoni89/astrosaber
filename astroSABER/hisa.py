@@ -183,11 +183,13 @@ class HisaExtraction(object):
        
         
     def save_data(self):
-        filename_bg = self.fitsfile.split('/')[-1].split('.fits')[0]+'_aslsq_bg_spectrum.fits'
-        filename_hisa = self.fitsfile.split('/')[-1].split('.fits')[0]+'_HISA_spectrum.fits'
-        filename_iter = self.fitsfile.split('/')[-1].split('.fits')[0]+'_number_of_iterations.fits'
+        filename_wext = os.path.basename(self.fitsfile)
+        filename_base, file_extension = os.path.splitext(filename_wext)
+        filename_bg = filename_base + '_aslsq_bg_spectrum.fits'
+        filename_hisa = filename_base + '_HISA_spectrum.fits'
+        filename_iter = filename_base + '_number_of_iterations.fits'
         #flags
-        filename_flags = self.fitsfile.split('/')[-1].split('.fits')[0]+'_flags.fits'
+        filename_flags = filename_base + '_flags.fits'
         
         if not os.path.exists(self.path_to_data):
             os.makedirs(self.path_to_data)
