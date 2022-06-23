@@ -21,7 +21,7 @@ warnings.showwarning = format_warning
 np.seterr('raise')
 
 class saberTraining(object):
-    def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, window_size=None, eps_l1=None, eps_l2=None, learning_rate_l1=None, learning_rate_l2=None, mom=None, get_trace=False, niters=50, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
+    def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, window_size=None, eps_l1=None, eps_l2=None, learning_rate_l1=None, learning_rate_l2=None, mom=None, get_trace=False, niters=20, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
         self.pickle_file = pickle_file
         self.path_to_data = path_to_data
 
@@ -78,7 +78,8 @@ class saberTraining(object):
     def prepare_data(self):
         self.rng = np.random.default_rng(self.seed)
         self.getting_ready()
-        self.p = pickle.load(open(self.pickle_file, 'rb'), encoding='latin1')
+        input_path = os.path.join(self.path_to_data, self.pickle_file)
+        self.p = pickle.load(open(input_path, 'rb'), encoding='latin1')
         self.training_data = self.p['training_data']
         self.test_data = self.p['test_data']
         self.hisa_mask = self.p['hisa_mask']
@@ -90,7 +91,7 @@ class saberTraining(object):
         self.header = self.p['header']
         self.v = len(self.p['velocity'])
         if self.p_limit is None:
-            self.p_limit = 0.02
+            self.p_limit = 0.01
         if self.p1 is None:
             self.p1 = 0.90
         if self.p2 is None:
@@ -100,8 +101,6 @@ class saberTraining(object):
         if self.weight_2 is None:
             self.weight_2 = 0.0
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
-        #init(self.training_data)
-        #self.ilist = np.arange(len(self.training_data))
         string = 'Done!'
         say(string)
 
@@ -123,12 +122,11 @@ class saberTraining(object):
 
     def objective_function_lambda_set(self, lam1, p1, lam2, p2, get_all=True, ncpus=None): 
    
-        #global lam1_updt, lam2_updt
         self.lam1_updt, self.lam2_updt = lam1, lam2
         import astroSABER.parallel_processing
         astroSABER.parallel_processing.init([self.training_data, [self]])
         results_list = astroSABER.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')
-        results_list_array = np.array(results_list) # .reshape((len(self.training_data),-1))
+        results_list_array = np.array(results_list)
    
         if get_all:
             assert results_list_array.shape == (len(self.training_data),3), 'Shape is {}'.format(results_list_array.shape)
@@ -141,15 +139,17 @@ class saberTraining(object):
         ###TODO
         try:
             mask_hisa = self.hisa_mask[i]
-            consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
+            consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='positive', amp_threshold=None)
             mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
-            mask = mask_channels(self.v, mask_ranges, pad_channels=2, remove_intervals=None)
+            mask = mask_channels(self.v, mask_ranges, pad_channels=3, remove_intervals=None)
             ###
             if self.phase == 'two':
                 bg_fit, _, _, _ = two_step_extraction(self.lam1_updt, self.p1, self.lam2_updt, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
             elif self.phase == 'one':
                 bg_fit, _, _, _ = one_step_extraction(self.lam1_updt, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
-    
+            #TODO; for simulated noise-less data
+            if self.noise[i] == 0.:
+                self.noise[i] = 1.
             if type(self.noise[i]) is not np.ndarray:
                 noise_array = np.ones(len(self.training_data[i])) * self.noise[i]
             else:
@@ -176,14 +176,21 @@ class saberTraining(object):
             
             mask = np.logical_and(mask_hisa, mask)
             assert mask.shape==self.test_data[i].shape
-        
+            if not any(mask):
+                warnings.warn('Signal mask is empty.', IterationWarning)
+                print('Spectrum ' + i)
+                if get_all:
+                    return np.nan, np.nan, np.nan
+                else:
+                    return np.nan, np.nan
+
             if any(np.isnan(bg_fit)):
                 warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
                 if get_all:
                     return np.nan, np.nan, np.nan
                 else:
                     return np.nan, np.nan
-    
+            
             squared_residuals = (self.test_data[i][mask] - bg_fit[mask])**2
             residuals = (self.test_data[i][mask] - bg_fit[mask])
             ssr = np.nansum(squared_residuals)
@@ -207,7 +214,9 @@ class saberTraining(object):
                 return cost_function, rchi2, MAD
             else:
                 return cost_function
-        except:
+            
+        except Exception as e:
+            print(e)
             if get_all:
                 return np.nan, np.nan, np.nan
             else:
@@ -217,15 +226,17 @@ class saberTraining(object):
         ###TODO
         try:
             mask_hisa = self.hisa_mask[i]
-            consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='both', amp_threshold=None)
+            consecutive_channels, ranges = determine_peaks(self.training_data[i], peak='positive', amp_threshold=None)
             mask_ranges = ranges[np.where(consecutive_channels>=self.max_consec_ch)]
-            mask = mask_channels(self.v, mask_ranges, pad_channels=2, remove_intervals=None)
+            mask = mask_channels(self.v, mask_ranges, pad_channels=3, remove_intervals=None)
             ###
             if self.phase == 'two':
                 bg_fit, _, _, _ = two_step_extraction(lam1_final, self.p1, lam2_final, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
             elif self.phase == 'one':
                 bg_fit, _, _, _ = one_step_extraction(lam1_final, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
-    
+            #TODO; for simulated noise-less data
+            if self.noise[i] == 0.:
+                self.noise[i] = 1.
             if type(self.noise[i]) is not np.ndarray:
                 noise_array = np.ones(len(self.training_data[i])) * self.noise[i]
             else:
@@ -251,6 +262,14 @@ class saberTraining(object):
                 mask_hisa = mask_hisa.astype('bool')
             
             mask = np.logical_and(mask_hisa, mask)
+            assert mask.shape==self.test_data[i].shape
+            if not any(mask):
+                warnings.warn('Signal mask is empty.', IterationWarning)
+                print('Spectrum ' + i)
+                if get_all:
+                    return np.nan, np.nan, np.nan
+                else:
+                    return np.nan, np.nan
         
             if any(np.isnan(bg_fit)):
                 warnings.warn('Asymmetric least squares fit contains NaNs.', IterationWarning)
@@ -282,7 +301,8 @@ class saberTraining(object):
                 return cost_function, rchi2, bg_fit
             else:
                 return cost_function, bg_fit
-        except:
+        except Exception as e:
+            print(e)
             if get_all:
                 return np.nan, np.nan, np.nan
             else:
@@ -323,9 +343,9 @@ class saberTraining(object):
         if self.learning_rate_l2 is None:
             self.learning_rate_l2 = 0.5
         if self.eps_l1 is None:
-            self.eps_l1 = 0.10
+            self.eps_l1 = 0.1
         if self.eps_l2 is None:
-            self.eps_l2 = 0.10
+            self.eps_l2 = 0.1
         if self.window_size is None:
             self.window_size = 10
         if self.MAD is None:
@@ -343,10 +363,6 @@ class saberTraining(object):
 
         if self.lam2_initial is None and self.phase == 'two':
             raise ValueError("'lam2_initial' parameter is required for two-phase optimization.")
-
-        #if self.phase == 'two':
-        #    if self.lam1_initial <= self.lam2_initial:
-        #        raise ValueError("'lam1_initial' has to be greater than 'lam2_initial'")
 
         # Initialize book-keeping object
         gd = self.gradient_descent_lambda_set(self.iterations)
@@ -375,7 +391,7 @@ class saberTraining(object):
                 gd.accuracy_trace[i] =  (rchi2_lam1r + rchi2_lam1l + rchi2_lam2r + rchi2_lam2l) / 4.
 
             if i == 0:
-                momentum_lam1, momentum_lam2 = 0., 0. #, momentum_lam2, momentum_p2 
+                momentum_lam1, momentum_lam2 = 0., 0.
             else:
                 if self.mom < 0 or self.mom > 1:
                     raise ValueError("'mom' must be between zero and one")
@@ -386,32 +402,28 @@ class saberTraining(object):
             gd.lam1_trace[i+1] = gd.lam1_trace[i] - self.learning_rate_l1 * gd.D_lam1_trace[i] + momentum_lam1
             gd.lam2_trace[i+1] = gd.lam2_trace[i] - self.learning_rate_l2 * gd.D_lam2_trace[i] + momentum_lam2
 
-        # lam and p cannot be negative; p needs to be 0<p<1
+            # lam cannot be negative; keep lambda within bounds
             if self.lam1_bounds is None:
                 self.lam1_bounds = [0.1,10.0]
             if gd.lam1_trace[i+1] < min(self.lam1_bounds):
-                gd.lam1_trace[i+1] = min(self.lam1_bounds) + 0.05
+                gd.lam1_trace[i+1] = min(self.lam1_bounds) + 0.5
             if gd.lam1_trace[i+1] > max(self.lam1_bounds):
-                gd.lam1_trace[i+1] = max(self.lam1_bounds) - 0.05
+                gd.lam1_trace[i+1] = max(self.lam1_bounds) - 0.5
             if self.lam2_bounds is None:
                 self.lam2_bounds = [0.1,10.0]
             if gd.lam2_trace[i+1] < min(self.lam2_bounds):
-                gd.lam2_trace[i+1] = min(self.lam2_bounds) + 0.05
+                gd.lam2_trace[i+1] = min(self.lam2_bounds) + 0.5
             if gd.lam2_trace[i+1] > max(self.lam2_bounds):
-                gd.lam2_trace[i+1] = max(self.lam2_bounds) - 0.05
+                gd.lam2_trace[i+1] = max(self.lam2_bounds) - 0.5
         
             if gd.lam1_trace[i+1] < 0.:
                 gd.lam1_trace[i+1] = 0.
             if gd.lam2_trace[i+1] < 0.:
                 gd.lam2_trace[i+1] = 0.
-            #lam1_bound_i = gd.lam2_trace[i+1]
-            #if gd.lam1_trace[i+1] <= lam1_bound_i:
-            #    gd.lam1_trace[i+1] = gd.lam2_trace[i+1] + 0.05
 
             say('\niter {0}: red.chi2={1:4.2f}, [lam1, lam2]=[{2:.3f}, {3:.3f}], [p1, p2]=[{4:.3f}, {5:.3f}], mom=[{6:.2f}, {7:4.2f}]'.format(i, gd.accuracy_trace[i], np.round(gd.lam1_trace[i], 3), np.round(gd.lam2_trace[i], 3), np.round(p1, 3), np.round(p2, 3), np.round(momentum_lam1, 2), np.round(momentum_lam2, 2)), end=' ')
 
-
-    #    if False: (use this to avoid convergence testing)
+            # if False: (use this to avoid convergence testing)
             if i <= 2 * self.window_size:
                 say(' (Convergence testing begins in {} iterations)'.format(int(2 * self.window_size - i)))
             else:
@@ -447,7 +459,7 @@ class saberTraining(object):
                     break
                 
                 # If gradient descent does not converge, decrease step size toward the end of the loop
-                if i == int(0.75*self.iterations-iterations_for_convergence_training):
+                if i == int(0.67*self.iterations-iterations_for_convergence_training):
                     say('\nDecreasing step size now...')
                     self.learning_rate_l1 = 0.5 * self.learning_rate_l1
                     self.learning_rate_l2 = 0.5 * self.learning_rate_l2
@@ -465,8 +477,10 @@ class saberTraining(object):
                 filename_lam = filename_base+'_lam_opt.txt'
             else:
                 filename_lam = filename_base+'_lam_traces.txt'
-        else:
+        elif not self.filename_out.endswith('.txt'):
             filename_lam = str(self.filename_out) + '.txt'
+        else:
+            filename_lam = str(self.filename_out)
         pathname_lam = os.path.join(self.path_to_data, filename_lam)
         np.savetxt(pathname_lam, self.popt_lam)
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_lam, self.path_to_data))

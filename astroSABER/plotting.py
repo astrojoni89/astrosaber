@@ -18,7 +18,7 @@ from astropy import units as u
 from tqdm import trange
 
 from .utils.spectrum_utils import pixel_circle_calculation, pixel_circle_calculation_px, calculate_spectrum
-from .utils.aslsq_helper import find_nearest, velocity_axes, pixel_to_world
+from .utils.aslsq_helper import find_nearest, velocity_axes, pixel_to_world, merge_ranges
 from .utils.aslsq_fit import two_step_extraction, one_step_extraction
 
 
@@ -31,9 +31,9 @@ def pickle_load_file(pathToFile):
     return data
 
 def styles():
-    color_list = ['k', 'b', 'b', 'r', 'g']
+    color_list = ['k', 'r', 'r', 'b', 'g']
     draw_list = ['steps-mid', 'default', 'steps-mid', 'steps-mid', 'steps-mid']
-    line_list = ['-', '--', '-', '-', '-']
+    line_list = ['-', '-', '-', '-', '-']
     return color_list, draw_list, line_list
 
 def styles_pickle():
@@ -43,7 +43,8 @@ def styles_pickle():
     return color_list, draw_list, line_list
 
 def get_figure_params(n_spectra, rowsize, rowbreak):
-    colsize = 1.3 * rowsize
+    golden_ratio = (1 + np.sqrt(5)) / 2.
+    colsize = golden_ratio * rowsize
     cols = int(np.sqrt(n_spectra))
     rows = int(n_spectra / (cols))
     if n_spectra % cols != 0:
@@ -100,7 +101,8 @@ def scale_fontsize(rowsize):
 
 def plot_signal_ranges(ax, data, idx, fig_channels):
     if 'signal_ranges' in data.keys():
-        for low, upp in data['signal_ranges'][idx]:
+        merged_signal_ranges = merge_ranges(data['signal_ranges'][idx]) # to merge overlapping ranges
+        for low, upp in merged_signal_ranges:
             ax.axvspan(fig_channels[low], fig_channels[upp - 1], alpha=0.1, color='indianred')
             
 def get_title_string(idx, rchi2):
@@ -256,7 +258,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
     figsize = (cols*colsize, rowbreak*rowsize)
     fig = plt.figure(figsize=figsize)
-    xValue = rng.integers(0,high=xsize,size=n_spectra)
+    xValue = rng.choice(xsize,size=n_spectra,replace=False)
     for i in trange(n_spectra):
         idx = xValue[i]
         ax = fig.add_subplot(rows,cols,i+1)
