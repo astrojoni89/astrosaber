@@ -30,6 +30,7 @@ The asymmetry parameter $p\in[0,1]$ is set to favor either peaks or dips while s
 
 After $n_{\mathrm{minor}}$ iterations, the minor cycle converges, such that the iteratively updated baseline $\mathbf{z}$ will not change anymore given the input spectrum $\mathbf{y}$. However, in order to effectively smooth out dips while still retaining real signal peaks in the spectra, the smoothed baseline $\mathbf{z}$ is then passed to the next iteration of the major cycle as an input (i.e. now $\mathbf{y}$) for its minor cycle smoothing.
 
+In the case of the THOR HI data, the minor cycle has shown to already converge after only three iterations. Hence, the number of minor cycle iterations has been fixed at $n_{\mathrm{minor}}=3$ in the algorithm. This parameter affects the output of `astroSABER` only mildly since the final smoothed baseline is mostly dependent on the number of iterations in the major cycle and on the $\lambda$ parameter that tunes the smoothing.
 
 ## Installation
 ### Dependencies
