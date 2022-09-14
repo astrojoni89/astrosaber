@@ -88,7 +88,7 @@ def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=Non
         sigma = 5
     if noise is None:
         noise = np.round(np.nanstd(np.append(spectrum[0:int(10*vdelt)],spectrum[int(-10*vdelt):-1])),decimals=2)
-    if np.all(noise)==0.:
+    if noise==0.:
         return True
     if np.any(spectrum > sigma * noise):
         if velo_range is not None:
