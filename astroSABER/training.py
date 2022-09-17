@@ -474,9 +474,9 @@ class saberTraining(object):
             filename_wext = os.path.basename(self.pickle_file)
             filename_base, file_extension = os.path.splitext(filename_wext)
             if not self.get_trace:
-                filename_lam = filename_base+'_lam_opt.txt'
+                filename_lam = filename_base+'_lam_opt{}.txt'.format(self.suffix)
             else:
-                filename_lam = filename_base+'_lam_traces.txt'
+                filename_lam = filename_base+'_lam_traces{}.txt'.format(self.suffix)
         elif not self.filename_out.endswith('.txt'):
             filename_lam = str(self.filename_out) + '.txt'
         else:
@@ -498,7 +498,7 @@ class saberTraining(object):
     def save_pickle(self):
         filename_wext = os.path.basename(self.pickle_file)
         filename_base, file_extension = os.path.splitext(filename_wext)
-        updated_picklename = filename_base + '_astrosaber_fit.pickle'
+        updated_picklename = filename_base + '_astrosaber_fit{}.pickle'.format(self.suffix)
         self.path_to_updated_pickle = os.path.join(self.path_to_data, updated_picklename)
         pickle.dump(self.p, open(self.path_to_updated_pickle, 'wb'), protocol=2)
         say("\n\033[92mSAVED UPDATED PICKLE FILE:\033[0m '{}' in '{}'".format(updated_picklename, self.path_to_data))
