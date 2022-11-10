@@ -33,7 +33,7 @@ def one_step_i(i):
     return result
 
 
-def parallel_process(array, function, n_jobs=4, use_kwargs=False, front_num=3):
+def parallel_process(array, function, n_jobs=4, use_kwargs=False, front_num=3, bar=tqdm):
     """A parallel version of the map function with a progress bar.
     Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/
     Args:
@@ -67,7 +67,7 @@ def parallel_process(array, function, n_jobs=4, use_kwargs=False, front_num=3):
             'leave': True
         }
         # Print out the progress as tasks complete
-        for f in tqdm(as_completed(futures), **kwargs):
+        for f in bar(as_completed(futures), **kwargs):
             pass
     out = []
     # Get the results from the futures.
@@ -125,7 +125,7 @@ def parallel_process_wo_bar(array, function, n_jobs=4, use_kwargs=False, front_n
     return front + out
 
 
-def func(use_ncpus=None, function=None):
+def func(use_ncpus=None, function=None, bar=tqdm):
     # Multiprocessing code
     ncpus = multiprocessing.cpu_count()
     # p = multiprocessing.Pool(ncpus, init_worker)
@@ -138,13 +138,13 @@ def func(use_ncpus=None, function=None):
         if function is None:
             raise ValueError('Have to set function for parallel process.')
         if function == 'two_step':
-            results_list = parallel_process(mp_ilist, two_step_i, n_jobs=use_ncpus)
+            results_list = parallel_process(mp_ilist, two_step_i, n_jobs=use_ncpus, bar=bar)
         if function == 'one_step':
-            results_list = parallel_process(mp_ilist, one_step_i, n_jobs=use_ncpus)
+            results_list = parallel_process(mp_ilist, one_step_i, n_jobs=use_ncpus, bar=bar)
         if function == 'cost':
-            results_list = parallel_process(mp_ilist, single_cost_i, n_jobs=use_ncpus)
+            results_list = parallel_process(mp_ilist, single_cost_i, n_jobs=use_ncpus, bar=bar)
         if function == 'hisa':
-            results_list = parallel_process(mp_ilist, lambda_extraction_i, n_jobs=use_ncpus)
+            results_list = parallel_process(mp_ilist, lambda_extraction_i, n_jobs=use_ncpus, bar=bar)
         
     except KeyboardInterrupt:
         print("KeyboardInterrupt... quitting.")
