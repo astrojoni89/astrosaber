@@ -154,12 +154,12 @@ class HisaExtraction(object):
             if self.phase == 'two':
                 import astroSABER.parallel_processing
                 astroSABER.parallel_processing.init([self.list_data, [self]])
-                results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='two_step') 
+                results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='two_step', bar=fran) 
                     
             elif self.phase == 'one':
                 import astroSABER.parallel_processing
                 astroSABER.parallel_processing.init([self.list_data, [self]])
-                results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='one_step')
+                results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='one_step', bar=fran)
                 
             print('\n'+'Unraveling data and writing into cubes...')
             for k in tqdm(range(len(results_list)), unit='spec', unit_scale=True):
