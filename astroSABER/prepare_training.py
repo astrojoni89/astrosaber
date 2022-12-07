@@ -20,7 +20,7 @@ np.seterr('raise')
 
 
 class saberPrepare(object):
-    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_amp_snr=7., std_amp_snr=1., mean_linewidth=4., std_linewidth=1., mean_ncomponent=2., std_ncomponent=.5, fix_velocities=None, lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence=3, noise=None, add_residual = False, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, path_to_file='.', seed=111):
+    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_amp_snr=7., std_amp_snr=1., mean_linewidth=4., std_linewidth=1., mean_ncomponent=2., std_ncomponent=.5, fix_velocities=None, fix_velocities_sigma=None, lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence=3, noise=None, add_residual = False, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, path_to_file='.', seed=111):
         self.fitsfile = fitsfile
         self.training_set_size = int(training_set_size)
         self.path_to_noise_map = path_to_noise_map
@@ -34,6 +34,7 @@ class saberPrepare(object):
         self.std_ncomponent = std_ncomponent
         
         self.fix_velocities = fix_velocities
+        self.fix_velocities_sigma = fix_velocities_sigma
         
         self.lam1 = lam1
         self.p1 = p1
@@ -63,7 +64,7 @@ class saberPrepare(object):
         self.debug_data = None # for debugging
         
     def __str__(self):
-        return f'saberPrepare:\nfitsfile: {self.fitsfile}\ntraining_set_size: {self.training_set_size}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nmean_amp_snr: {self.mean_amp_snr}\nstd_amp_snr: {self.std_amp_snr}\nmean_linewidth: {self.mean_linewidth}\nstd_linewidth: {self.std_linewidth}\nmean_ncomponent: {self.mean_ncomponent}\nstd_ncomponent: {self.std_ncomponent}\nfix_velocities: {self.fix_velocities}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
+        return f'saberPrepare:\nfitsfile: {self.fitsfile}\ntraining_set_size: {self.training_set_size}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nmean_amp_snr: {self.mean_amp_snr}\nstd_amp_snr: {self.std_amp_snr}\nmean_linewidth: {self.mean_linewidth}\nstd_linewidth: {self.std_linewidth}\nmean_ncomponent: {self.mean_ncomponent}\nstd_ncomponent: {self.std_ncomponent}\nfix_velocities: {self.fix_velocities}\nfix_velocities_sigma: {self.fix_velocities_sigma}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
     
     def getting_ready(self):
         string = 'preparation'
@@ -188,7 +189,11 @@ class saberPrepare(object):
                     if k < len(results_list[i][1][:,0])-1:
                         k += 1
                 else:
-                    velos_HISA_k = self.rng.normal(fix_velocities_indices[j], 1, samplesize_rng).reshape(samplesize_rng,)
+                    if self.fix_velocities_sigma is not None:
+                        fix_velocities_sigma_k = self.fix_velocities_sigma / channel_width
+                    else:
+                        fix_velocities_sigma_k = 1. # one spectral channel as std
+                    velos_HISA_k = self.rng.normal(fix_velocities_indices[j], fix_velocities_sigma_k, samplesize_rng).reshape(samplesize_rng,)
                 velos_of_comps_HISA_k = self.rng.choice(velos_HISA_k, 1)
                 if not (velos_of_comps_HISA_k < 0 or velos_of_comps_HISA_k > self.v):
                     velos_of_comps_HISA.append(velos_of_comps_HISA_k)
