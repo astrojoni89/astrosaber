@@ -107,12 +107,18 @@ def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=Non
 
 def md_header_2d(fitsfile):
     header_2d = fits.getheader(fitsfile)
-    del header_2d['NAXIS3']
-    del header_2d['CRPIX3']
-    del header_2d['CDELT3']
-    del header_2d['CUNIT3']
-    del header_2d['CTYPE3']
-    del header_2d['CRVAL3']
+    if 'NAXIS3' in header_2d.keys():
+        del header_2d['NAXIS3']
+    if 'CRPIX3' in header_2d.keys():
+        del header_2d['CRPIX3']
+    if 'CDELT3' in header_2d.keys():
+        del header_2d['CDELT3']
+    if 'CUNIT3' in header_2d.keys():
+        del header_2d['CUNIT3']
+    if 'CTYPE3' in header_2d.keys():
+        del header_2d['CTYPE3']
+    if 'CRVAL3' in header_2d.keys():
+        del header_2d['CRVAL3']
 
     header_2d['NAXIS'] = 2
     header_2d['WCSAXES'] = 2
