@@ -72,7 +72,7 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
             converge_logic = np.append(converge_logic,converge_test)
             c = count_ones_in_row(converge_logic)
             if np.any(c > iterations_for_convergence):
-                i_converge = np.min(np.argwhere(c > iterations_for_convergence))
+                i_converge = np.min(np.argwhere(c > iterations_for_convergence)) + 2
                 res = abs(spectrum_next - spectrum_firstfit)
                 if add_residual:
                     final_spec = spectrum_next + res
@@ -133,7 +133,7 @@ def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_si
             converge_logic = np.append(converge_logic,converge_test)
             c = count_ones_in_row(converge_logic)
             if np.any(c > iterations_for_convergence):
-                i_converge = np.min(np.argwhere(c > iterations_for_convergence))
+                i_converge = np.min(np.argwhere(c > iterations_for_convergence)) + 2
                 res = abs(spectrum_next - spectrum_firstfit)
                 if add_residual:
                     final_spec = spectrum_next + res
