@@ -6,7 +6,7 @@
 
 # astroSABER
 
-![astroSABER logo](./docs/astrosaber_promo_lowres.png)
+![astroSABER logo](./docs/astrosaber_promo_lowres.png)  
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/astrojoni89/astroSABER?style=for-the-badge)
 
 ## About
