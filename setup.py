@@ -35,7 +35,7 @@ with open(glob.glob(readme_glob)[0]) as f:
     LONG_DESCRIPTION = f.read()
 
 # VERSION should be PEP440 compatible (http://www.python.org/dev/peps/pep-0440)
-VERSION = metadata.get('version', '0.1.0')
+VERSION = metadata.get('version', '0.2.0')
 
 # Treat everything in scripts except README* as a script to be installed
 scripts = [fname for fname in glob.glob(os.path.join('scripts', '*'))
