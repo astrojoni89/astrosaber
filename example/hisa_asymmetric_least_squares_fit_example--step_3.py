@@ -3,8 +3,8 @@ import numpy as np
 from astropy.io import fits
 from astropy import units as u
 
-from astroSABER.hisa import HisaExtraction
-from astroSABER.plotting import plot_spectra
+from astrosaber.hisa import HisaExtraction
+from astrosaber.plotting import plot_spectra
 
 
 ###step 3: run the self-absorption extraction with optimal smoothing parameters obtained in step 2 
