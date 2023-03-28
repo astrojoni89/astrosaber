@@ -45,7 +45,7 @@ You will need the following packages to run `astroSABER`. We list the version of
 * [tqdm (v4.56.2)](https://tqdm.github.io/)
 
 ### Download astroSABER
-Download `astroSABER` using git `$ git clone https://github.com/astrojoni89/astroSABER.git`
+Download `astroSABER` using git `$ git clone https://github.com/astrojoni89/astrosaber.git`
 
 ### Installing astroSABER
 To install `astroSABER`, make sure that all dependencies are already installed and properly linked to python. We recommend using anaconda and creating a new environment. Then cd to the local directory containing `astroSABER` and install via
