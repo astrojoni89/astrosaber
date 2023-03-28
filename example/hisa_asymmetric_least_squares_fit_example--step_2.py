@@ -3,7 +3,7 @@ import numpy as np
 from astropy.io import fits
 from astropy import units as u
 
-from astroSABER.training import saberTraining
+from astrosaber.training import saberTraining
 
 
 ###step 2: use training and test data obtained in step 1 to find optimal smoothing parameters
