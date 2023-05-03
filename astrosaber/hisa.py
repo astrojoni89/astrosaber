@@ -9,6 +9,8 @@
 import os
 import sys
 import numpy as np
+from pathlib import Path
+from typing import Type, Optional, List, Tuple
 
 from astropy.io import fits
 from astropy import units as u
@@ -26,7 +28,27 @@ warnings.showwarning = format_warning
 
 
 class HisaExtraction(object):
-    def __init__(self, fitsfile, path_to_noise_map=None, path_to_data='.', smoothing='Y', phase='two', lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence = 3, noise=None, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., output_flags = True, baby_yoda = False, p_limit=None, ncpus=None, suffix=''):
+    """
+    A class used to execute self-absorption extraction
+
+    ...
+
+    Attributes
+    ----------
+    fitsfile : Path
+
+    Methods
+    -------
+    says(sound=None)
+        Prints the animals name and what sound it makes
+    """
+    def __init__(self, fitsfile : Path, noise_map=None, path_to_data='.',
+                 smoothing='Y', phase='two', lam1=None, p1=None, lam2=None,
+                 p2=None, niters=20, iterations_for_convergence = 3, noise=None,
+                 add_residual = True, sig = 1.0, velo_range = 15.0,
+                 check_signal_sigma = 6., output_flags = True, baby_yoda = False,
+                 p_limit=None, ncpus=None, suffix=''):
+        
         self.fitsfile = fitsfile
         self.path_to_noise_map = path_to_noise_map
         self.path_to_data = path_to_data
@@ -58,8 +80,27 @@ class HisaExtraction(object):
         
         self.suffix = suffix
         
-    def __str__(self):
-        return f'HisaExtraction:\nfitsfile: {self.fitsfile}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nsmoothing: {self.smoothing}\nphase: {self.phase}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\noutput_flags: {self.output_flags}\np_limit: {self.p_limit}\nncpus: {self.ncpus}'
+    def __repr__(self):
+        return f'HisaExtraction(
+                 \nfitsfile: {self.fitsfile}
+                 \npath_to_noise_map: {self.path_to_noise_map}
+                 \npath_to_data: {self.path_to_data}
+                 \nsmoothing: {self.smoothing}
+                 \nphase: {self.phase}
+                 \nlam1: {self.lam1}
+                 \np1: {self.p1}
+                 \nlam2: {self.lam2}
+                 \np2: {self.p2}
+                 \nniters: {self.niters}
+                 \niterations_for_convergence: {self.iterations_for_convergence}
+                 \nnoise: {self.noise}
+                 \nadd_residual: {self.add_residual}
+                 \nsig: {self.sig}
+                 \nvelo_range: {self.velo_range}
+                 \ncheck_signal_sigma: {self.check_signal_sigma}
+                 \noutput_flags: {self.output_flags}
+                 \np_limit: {self.p_limit}
+                 \nncpus: {self.ncpus})'
 
     def getting_ready(self):
         string = 'preparation'
