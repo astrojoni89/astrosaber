@@ -29,25 +29,70 @@ warnings.showwarning = format_warning
 
 class HisaExtraction(object):
     """
-    A class used to execute self-absorption extraction
+    A class used to execute the self-absorption extraction
 
     ...
 
     Attributes
     ----------
-    fitsfile : Path
+    fitsfile : str
+        Name of the fitsfile.
+    path_to_noise_map : Path
+        Path to the noise map.
+    path_to_data : Path
+        Path to the fitsfile.
+    smoothing : bool, optional
+        Whether to execute the asymmetric least squares smoothing routine.
+    phase : str, optional
+        Mode of saber smoothing, eihter 'one' or 'two' (default) phase smoothing.
+    lam1 : float
+        Lambda_1 smoothing parameter.
+    p1 : float
+        Asymmetry weight of the minor cycle smoothing.
+    lam2 : float
+        Lambda_2 smoothing parameter. Has to be specified if phase is set to 'two'.
+    p2 : float
+        Asymmetry weight of the major cycle smoothing. Has to be specified if phase is set to 'two'.
+    niters : int, optional
+        Maximum number of iterations of the smoothing.
+    iterations_for_convergence : int, optional
+        Number of iterations of the major cycle for the baseline to be considered converged.
+    noise : float
+        Noise level of the data. Has to be specified if no path to noise map is given.
+    add_residual : bool, optional
+        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline. Default is True.
+    sig : float, optional
+        Defines how many sigma of the noise is used as a convergence criterion.
+        If change in baseline between major cycle iterations is smaller than 'sig' * 'noise' for 'iterations_for_convergence',
+        then the baseline is considered converged.
+    velo_range : float, optional
+        Velocity range [in km/s] of the spectra that has to contain significant signal
+        for it to be considered in the baseline extraction. Default is 15.0.
+    check_signal_sigma : float, optional
+        Defines the significance of the signal that has to be present in the spectra
+        for at least the range defined by 'velo_range'. Default is 6.0.
+    output_flags : bool, optional
+        Whether to save a mask containing the flags. Default is True.
+    baby_yoda : bool, optional
+        Whether to show a star wars-themed progress bar. Default is False.
+    p_limit : float
+        The p-limit of the Markov chain to estimate signal ranges in the spectra.
+    ncpus : int
+        Number of CPUs to use.
+    suffix : str, optional
+        Optional suffix to add to the output filenames.
 
     Methods
     -------
-    says(sound=None)
-        Prints the animals name and what sound it makes
+    #TODO
     """
-    def __init__(self, fitsfile : Path, noise_map=None, path_to_data='.',
-                 smoothing='Y', phase='two', lam1=None, p1=None, lam2=None,
-                 p2=None, niters=20, iterations_for_convergence = 3, noise=None,
-                 add_residual = True, sig = 1.0, velo_range = 15.0,
-                 check_signal_sigma = 6., output_flags = True, baby_yoda = False,
-                 p_limit=None, ncpus=None, suffix=''):
+    def __init__(self, fitsfile : str, path_to_noise_map : Path = None, path_to_data : Path = '.',
+                 smoothing : Optional[str] = 'Y', phase : Optional[str] = 'two', lam1 : float = None, p1 : float = None,
+                 lam2 : float = None, p2 : float = None, niters : Optional[int] = 20,
+                 iterations_for_convergence : Optional[int] = 3, noise : float = None,
+                 add_residual : Optional[bool] = True, sig : Optional[float] = 1.0, velo_range : Optional[float] = 15.0,
+                 check_signal_sigma : Optional[float] = 6., output_flags : Optional[bool] = True, baby_yoda : Optional[bool] = False,
+                 p_limit : float = None, ncpus : int = None, suffix : Optional[str] = ''):
         
         self.fitsfile = fitsfile
         self.path_to_noise_map = path_to_noise_map
