@@ -37,7 +37,7 @@ def parallel_process(array, function, n_jobs=4, use_kwargs=False, front_num=3, b
     """A parallel version of the map function with a progress bar.
     Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/
 
-    array : np.ndarray 
+    array : numpy.ndarray 
         An array to iterate over.
     function : func
         A python function to apply to the elements of array.
@@ -88,7 +88,7 @@ def parallel_process_wo_bar(array, function, n_jobs=4, use_kwargs=False, front_n
     """A parallel version of the map function with a progress bar.
     Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/
 
-    array : np.ndarray 
+    array : numpy.ndarray 
         An array to iterate over.
     function : func
         A python function to apply to the elements of array.

@@ -5,6 +5,7 @@ import numpy as np
 def goodness_of_fit(data, fit, errors, dof, mask=None,
                     get_aicc=False):
     """Determine the goodness of fit (reduced chi-square, AICc).
+    
     Parameters
     ----------
     data : numpy.ndarray
@@ -20,6 +21,7 @@ def goodness_of_fit(data, fit, errors, dof, mask=None,
     get_aicc : bool
         If set to `True`, the AICc value will be returned in addition to the
         reduced chi2 value.
+
     Returns
     -------
     rchi2 : float
@@ -60,6 +62,7 @@ def get_max_consecutive_channels(n_channels, p_limit):
     Calculate the number of consecutive positive or negative channels,
     whose probability of occurring due to random chance in a spectrum
     is less than p_limit.
+
     Parameters
     ----------
     n_channels : int
@@ -67,6 +70,7 @@ def get_max_consecutive_channels(n_channels, p_limit):
     p_limit : float
         Maximum probability for consecutive positive/negative channels being
         due to chance.
+
     Returns
     -------
     consec_channels : int
@@ -84,6 +88,7 @@ def get_max_consecutive_channels(n_channels, p_limit):
 
 def determine_peaks(spectrum, peak='both', amp_threshold=None):
     """Find peaks in a spectrum.
+
     Parameters
     ----------
     spectrum : numpy.ndarray
@@ -92,6 +97,7 @@ def determine_peaks(spectrum, peak='both', amp_threshold=None):
         Description of parameter `peak`.
     amp_threshold : float
         Required minimum threshold that at least one data point in a peak feature has to exceed.
+
     Returns
     -------
     consecutive_channels or amp_vals : numpy.ndarray
@@ -152,6 +158,7 @@ def determine_peaks(spectrum, peak='both', amp_threshold=None):
 
 def mask_channels(n_channels, ranges, pad_channels=None, remove_intervals=None):
     """Determine the 1D boolean mask for a given list of spectral ranges.
+
     Parameters
     ----------
     n_channels : int
@@ -162,6 +169,7 @@ def mask_channels(n_channels, ranges, pad_channels=None, remove_intervals=None):
         Number of channels by which an interval (low, upp) gets extended on both sides, resulting in (low - pad_channels, upp + pad_channels).
     remove_intervals : type
         Nested list containing info about ranges of the spectrum that should be masked out.
+
     Returns
     -------
     mask : numpy.ndarray
