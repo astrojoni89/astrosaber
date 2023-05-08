@@ -1,0 +1,1 @@
+astrosaber.rst:1: [redirected permanently] http://danshiebler.com/2016-09-14-parallel-progress-bar/ to https://danshiebler.com/2016-09-14-parallel-progress-bar/
