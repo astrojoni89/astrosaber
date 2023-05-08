@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>astrosaber.parallel_processing &mdash; astrosaber v0.2.0</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            astrosaber
+          </a>
+              <div class="version">
+                0.2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">astrosaber</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">astrosaber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../astrosaber.html">astrosaber</a></li>
+      <li class="breadcrumb-item active">astrosaber.parallel_processing</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for astrosaber.parallel_processing</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ProcessPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
+
+<span class="kn">from</span> <span class="nn">.training</span> <span class="kn">import</span> <span class="n">saberTraining</span>
+<span class="kn">from</span> <span class="nn">.prepare_training</span> <span class="kn">import</span> <span class="n">saberPrepare</span>
+<span class="kn">from</span> <span class="nn">.hisa</span> <span class="kn">import</span> <span class="n">HisaExtraction</span>
+<span class="kn">from</span> <span class="nn">.utils.aslsq_fit</span> <span class="kn">import</span> <span class="n">baseline_als_optimized</span>
+<span class="kn">from</span> <span class="nn">.utils.quality_checks</span> <span class="kn">import</span> <span class="n">goodness_of_fit</span><span class="p">,</span> <span class="n">get_max_consecutive_channels</span><span class="p">,</span> <span class="n">determine_peaks</span><span class="p">,</span> <span class="n">mask_channels</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">trange</span><span class="p">,</span> <span class="n">tqdm</span>
+
+
+    
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">mp_info</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">mp_ilist</span><span class="p">,</span> <span class="n">mp_data</span><span class="p">,</span> <span class="n">mp_params</span>
+    <span class="n">mp_data</span><span class="p">,</span> <span class="n">mp_params</span> <span class="o">=</span> <span class="n">mp_info</span>
+    <span class="n">mp_ilist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_data</span><span class="p">))</span></div>
+      
+<div class="viewcode-block" id="single_cost_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.single_cost_i">[docs]</a><span class="k">def</span> <span class="nf">single_cost_i</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">saberTraining</span><span class="o">.</span><span class="n">single_cost</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="lambda_extraction_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.lambda_extraction_i">[docs]</a><span class="k">def</span> <span class="nf">lambda_extraction_i</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">saberPrepare</span><span class="o">.</span><span class="n">two_step_extraction_prepare</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="two_step_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.two_step_i">[docs]</a><span class="k">def</span> <span class="nf">two_step_i</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">HisaExtraction</span><span class="o">.</span><span class="n">two_step_extraction_single</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="one_step_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.one_step_i">[docs]</a><span class="k">def</span> <span class="nf">one_step_i</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">HisaExtraction</span><span class="o">.</span><span class="n">one_step_extraction_single</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="parallel_process"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.parallel_process">[docs]</a><span class="k">def</span> <span class="nf">parallel_process</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">use_kwargs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">front_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">tqdm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A parallel version of the map function with a progress bar.</span>
+<span class="sd">    Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/</span>
+
+<span class="sd">    array : numpy.ndarray </span>
+<span class="sd">        An array to iterate over.</span>
+<span class="sd">    function : func</span>
+<span class="sd">        A python function to apply to the elements of array.</span>
+<span class="sd">    n_jobs : int</span>
+<span class="sd">        The number of cores to use.</span>
+<span class="sd">    use_kwargs : bool</span>
+<span class="sd">        Whether to consider the elements of array as dictionaries of</span>
+<span class="sd">        keyword arguments to function. Default is False.</span>
+<span class="sd">    front_num : int</span>
+<span class="sd">        The number of iterations to run serially before kicking off the parallel job.</span>
+<span class="sd">        Useful for catching bugs. Default is 3.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [function(array[0]), function(array[1]), ...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># We run the first few iterations serially to catch bugs</span>
+    <span class="k">if</span> <span class="n">front_num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">front</span> <span class="o">=</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[:</span><span class="n">front_num</span><span class="p">]]</span> <span class="c1">#, lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt</span>
+    <span class="c1"># If we set n_jobs to 1, just run a list comprehension. This is useful for benchmarking and debugging.</span>
+    <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">front</span> <span class="o">+</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:])]</span>
+    <span class="c1"># Assemble the workers</span>
+    <span class="k">with</span> <span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+        <span class="c1"># Pass the elements of array into function</span>
+        <span class="k">if</span> <span class="n">use_kwargs</span><span class="p">:</span>
+            <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:]]</span> <span class="c1"># , lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">futures</span><span class="p">),</span>
+            <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;spec&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;unit_scale&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s1">&#39;leave&#39;</span><span class="p">:</span> <span class="kc">True</span>
+        <span class="p">}</span>
+        <span class="c1"># Print out the progress as tasks complete</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">bar</span><span class="p">(</span><span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">pass</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Get the results from the futures.</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">future</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span> <span class="c1">#tqdm(enumerate(futures)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">front</span> <span class="o">+</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="parallel_process_wo_bar"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.parallel_process_wo_bar">[docs]</a><span class="k">def</span> <span class="nf">parallel_process_wo_bar</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">use_kwargs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">front_num</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A parallel version of the map function with a progress bar.</span>
+<span class="sd">    Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/</span>
+
+<span class="sd">    array : numpy.ndarray </span>
+<span class="sd">        An array to iterate over.</span>
+<span class="sd">    function : func</span>
+<span class="sd">        A python function to apply to the elements of array.</span>
+<span class="sd">    n_jobs : int</span>
+<span class="sd">        The number of cores to use.</span>
+<span class="sd">    use_kwargs : bool</span>
+<span class="sd">        Whether to consider the elements of array as dictionaries of</span>
+<span class="sd">        keyword arguments to function. Default is False.</span>
+<span class="sd">    front_num : int</span>
+<span class="sd">        The number of iterations to run serially before kicking off the parallel job.</span>
+<span class="sd">        Useful for catching bugs. Default is 3.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [function(array[0]), function(array[1]), ...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># We run the first few iterations serially to catch bugs</span>
+    <span class="k">if</span> <span class="n">front_num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">front</span> <span class="o">=</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[:</span><span class="n">front_num</span><span class="p">]]</span> <span class="c1">#, lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt</span>
+    <span class="c1"># If we set n_jobs to 1, just run a list comprehension. This is useful for benchmarking and debugging.</span>
+    <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">front</span> <span class="o">+</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:])]</span>
+    <span class="c1"># Assemble the workers</span>
+    <span class="k">with</span> <span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+        <span class="c1"># Pass the elements of array into function</span>
+        <span class="k">if</span> <span class="n">use_kwargs</span><span class="p">:</span>
+            <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:]]</span> <span class="c1"># , lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">futures</span><span class="p">),</span>
+            <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;it&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;unit_scale&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s1">&#39;leave&#39;</span><span class="p">:</span> <span class="kc">True</span>
+        <span class="p">}</span>
+        <span class="c1"># Print out the progress as tasks complete</span>
+        <span class="c1">#for f in tqdm(as_completed(futures), **kwargs):</span>
+        <span class="c1">#    pass</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Get the results from the futures.</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">future</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span> <span class="c1">#tqdm(enumerate(futures)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">front</span> <span class="o">+</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="func"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.func">[docs]</a><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">use_ncpus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">tqdm</span><span class="p">):</span>
+    <span class="c1"># Multiprocessing code</span>
+    <span class="n">ncpus</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+    <span class="c1"># p = multiprocessing.Pool(ncpus, init_worker)</span>
+    <span class="k">if</span> <span class="n">use_ncpus</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">use_ncpus</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ncpus</span><span class="o">*</span><span class="mf">0.75</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Using </span><span class="si">{}</span><span class="s1"> of </span><span class="si">{}</span><span class="s1"> cpus&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">use_ncpus</span><span class="p">,</span> <span class="n">ncpus</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">mp_ilist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must specify &#39;mp_ilist&#39;.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Have to set function for parallel process.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="o">==</span> <span class="s1">&#39;two_step&#39;</span><span class="p">:</span>
+            <span class="n">results_list</span> <span class="o">=</span> <span class="n">parallel_process</span><span class="p">(</span><span class="n">mp_ilist</span><span class="p">,</span> <span class="n">two_step_i</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">use_ncpus</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">bar</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="o">==</span> <span class="s1">&#39;one_step&#39;</span><span class="p">:</span>
+            <span class="n">results_list</span> <span class="o">=</span> <span class="n">parallel_process</span><span class="p">(</span><span class="n">mp_ilist</span><span class="p">,</span> <span class="n">one_step_i</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">use_ncpus</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">bar</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="o">==</span> <span class="s1">&#39;cost&#39;</span><span class="p">:</span>
+            <span class="n">results_list</span> <span class="o">=</span> <span class="n">parallel_process</span><span class="p">(</span><span class="n">mp_ilist</span><span class="p">,</span> <span class="n">single_cost_i</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">use_ncpus</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">bar</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="o">==</span> <span class="s1">&#39;hisa&#39;</span><span class="p">:</span>
+            <span class="n">results_list</span> <span class="o">=</span> <span class="n">parallel_process</span><span class="p">(</span><span class="n">mp_ilist</span><span class="p">,</span> <span class="n">lambda_extraction_i</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">use_ncpus</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">bar</span><span class="p">)</span>
+        
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;KeyboardInterrupt... quitting.&quot;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">results_list</span></div>
+
+
+<div class="viewcode-block" id="func_wo_bar"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.func_wo_bar">[docs]</a><span class="k">def</span> <span class="nf">func_wo_bar</span><span class="p">(</span><span class="n">use_ncpus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># Multiprocessing code</span>
+    <span class="n">ncpus</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+    <span class="c1"># p = multiprocessing.Pool(ncpus, init_worker)</span>
+    <span class="k">if</span> <span class="n">use_ncpus</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">use_ncpus</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ncpus</span><span class="o">*</span><span class="mf">0.75</span><span class="p">)</span>
+    <span class="c1">#print(&#39;Using {} of {} cpus&#39;.format(use_ncpus, ncpus))</span>
+    <span class="k">if</span> <span class="n">mp_ilist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must specify &#39;mp_ilist&#39;.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Have to set function for parallel process.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="o">==</span> <span class="s1">&#39;two_step&#39;</span><span class="p">:</span>
+            <span class="n">results_list</span> <span class="o">=</span> <span class="n">parallel_process_wo_bar</span><span class="p">(</span><span class="n">mp_ilist</span><span class="p">,</span> <span class="n">two_step_i</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">use_ncpus</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="o">==</span> <span class="s1">&#39;one_step&#39;</span><span class="p">:</span>
+            <span class="n">results_list</span> <span class="o">=</span> <span class="n">parallel_process_wo_bar</span><span class="p">(</span><span class="n">mp_ilist</span><span class="p">,</span> <span class="n">one_step_i</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">use_ncpus</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="o">==</span> <span class="s1">&#39;cost&#39;</span><span class="p">:</span>
+            <span class="n">results_list</span> <span class="o">=</span> <span class="n">parallel_process_wo_bar</span><span class="p">(</span><span class="n">mp_ilist</span><span class="p">,</span> <span class="n">single_cost_i</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">use_ncpus</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="o">==</span> <span class="s1">&#39;hisa&#39;</span><span class="p">:</span>
+            <span class="n">results_list</span> <span class="o">=</span> <span class="n">parallel_process_wo_bar</span><span class="p">(</span><span class="n">mp_ilist</span><span class="p">,</span> <span class="n">lambda_extraction_i</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">use_ncpus</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;KeyboardInterrupt... quitting.&quot;</span><span class="p">)</span>
+        <span class="n">quit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">results_list</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Jonas Syed.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
