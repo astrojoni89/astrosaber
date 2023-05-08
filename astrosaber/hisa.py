@@ -10,7 +10,7 @@ import os
 import sys
 import numpy as np
 from pathlib import Path
-from typing import Type, Optional, List, Tuple
+from typing import Optional, List, Tuple
 
 from astropy.io import fits
 from astropy import units as u
@@ -100,7 +100,7 @@ class HisaExtraction(object):
     prepare_data()
         Prepares the extraction by reading in data and put them in a raveled list of spectra.
     saber()
-        Runs the self-absorption extraction.
+        Runs the self-absorption extraction and saves the data.
         It takes the instance attributes and reads in the noise to kick off the extraction routine.
     two_step_extraction_single(i)
         Runs the two-phase extraction for a single spectrum i.
@@ -116,7 +116,7 @@ class HisaExtraction(object):
                  iterations_for_convergence : Optional[int] = 3, noise : float = None,
                  add_residual : Optional[bool] = True, sig : Optional[float] = 1.0, velo_range : Optional[float] = 15.0,
                  check_signal_sigma : Optional[float] = 6., output_flags : Optional[bool] = True, baby_yoda : Optional[bool] = False,
-                 p_limit : float = 0.02, ncpus : int = None, suffix : Optional[str] = ''):
+                 p_limit : Optional[float] = 0.02, ncpus : Optional[int] = None, suffix : Optional[str] = ''):
         
         self.fitsfile = fitsfile
         self.path_to_noise_map = path_to_noise_map
