@@ -92,7 +92,7 @@ class HisaExtraction(object):
                  iterations_for_convergence : Optional[int] = 3, noise : float = None,
                  add_residual : Optional[bool] = True, sig : Optional[float] = 1.0, velo_range : Optional[float] = 15.0,
                  check_signal_sigma : Optional[float] = 6., output_flags : Optional[bool] = True, baby_yoda : Optional[bool] = False,
-                 p_limit : float = None, ncpus : int = None, suffix : Optional[str] = ''):
+                 p_limit : float = 0.02, ncpus : int = None, suffix : Optional[str] = ''):
         
         self.fitsfile = fitsfile
         self.path_to_noise_map = path_to_noise_map
@@ -126,26 +126,26 @@ class HisaExtraction(object):
         self.suffix = suffix
         
     def __repr__(self):
-        return f'HisaExtraction(
-                 \nfitsfile: {self.fitsfile}
-                 \npath_to_noise_map: {self.path_to_noise_map}
-                 \npath_to_data: {self.path_to_data}
-                 \nsmoothing: {self.smoothing}
-                 \nphase: {self.phase}
-                 \nlam1: {self.lam1}
-                 \np1: {self.p1}
-                 \nlam2: {self.lam2}
-                 \np2: {self.p2}
-                 \nniters: {self.niters}
-                 \niterations_for_convergence: {self.iterations_for_convergence}
-                 \nnoise: {self.noise}
-                 \nadd_residual: {self.add_residual}
-                 \nsig: {self.sig}
-                 \nvelo_range: {self.velo_range}
-                 \ncheck_signal_sigma: {self.check_signal_sigma}
-                 \noutput_flags: {self.output_flags}
-                 \np_limit: {self.p_limit}
-                 \nncpus: {self.ncpus})'
+        return f'''HisaExtraction(
+                 fitsfile: {self.fitsfile}
+                 path_to_noise_map: {self.path_to_noise_map}
+                 path_to_data: {self.path_to_data}
+                 smoothing: {self.smoothing}
+                 phase: {self.phase}
+                 lam1: {self.lam1}
+                 p1: {self.p1}
+                 lam2: {self.lam2}
+                 p2: {self.p2}
+                 niters: {self.niters}
+                 iterations_for_convergence: {self.iterations_for_convergence}
+                 noise: {self.noise}
+                 add_residual: {self.add_residual}
+                 sig: {self.sig}
+                 velo_range: {self.velo_range}
+                 check_signal_sigma: {self.check_signal_sigma}
+                 output_flags: {self.output_flags}
+                 p_limit: {self.p_limit}
+                 ncpus: {self.ncpus})'''
 
     def getting_ready(self):
         string = 'preparation'
@@ -238,14 +238,14 @@ class HisaExtraction(object):
             print('\n'+'Asymmetric least squares fitting in progress...')
             
             if self.phase == 'two':
-                import astroSABER.parallel_processing
-                astroSABER.parallel_processing.init([self.list_data, [self]])
-                results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='two_step', bar=fran) 
+                import astrosaber.parallel_processing
+                astrosaber.parallel_processing.init([self.list_data, [self]])
+                results_list = astrosaber.parallel_processing.func(use_ncpus=self.ncpus, function='two_step', bar=fran) 
                     
             elif self.phase == 'one':
-                import astroSABER.parallel_processing
-                astroSABER.parallel_processing.init([self.list_data, [self]])
-                results_list = astroSABER.parallel_processing.func(use_ncpus=self.ncpus, function='one_step', bar=fran)
+                import astrosaber.parallel_processing
+                astrosaber.parallel_processing.init([self.list_data, [self]])
+                results_list = astrosaber.parallel_processing.func(use_ncpus=self.ncpus, function='one_step', bar=fran)
                 
             print('\n'+'Unraveling data and writing into cubes...')
             for k in tqdm(range(len(results_list)), unit='spec', unit_scale=True):
