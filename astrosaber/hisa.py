@@ -29,7 +29,7 @@ warnings.showwarning = format_warning
 
 class HisaExtraction(object):
     """
-    A class used to execute the self-absorption extraction
+    A class used to execute the self-absorption extraction.
 
     
     Attributes
@@ -38,32 +38,40 @@ class HisaExtraction(object):
         Name of the fitsfile.
     path_to_noise_map : Path
         Path to the noise map.
+        If no noise map is given, a single value must be provided instead using the 'noise' attribute.
     path_to_data : Path
         Path to the fitsfile.
     smoothing : bool, optional
         Whether to execute the asymmetric least squares smoothing routine.
+        Default is True.
     phase : str, optional
-        Mode of saber smoothing, eihter 'one' or 'two' (default) phase smoothing.
+        Mode of saber smoothing.
+        Either 'one' or 'two' (default) phase smoothing. Default is 'two'.
     lam1 : float
         Lambda_1 smoothing parameter.
-    p1 : float
+    p1 : float, optional
         Asymmetry weight of the minor cycle smoothing.
+        Default is 0.90.
     lam2 : float
         Lambda_2 smoothing parameter. Has to be specified if phase is set to 'two'.
-    p2 : float
-        Asymmetry weight of the major cycle smoothing. Has to be specified if phase is set to 'two'.
+    p2 : float, optional
+        Asymmetry weight of the major cycle smoothing.
+        Has to be specified if phase is set to 'two'. Default is 0.90.
     niters : int, optional
         Maximum number of iterations of the smoothing.
+        Default is 20.
     iterations_for_convergence : int, optional
         Number of iterations of the major cycle for the baseline to be considered converged.
+        Default is 3.
     noise : float
         Noise level of the data. Has to be specified if no path to noise map is given.
     add_residual : bool, optional
-        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline. Default is True.
+        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
+        Default is True.
     sig : float, optional
         Defines how many sigma of the noise is used as a convergence criterion.
-        If change in baseline between major cycle iterations is smaller than 'sig' * 'noise' for 'iterations_for_convergence',
-        then the baseline is considered converged.
+        If the change in baseline between major cycle iterations is smaller than 'sig' * noise for 'iterations_for_convergence',
+        then the baseline is considered converged. Default is 1.0.
     velo_range : float, optional
         Velocity range [in km/s] of the spectra that has to contain significant signal
         for it to be considered in the baseline extraction. Default is 15.0.
@@ -71,13 +79,17 @@ class HisaExtraction(object):
         Defines the significance of the signal that has to be present in the spectra
         for at least the range defined by 'velo_range'. Default is 6.0.
     output_flags : bool, optional
-        Whether to save a mask containing the flags. Default is True.
+        Whether to save a mask containing the flags.
+        Default is True.
     baby_yoda : bool, optional
-        Whether to show a star wars-themed progress bar. Default is False.
-    p_limit : float
+        Whether to show a star wars-themed progress bar.
+        Default is False.
+    p_limit : float, optional
         The p-limit of the Markov chain to estimate signal ranges in the spectra.
+        Default is 0.02.
     ncpus : int
         Number of CPUs to use.
+        Defaults to half of the available cpus.
     suffix : str, optional
         Optional suffix to add to the output filenames.
 
@@ -97,6 +109,7 @@ class HisaExtraction(object):
     save_data()
         Saves all the extracted data into FITS files.
     """
+
     def __init__(self, fitsfile : str, path_to_noise_map : Path = None, path_to_data : Path = '.',
                  smoothing : Optional[str] = 'Y', phase : Optional[str] = 'two', lam1 : float = None, p1 : Optional[float] = 0.90,
                  lam2 : float = None, p2 : Optional[float] = 0.90, niters : Optional[int] = 20,
