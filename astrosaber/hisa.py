@@ -31,8 +31,7 @@ class HisaExtraction(object):
     """
     A class used to execute the self-absorption extraction
 
-    ...
-
+    
     Attributes
     ----------
     fitsfile : str
@@ -84,11 +83,23 @@ class HisaExtraction(object):
 
     Methods
     -------
-    #TODO
+    getting_ready()
+        Prints a message when preparation starts.
+    prepare_data()
+        Prepares the extraction by reading in data and put them in a raveled list of spectra.
+    saber()
+        Runs the self-absorption extraction.
+        It takes the instance attributes and reads in the noise to kick off the extraction routine.
+    two_step_extraction_single(i)
+        Runs the two-phase extraction for a single spectrum i.
+    one_step_extraction_single(i)
+        Runs the one-phase extraction for a single spectrum i.
+    save_data()
+        Saves all the extracted data into FITS files.
     """
     def __init__(self, fitsfile : str, path_to_noise_map : Path = None, path_to_data : Path = '.',
-                 smoothing : Optional[str] = 'Y', phase : Optional[str] = 'two', lam1 : float = None, p1 : float = None,
-                 lam2 : float = None, p2 : float = None, niters : Optional[int] = 20,
+                 smoothing : Optional[str] = 'Y', phase : Optional[str] = 'two', lam1 : float = None, p1 : Optional[float] = 0.90,
+                 lam2 : float = None, p2 : Optional[float] = 0.90, niters : Optional[int] = 20,
                  iterations_for_convergence : Optional[int] = 3, noise : float = None,
                  add_residual : Optional[bool] = True, sig : Optional[float] = 1.0, velo_range : Optional[float] = 15.0,
                  check_signal_sigma : Optional[float] = 6., output_flags : Optional[bool] = True, baby_yoda : Optional[bool] = False,
