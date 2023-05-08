@@ -36,14 +36,19 @@ def one_step_i(i):
 def parallel_process(array, function, n_jobs=4, use_kwargs=False, front_num=3, bar=tqdm):
     """A parallel version of the map function with a progress bar.
     Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/
-    Args:
-        array (array-like): An array to iterate over.
-        function (function): A python function to apply to the elements of array
-        n_jobs (int, default=16): The number of cores to use
-        use_kwargs (boolean, default=False): Whether to consider the elements of array as dictionaries of
-            keyword arguments to function
-        front_num (int, default=3): The number of iterations to run serially before kicking off the parallel job.
-            Useful for catching bugs
+
+    array : np.ndarray 
+        An array to iterate over.
+    function : func
+        A python function to apply to the elements of array.
+    n_jobs : int
+        The number of cores to use.
+    use_kwargs : bool
+        Whether to consider the elements of array as dictionaries of
+        keyword arguments to function. Default is False.
+    front_num : int
+        The number of iterations to run serially before kicking off the parallel job.
+        Useful for catching bugs. Default is 3.
     Returns:
         [function(array[0]), function(array[1]), ...]
     """
@@ -82,14 +87,19 @@ def parallel_process(array, function, n_jobs=4, use_kwargs=False, front_num=3, b
 def parallel_process_wo_bar(array, function, n_jobs=4, use_kwargs=False, front_num=3):
     """A parallel version of the map function with a progress bar.
     Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/
-    Args:
-        array (array-like): An array to iterate over.
-        function (function): A python function to apply to the elements of array
-        n_jobs (int, default=16): The number of cores to use
-        use_kwargs (boolean, default=False): Whether to consider the elements of array as dictionaries of
-            keyword arguments to function
-        front_num (int, default=3): The number of iterations to run serially before kicking off the parallel job.
-            Useful for catching bugs
+
+    array : np.ndarray 
+        An array to iterate over.
+    function : func
+        A python function to apply to the elements of array.
+    n_jobs : int
+        The number of cores to use.
+    use_kwargs : bool
+        Whether to consider the elements of array as dictionaries of
+        keyword arguments to function. Default is False.
+    front_num : int
+        The number of iterations to run serially before kicking off the parallel job.
+        Useful for catching bugs. Default is 3.
     Returns:
         [function(array[0]), function(array[1]), ...]
     """
