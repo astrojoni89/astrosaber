@@ -127,7 +127,7 @@ class saberTraining(object):
         astrosaber.parallel_processing.init([self.training_data, [self]])
         results_list = astrosaber.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')
         results_list_array = np.array(results_list)
-   
+    
         if get_all:
             assert results_list_array.shape == (len(self.training_data),3), 'Shape is {}'.format(results_list_array.shape)
             return np.nanmedian(results_list_array[:,0]), np.nanmedian(results_list_array[:,1]), np.nanmedian(results_list_array[:,2])
