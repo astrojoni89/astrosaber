@@ -89,7 +89,7 @@ class HisaExtraction(object):
         Default is 0.02.
     ncpus : int
         Number of CPUs to use.
-        Defaults to half of the available cpus.
+        Defaults to 75% of the available cpus.
     suffix : str, optional
         Optional suffix to add to the output filenames.
 
