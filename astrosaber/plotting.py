@@ -282,7 +282,10 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     if outfile is not None:
         filename = outfile
     elif outfile is None:
-        filename = pickle_file.split('/')[-1].split('.pickle')[0] + '_{}.pdf'.format(n_spectra)
+        #filename = pickle_file.split('/')[-1].split('.pickle')[0] + '_{}.pdf'.format(n_spectra)
+        filename_wext = os.path.basename(pickle_file)
+        filename_base, file_extension = os.path.splitext(filename_wext)
+        filename = filename_base + '_{}.pdf'.format(n_spectra)
     pathname = os.path.join(path_to_plots, filename)
     fig.savefig(pathname, dpi=dpi, bbox_inches='tight')
     #plt.close()

@@ -436,7 +436,9 @@ class saberPrepare(object):
 
     def save_data(self):
         if self.filename_out is None:
-            filename_out = '{}-training_set-{}_spectra{}.pickle'.format(self.fitsfile.split('/')[-1].split('.fits')[0], self.training_set_size, self.suffix)
+            filename_wext = os.path.basename(self.fitsfile)
+            filename_base, file_extension = os.path.splitext(filename_wext)
+            filename_out = '{}-training_set-{}_spectra{}.pickle'.format(filename_base, self.training_set_size, self.suffix)
         elif not self.filename_out.endswith('.pickle'):
             filename_out = self.filename_out + '.pickle'
         else:
