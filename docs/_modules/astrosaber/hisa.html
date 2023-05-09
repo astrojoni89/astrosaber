@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>astrosaber.hisa &mdash; astrosaber v0.2.0</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            astrosaber
+          </a>
+              <div class="version">
+                0.2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">astrosaber</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">astrosaber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../astrosaber.html">astrosaber</a></li>
+      <li class="breadcrumb-item active">astrosaber.hisa</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for astrosaber.hisa</h1><div class="highlight"><pre>
+<span></span><span class="c1"># @Author: syed</span>
+<span class="c1"># @Date:   2021-01</span>
+<span class="c1"># @Filename: hisa.py</span>
+<span class="c1"># @Last modified by:   syed</span>
+<span class="c1"># @Last modified time: 05-02-2022</span>
+
+<span class="sd">&#39;&#39;&#39;hisa extraction&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">astropy.io</span> <span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">tqdm.utils</span> <span class="kn">import</span> <span class="n">_is_utf</span><span class="p">,</span> <span class="n">_supports_unicode</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">.utils.aslsq_helper</span> <span class="kn">import</span> <span class="n">count_ones_in_row</span><span class="p">,</span> <span class="n">md_header_2d</span><span class="p">,</span> <span class="n">check_signal_ranges</span><span class="p">,</span> <span class="n">IterationWarning</span><span class="p">,</span> <span class="n">say</span><span class="p">,</span> <span class="n">format_warning</span>
+<span class="kn">from</span> <span class="nn">.utils.aslsq_fit</span> <span class="kn">import</span> <span class="n">baseline_als_optimized</span><span class="p">,</span> <span class="n">two_step_extraction</span><span class="p">,</span> <span class="n">one_step_extraction</span>
+<span class="kn">from</span> <span class="nn">.utils.grogu</span> <span class="kn">import</span> <span class="n">yoda</span>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">showwarning</span> <span class="o">=</span> <span class="n">format_warning</span>
+
+
+
+<div class="viewcode-block" id="HisaExtraction"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction">[docs]</a><span class="k">class</span> <span class="nc">HisaExtraction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class used to execute the self-absorption extraction.</span>
+
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fitsfile : str</span>
+<span class="sd">        Name of the fitsfile.</span>
+<span class="sd">    path_to_noise_map : Path</span>
+<span class="sd">        Path to the noise map.</span>
+<span class="sd">        If no noise map is given, a single value must be provided instead using the &#39;noise&#39; attribute.</span>
+<span class="sd">    path_to_data : Path</span>
+<span class="sd">        Path to the fitsfile.</span>
+<span class="sd">    smoothing : bool, optional</span>
+<span class="sd">        Whether to execute the asymmetric least squares smoothing routine.</span>
+<span class="sd">        Default is True.</span>
+<span class="sd">    phase : str, optional</span>
+<span class="sd">        Mode of saber smoothing.</span>
+<span class="sd">        Either &#39;one&#39; or &#39;two&#39; (default) phase smoothing. Default is &#39;two&#39;.</span>
+<span class="sd">    lam1 : float</span>
+<span class="sd">        Lambda_1 smoothing parameter.</span>
+<span class="sd">    p1 : float, optional</span>
+<span class="sd">        Asymmetry weight of the minor cycle smoothing.</span>
+<span class="sd">        Default is 0.90.</span>
+<span class="sd">    lam2 : float</span>
+<span class="sd">        Lambda_2 smoothing parameter. Has to be specified if phase is set to &#39;two&#39;.</span>
+<span class="sd">    p2 : float, optional</span>
+<span class="sd">        Asymmetry weight of the major cycle smoothing.</span>
+<span class="sd">        Has to be specified if phase is set to &#39;two&#39;. Default is 0.90.</span>
+<span class="sd">    niters : int, optional</span>
+<span class="sd">        Maximum number of iterations of the smoothing.</span>
+<span class="sd">        Default is 20.</span>
+<span class="sd">    iterations_for_convergence : int, optional</span>
+<span class="sd">        Number of iterations of the major cycle for the baseline to be considered converged.</span>
+<span class="sd">        Default is 3.</span>
+<span class="sd">    noise : float</span>
+<span class="sd">        Noise level of the data. Has to be specified if no path to noise map is given.</span>
+<span class="sd">    add_residual : bool, optional</span>
+<span class="sd">        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.</span>
+<span class="sd">        Default is True.</span>
+<span class="sd">    sig : float, optional</span>
+<span class="sd">        Defines how many sigma of the noise is used as a convergence criterion.</span>
+<span class="sd">        If the change in baseline between major cycle iterations is smaller than &#39;sig&#39; * noise for &#39;iterations_for_convergence&#39;,</span>
+<span class="sd">        then the baseline is considered converged. Default is 1.0.</span>
+<span class="sd">    velo_range : float, optional</span>
+<span class="sd">        Velocity range [in km/s] of the spectra that has to contain significant signal</span>
+<span class="sd">        for it to be considered in the baseline extraction. Default is 15.0.</span>
+<span class="sd">    check_signal_sigma : float, optional</span>
+<span class="sd">        Defines the significance of the signal that has to be present in the spectra</span>
+<span class="sd">        for at least the range defined by &#39;velo_range&#39;. Default is 6.0.</span>
+<span class="sd">    output_flags : bool, optional</span>
+<span class="sd">        Whether to save a mask containing the flags.</span>
+<span class="sd">        Default is True.</span>
+<span class="sd">    baby_yoda : bool, optional</span>
+<span class="sd">        Whether to show a star wars-themed progress bar.</span>
+<span class="sd">        Default is False.</span>
+<span class="sd">    p_limit : float, optional</span>
+<span class="sd">        The p-limit of the Markov chain to estimate signal ranges in the spectra.</span>
+<span class="sd">        Default is 0.02.</span>
+<span class="sd">    ncpus : int</span>
+<span class="sd">        Number of CPUs to use.</span>
+<span class="sd">        Defaults to half of the available cpus.</span>
+<span class="sd">    suffix : str, optional</span>
+<span class="sd">        Optional suffix to add to the output filenames.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    getting_ready()</span>
+<span class="sd">        Prints a message when preparation starts.</span>
+<span class="sd">    prepare_data()</span>
+<span class="sd">        Prepares the extraction by reading in data and put them in a raveled list of spectra.</span>
+<span class="sd">    saber()</span>
+<span class="sd">        Runs the self-absorption extraction and saves the data.</span>
+<span class="sd">        It takes the instance attributes and reads in the noise to kick off the extraction routine.</span>
+<span class="sd">    two_step_extraction_single(i)</span>
+<span class="sd">        Runs the two-phase extraction for a single spectrum i.</span>
+<span class="sd">    one_step_extraction_single(i)</span>
+<span class="sd">        Runs the one-phase extraction for a single spectrum i.</span>
+<span class="sd">    save_data()</span>
+<span class="sd">        Saves all the extracted data into FITS files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitsfile</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_to_noise_map</span> <span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">path_to_data</span> <span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+                 <span class="n">smoothing</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">phase</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;two&#39;</span><span class="p">,</span> <span class="n">lam1</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">p1</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.90</span><span class="p">,</span>
+                 <span class="n">lam2</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">p2</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.90</span><span class="p">,</span> <span class="n">niters</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+                 <span class="n">iterations_for_convergence</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">noise</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">add_residual</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">sig</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">velo_range</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">15.0</span><span class="p">,</span>
+                 <span class="n">check_signal_sigma</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">6.</span><span class="p">,</span> <span class="n">output_flags</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">baby_yoda</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">p_limit</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">ncpus</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitsfile</span> <span class="o">=</span> <span class="n">fitsfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_noise_map</span> <span class="o">=</span> <span class="n">path_to_noise_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span> <span class="o">=</span> <span class="n">path_to_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smoothing</span> <span class="o">=</span> <span class="n">smoothing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="n">phase</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">lam1</span> <span class="o">=</span> <span class="n">lam1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p1</span> <span class="o">=</span> <span class="n">p1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lam2</span> <span class="o">=</span> <span class="n">lam2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">niters</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">niters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations_for_convergence</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iterations_for_convergence</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="n">noise</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_residual</span> <span class="o">=</span> <span class="n">add_residual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sig</span> <span class="o">=</span> <span class="n">sig</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">velo_range</span> <span class="o">=</span> <span class="n">velo_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_signal_sigma</span> <span class="o">=</span> <span class="n">check_signal_sigma</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_flags</span> <span class="o">=</span> <span class="n">output_flags</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">baby_yoda</span> <span class="o">=</span> <span class="n">baby_yoda</span> <span class="c1">#NO IDEA WHAT THIS DOES</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">p_limit</span> <span class="o">=</span> <span class="n">p_limit</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">ncpus</span> <span class="o">=</span> <span class="n">ncpus</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
+        
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;HisaExtraction(</span>
+<span class="s1">                 fitsfile: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fitsfile</span><span class="si">}</span>
+<span class="s1">                 path_to_noise_map: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_noise_map</span><span class="si">}</span>
+<span class="s1">                 path_to_data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span><span class="si">}</span>
+<span class="s1">                 smoothing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">smoothing</span><span class="si">}</span>
+<span class="s1">                 phase: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="si">}</span>
+<span class="s1">                 lam1: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lam1</span><span class="si">}</span>
+<span class="s1">                 p1: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">p1</span><span class="si">}</span>
+<span class="s1">                 lam2: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lam2</span><span class="si">}</span>
+<span class="s1">                 p2: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">p2</span><span class="si">}</span>
+<span class="s1">                 niters: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">niters</span><span class="si">}</span>
+<span class="s1">                 iterations_for_convergence: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations_for_convergence</span><span class="si">}</span>
+<span class="s1">                 noise: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="si">}</span>
+<span class="s1">                 add_residual: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">add_residual</span><span class="si">}</span>
+<span class="s1">                 sig: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sig</span><span class="si">}</span>
+<span class="s1">                 velo_range: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">velo_range</span><span class="si">}</span>
+<span class="s1">                 check_signal_sigma: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">check_signal_sigma</span><span class="si">}</span>
+<span class="s1">                 output_flags: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_flags</span><span class="si">}</span>
+<span class="s1">                 p_limit: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">p_limit</span><span class="si">}</span>
+<span class="s1">                 ncpus: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ncpus</span><span class="si">}</span><span class="s1">)&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="HisaExtraction.getting_ready"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.getting_ready">[docs]</a>    <span class="k">def</span> <span class="nf">getting_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;preparation&#39;</span>
+        <span class="n">banner</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">*</span> <span class="s1">&#39;=&#39;</span>
+        <span class="n">heading</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">banner</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">banner</span>
+        <span class="n">say</span><span class="p">(</span><span class="n">heading</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HisaExtraction.prepare_data"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.prepare_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">getting_ready</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">getdata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitsfile</span><span class="p">)</span> <span class="c1">#load data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">))]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitsfile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header_2d</span> <span class="o">=</span> <span class="n">md_header_2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitsfile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS3&#39;</span><span class="p">]</span>
+        
+        <span class="c1">#serialize data to have a list of spectra</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span> 
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                <span class="n">idx_1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel_multi_index</span><span class="p">((</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">list_data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">idx_1d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">[:,</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]])</span>
+        
+        <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;Done!&#39;</span>
+        <span class="n">say</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
+
+    <span class="c1">#TODO</span>
+<div class="viewcode-block" id="HisaExtraction.saber"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.saber">[docs]</a>    <span class="k">def</span> <span class="nf">saber</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prepare_data</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lam1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Need to specify &#39;lam1&#39; for extraction.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p1</span> <span class="o">=</span> <span class="mf">0.90</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span><span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p1</span> <span class="o">&lt;=</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;p1&#39; has to be in the range [0,1]&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lam2</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="o">==</span><span class="s1">&#39;two&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Need to specify &#39;lam2&#39; for two-phase extraction.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p2</span> <span class="o">=</span> <span class="mf">0.90</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span><span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p2</span> <span class="o">&lt;=</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;p2&#39; has to be in the range [0,1]&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_limit</span> <span class="o">=</span> <span class="mf">0.02</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_to_noise_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">noise_map</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">getdata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_noise_map</span><span class="p">)</span>
+            <span class="n">thresh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sig</span> <span class="o">*</span> <span class="n">noise_map</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">list_data_noise</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">list_data_thresh</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">noise_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">noise_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">idx_1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel_multi_index</span><span class="p">((</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="n">noise_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">noise_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">list_data_noise</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">idx_1d</span><span class="p">,</span> <span class="n">noise_map</span><span class="p">[</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">list_data_thresh</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">idx_1d</span><span class="p">,</span> <span class="n">thresh</span><span class="p">[</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+               <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Need to specify &#39;noise&#39; if no path to noise map is given.&quot;</span><span class="p">)</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">noise_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS1&#39;</span><span class="p">]))</span>
+                <span class="n">thresh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sig</span> <span class="o">*</span> <span class="n">noise_map</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">list_data_noise</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">list_data_thresh</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">noise_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">noise_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                        <span class="n">idx_1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel_multi_index</span><span class="p">((</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="n">noise_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">noise_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">list_data_noise</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">idx_1d</span><span class="p">,</span> <span class="n">noise_map</span><span class="p">[</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">list_data_thresh</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">idx_1d</span><span class="p">,</span> <span class="n">thresh</span><span class="p">[</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]])</span>
+                
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">baby_yoda</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_supports_unicode</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">):</span>
+                <span class="n">fran</span> <span class="o">=</span> <span class="n">yoda</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fran</span> <span class="o">=</span> <span class="n">tqdm</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fran</span> <span class="o">=</span> <span class="n">tqdm</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">smoothing</span><span class="o">==</span><span class="s1">&#39;Y&#39;</span><span class="p">:</span>
+            <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;hisa extraction&#39;</span>
+            <span class="n">banner</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">*</span> <span class="s1">&#39;=&#39;</span>
+            <span class="n">heading</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">banner</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">banner</span>
+            <span class="n">say</span><span class="p">(</span><span class="n">heading</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_asy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS1&#39;</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">HISA_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS1&#39;</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iteration_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS1&#39;</span><span class="p">]))</span>
+            <span class="c1">#flags</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flag_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS1&#39;</span><span class="p">]))</span>
+            
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">+</span><span class="s1">&#39;Asymmetric least squares fitting in progress...&#39;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;two&#39;</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">astrosaber.parallel_processing</span>
+                <span class="n">astrosaber</span><span class="o">.</span><span class="n">parallel_processing</span><span class="o">.</span><span class="n">init</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">list_data</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="p">]])</span>
+                <span class="n">results_list</span> <span class="o">=</span> <span class="n">astrosaber</span><span class="o">.</span><span class="n">parallel_processing</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">use_ncpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ncpus</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="s1">&#39;two_step&#39;</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">fran</span><span class="p">)</span> 
+                    
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;one&#39;</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">astrosaber.parallel_processing</span>
+                <span class="n">astrosaber</span><span class="o">.</span><span class="n">parallel_processing</span><span class="o">.</span><span class="n">init</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">list_data</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="p">]])</span>
+                <span class="n">results_list</span> <span class="o">=</span> <span class="n">astrosaber</span><span class="o">.</span><span class="n">parallel_processing</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">use_ncpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ncpus</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="s1">&#39;one_step&#39;</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">fran</span><span class="p">)</span>
+                
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">+</span><span class="s1">&#39;Unraveling data and writing into cubes...&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">results_list</span><span class="p">)),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;spec&#39;</span><span class="p">,</span> <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">results_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">HISA_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">HISA_map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>   
+                <span class="bp">self</span><span class="o">.</span><span class="n">image_asy</span><span class="p">[:,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">HISA_map</span><span class="p">[:,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteration_map</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_map</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">results_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">results_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">results_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">results_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span>
+            
+            <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;Done!&#39;</span>
+            <span class="n">say</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_data</span><span class="p">()</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No smoothing applied. Set smoothing to &#39;Y&#39;&quot;</span><span class="p">)</span></div>
+        
+        
+<div class="viewcode-block" id="HisaExtraction.two_step_extraction_single"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.two_step_extraction_single">[docs]</a>    <span class="k">def</span> <span class="nf">two_step_extraction_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="n">bg</span><span class="p">,</span> <span class="n">hisa</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">flag_map</span> <span class="o">=</span> <span class="n">two_step_extraction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lam1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lam2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p2</span><span class="p">,</span> <span class="n">spectrum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">list_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">header</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">check_signal_sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">check_signal_sigma</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">list_data_noise</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">velo_range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">velo_range</span><span class="p">,</span> <span class="n">niters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">niters</span><span class="p">,</span> <span class="n">iterations_for_convergence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations_for_convergence</span><span class="p">,</span> <span class="n">add_residual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">add_residual</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">list_data_thresh</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">p_limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p_limit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bg</span><span class="p">,</span> <span class="n">hisa</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">flag_map</span></div>
+    
+    
+<div class="viewcode-block" id="HisaExtraction.one_step_extraction_single"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.one_step_extraction_single">[docs]</a>    <span class="k">def</span> <span class="nf">one_step_extraction_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="n">bg</span><span class="p">,</span> <span class="n">hisa</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">flag_map</span> <span class="o">=</span> <span class="n">one_step_extraction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lam1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p1</span><span class="p">,</span> <span class="n">spectrum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">list_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">header</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">check_signal_sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">check_signal_sigma</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">list_data_noise</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">velo_range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">velo_range</span><span class="p">,</span> <span class="n">niters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">niters</span><span class="p">,</span> <span class="n">iterations_for_convergence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations_for_convergence</span><span class="p">,</span> <span class="n">add_residual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">add_residual</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">list_data_thresh</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">p_limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p_limit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bg</span><span class="p">,</span> <span class="n">hisa</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">flag_map</span></div>
+       
+        
+<div class="viewcode-block" id="HisaExtraction.save_data"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.save_data">[docs]</a>    <span class="k">def</span> <span class="nf">save_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">filename_wext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitsfile</span><span class="p">)</span>
+        <span class="n">filename_base</span><span class="p">,</span> <span class="n">file_extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename_wext</span><span class="p">)</span>
+        <span class="n">filename_bg</span> <span class="o">=</span> <span class="n">filename_base</span> <span class="o">+</span> <span class="s1">&#39;_aslsq_bg_spectrum</span><span class="si">{}</span><span class="s1">.fits&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="n">filename_hisa</span> <span class="o">=</span> <span class="n">filename_base</span> <span class="o">+</span> <span class="s1">&#39;_HISA_spectrum</span><span class="si">{}</span><span class="s1">.fits&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="n">filename_iter</span> <span class="o">=</span> <span class="n">filename_base</span> <span class="o">+</span> <span class="s1">&#39;_number_of_iterations</span><span class="si">{}</span><span class="s1">.fits&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="c1">#flags</span>
+        <span class="n">filename_flags</span> <span class="o">=</span> <span class="n">filename_base</span> <span class="o">+</span> <span class="s1">&#39;_flags</span><span class="si">{}</span><span class="s1">.fits&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span><span class="p">)</span>
+        <span class="n">pathname_bg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span><span class="p">,</span> <span class="n">filename_bg</span><span class="p">)</span>
+        <span class="n">fits</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">pathname_bg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_asy</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\033</span><span class="s2">[92mSAVED FILE:</span><span class="se">\033</span><span class="s2">[0m &#39;</span><span class="si">{}</span><span class="s2">&#39; in &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename_bg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span><span class="p">))</span>
+        <span class="n">pathname_hisa</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span><span class="p">,</span> <span class="n">filename_hisa</span><span class="p">)</span>
+        <span class="n">fits</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">pathname_hisa</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">HISA_map</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\033</span><span class="s2">[92mSAVED FILE:</span><span class="se">\033</span><span class="s2">[0m &#39;</span><span class="si">{}</span><span class="s2">&#39; in &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename_hisa</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span><span class="p">))</span>
+        <span class="n">pathname_iter</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span><span class="p">,</span> <span class="n">filename_iter</span><span class="p">)</span>
+        <span class="n">fits</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">pathname_iter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteration_map</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">header_2d</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\033</span><span class="s2">[92mSAVED FILE:</span><span class="se">\033</span><span class="s2">[0m &#39;</span><span class="si">{}</span><span class="s2">&#39; in &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename_iter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span><span class="p">))</span>
+        <span class="c1">#flags</span>
+        <span class="n">pathname_flags</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span><span class="p">,</span> <span class="n">filename_flags</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_flags</span><span class="p">:</span>
+            <span class="n">fits</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">pathname_flags</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag_map</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">header_2d</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\033</span><span class="s2">[92mSAVED FILE:</span><span class="se">\033</span><span class="s2">[0m &#39;</span><span class="si">{}</span><span class="s2">&#39; in &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename_flags</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_to_data</span><span class="p">))</span></div></div>
+        
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Jonas Syed.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
