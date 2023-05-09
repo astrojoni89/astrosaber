@@ -12,9 +12,10 @@ from astrosaber.training import saberTraining
 def main():
     ###data to use as training and test data
     filename = 'HI_THOR_test_cube-training_set-50_spectra.pickle'
+    path_to_data = 'astrosaber_training'
 
     ###initialize optimization routine
-    train = saberTraining(pickle_file=filename)
+    train = saberTraining(pickle_file=filename, path_to_data=path_to_data)
 
     ###you can adjust the number of cpus to use
     train.ncpus = 4

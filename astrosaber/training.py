@@ -123,9 +123,9 @@ class saberTraining(object):
     def objective_function_lambda_set(self, lam1, p1, lam2, p2, get_all=True, ncpus=None): 
    
         self.lam1_updt, self.lam2_updt = lam1, lam2
-        import astroSABER.parallel_processing
-        astroSABER.parallel_processing.init([self.training_data, [self]])
-        results_list = astroSABER.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')
+        import astrosaber.parallel_processing
+        astrosaber.parallel_processing.init([self.training_data, [self]])
+        results_list = astrosaber.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')
         results_list_array = np.array(results_list)
    
         if get_all:
