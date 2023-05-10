@@ -134,7 +134,7 @@ class saberPrepare(object):
     prepare_training()
         Creates the test and training data and saves them into a pickled file.
     two_step_extraction_prepare()
-        Runs the two-phase smoothing with default parameters to generate test data.
+        Runs the two-phase smoothing with default parameters to generate test data and self-absorption parameters.
     save_data()
         Saves all the test and training data into a pickled file.
     """
@@ -226,12 +226,21 @@ class saberPrepare(object):
                 seed: {self.seed}'''
     
     def getting_ready(self):
+        """
+        Prints a message when preparation starts.
+
+        """
         string = 'preparation'
         banner = len(string) * '='
         heading = '\n' + banner + '\n' + string + '\n' + banner
         say(heading)
 
     def prepare_data(self):
+        """
+        Prepares the training data by reading in data and
+        setting up lists for Gaussian parameter distributions.
+
+        """
         self.getting_ready()
         self.image = fits.getdata(self.fitsfile) #load data
         self.image[np.where(np.isnan(self.image))] = 0.0
@@ -254,6 +263,10 @@ class saberPrepare(object):
         say(string)
 
     def prepare_training(self):
+        """
+        Creates the test and training data and saves them into a pickled file.
+        
+        """
         self.rng = np.random.default_rng(self.seed)
         self.prepare_data()
 
@@ -420,6 +433,22 @@ class saberPrepare(object):
         plot_pickle_spectra(self.path_to_file, outfile=None, ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[self.velocity[0],self.velocity[-1]], vel_unit=u.km/u.s, seed=self.seed)
 
     def two_step_extraction_prepare(self, i):
+        """
+        Runs the two-phase smoothing with default parameters to generate test data and self-absorption parameters.
+        
+        Returns
+        -------
+        mock_emission : numpy.ndarray
+            'Pure' emission spectrum w/o self-absorption.
+        mask_ranges : numpy.ndarray
+            Array of range indices that contain signal.
+        mask : numpy.ndarray
+            Array of signal mask.
+        mu_amps_HISA : float
+            Mean amplitude value of self-absorption features.
+        sigma_amps_HISA : float
+            Standard deviation of self-absorption features.
+        """
         bg, _, _, _  = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.spectrum_list[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise_list[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh_list[i])
         
         pad_ch = 5
@@ -435,6 +464,10 @@ class saberPrepare(object):
         return mock_emission, mask_ranges, mask, mu_amps_HISA, sigma_amps_HISA, i
 
     def save_data(self):
+        """
+        Saves all the test and training data into a pickled file.
+        
+        """
         if self.filename_out is None:
             filename_wext = os.path.basename(self.fitsfile)
             filename_base, file_extension = os.path.splitext(filename_wext)
