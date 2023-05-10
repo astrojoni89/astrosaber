@@ -130,9 +130,9 @@ class saberTraining(object):
         Prepares the optimization by reading in data and
         setting parameters.
     training()
-        
+        Prepares the data and kicks off the optimization routine.
     train()
-        
+        Optimizes the Lambda smoothing parameters.
     objective_function_lambda_set()
         
     single_cost(i)
@@ -144,7 +144,8 @@ class saberTraining(object):
     train_lambda_set()
         
     save_data()
-        Saves all the prepared and baseline data into a pickled file.
+        If get_trace is set to False, this will save the optimized Lambda smoothing parameters in a .txt file.
+        If get_trace is set to True, this will save the tracks of Lambda positions in the parameter space in a .txt file.
     update_pickle_file()
         
     save_pickle()
@@ -242,6 +243,13 @@ class saberTraining(object):
         say(string)
 
     def training(self):
+        """
+        Prepares the data using :meth:`~astrosaber.saberTraining.prepare_data`
+        and calls the methods :meth:`~astrosaber.saberTraining.train`,
+        :meth:`~astrosaber.saberTraining.save_data`; and
+        :meth:`~astrosaber.saberTraining.update_pickle_file` and :func:`astrosaber.plotting.plot_pickle_spectra`
+        if get_trace is set to False.
+        """
         self.prepare_data()
         string = 'Optimizing smoothing parameters'
         banner = len(string) * '='
@@ -254,11 +262,48 @@ class saberTraining(object):
             plot_pickle_spectra(self.path_to_updated_pickle, outfile=None, ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[self.velocity[0],self.velocity[-1]], vel_unit=u.km/u.s, seed=self.seed)
 
     def train(self):
+        """
+        Optimizes the Lambda smoothing parameter(s).
+        
+        Returns
+        -------
+        popt_lam : List
+            Optimized Lambda parameters.
+            Returns an array of lambda positions from the gradient descent run if get_trace is set to True.
+        """
         popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps_l1=self.eps_l1, eps_l2=self.eps_l2, learning_rate_l1=self.learning_rate_l1, learning_rate_l2=self.learning_rate_l2, mom=self.mom, window_size=self.window_size, iterations_for_convergence_training=10, get_trace=False, ncpus=self.ncpus)
         return popt_lam
 
-    def objective_function_lambda_set(self, lam1, p1, lam2, p2, get_all=True, ncpus=None): 
-   
+    def objective_function_lambda_set(self, lam1 : float, p1 : float, lam2 : float, p2 : float, get_all : bool = True, ncpus : int = None) -> Tuple[float, float, float]:
+        """
+        Kicks off the parallel process and computes the cost function based on the current Lambda parameters.
+         
+        Parameters
+        ----------
+        lam1 : float
+            Lambda_1 smooting parameter.
+        p1 : float
+            Asymmetry weight parameter.
+        lam2 : float
+            Lambda_2 smooting parameter.
+        p2 : float
+            Asymmetry weight parameter
+        get_all : bool, optional
+            If get_all is set to True, it will return the median results of the cost function, the reduced chi square, and the median absolute deviation (MAD).
+            If set to False, it will return just the median result of the costs.
+        ncpus : int, optional
+            Number of CPUs to use.
+            Defaults to 75% of the available CPUs.
+
+        Returns
+        -------
+        cost : float
+            Median of costs.
+        rchi2 : float
+            Median of reduced chi square values. Only returned if get_all==True.
+        MAD : float
+            Median of MAD values. Only returned if get_all==True
+        """
         self.lam1_updt, self.lam2_updt = lam1, lam2
         import astrosaber.parallel_processing
         astrosaber.parallel_processing.init([self.training_data, [self]])
