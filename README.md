@@ -55,3 +55,5 @@ python setup.py install
 
 ## Getting started
 You can find example scripts and a jupyter notebook for an HI self-absorption (HISA) baseline extraction run in the `example` directory. The data used in this example are taken from The HI/OH Recombination line survey of the inner Milky Way (THOR; [Beuther et al. 2016](https://ui.adsabs.harvard.edu/abs/2016A%26A...595A..32B/abstract), [Wang et al. 2020](https://ui.adsabs.harvard.edu/abs/2020A%26A...634A..83W/abstract)).
+
+More information is available in the documentation under [astrojoni89.github.io/astrosaber/](https://astrojoni89.github.io/astrosaber/).
