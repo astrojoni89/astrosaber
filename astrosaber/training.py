@@ -1,6 +1,11 @@
 import sys
 import numpy as np
 import pickle
+import warnings
+import os
+from pathlib import Path
+from typing import Optional, List, Tuple
+
 from astropy.io import fits
 from astropy import units as u
 from scipy import sparse
@@ -8,8 +13,6 @@ from scipy.sparse.linalg import spsolve
 
 from tqdm import tqdm, trange
 from tqdm.utils import _is_utf, _supports_unicode
-import warnings
-import os
 
 from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
 from .utils.aslsq_helper import velocity_axes, count_ones_in_row, check_signal_ranges, IterationWarning, say, format_warning
@@ -21,7 +24,141 @@ warnings.showwarning = format_warning
 np.seterr('raise')
 
 class saberTraining(object):
-    def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, window_size=None, eps_l1=None, eps_l2=None, learning_rate_l1=None, learning_rate_l2=None, mom=None, get_trace=False, niters=20, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
+    """
+    A class used to optimize smoothing parameters based on training data.
+
+    
+    Attributes
+    ----------
+    picklefile : str
+        Name of the pickled file to use as an input.
+    path_to_data : Path, optional
+        Path to the pickled file.
+        Default is the working directory.
+    iterations : int, optional
+        Maximum number of iterations for gradient descent algorithm.
+        Default is 100.
+    phase : str, optional
+        Mode of saber smoothing.
+        Either 'one' or 'two' (default) phase smoothing. Default is 'two'.
+    lam1_initial : float
+        Initial value of the Lambda_1 smoothing parameter that is to be optimized.
+    p1 : float, optional
+        Asymmetry weight of the minor (and major if phase=='one') cycle smoothing.
+        Default is 0.90.
+    lam1_initial : float
+        Initial value of the Lambda_2 smoothing parameter that is to be optimized.
+        Has to be specified if phase is set to 'two'.
+    p2 : float, optional
+        Asymmetry weight of the major cycle smoothing to generate test data.
+        Default is 0.90.
+    weight_1 : float, optional
+        (DEPRECATED) Additional penalty that can be imposed on the Lambda_1 smoothing weight.
+        This is deprecated and will be ignored.
+    weight_2 : float, optional
+        (DEPRECATED) Additional penalty that can be imposed on the Lambda_2 smoothing weight.
+        This is deprecated and will be ignored.
+    lam1_bounds : List, optional
+        List of two constraints on Lambda_1 smoothing parameter to limit the parameter space.
+        Default is no limit.
+    lam2_bounds : List, optional
+        List of two constraints on Lambda_2 smoothing parameter to limit the parameter space.
+        Default is no limit.
+    MAD : float, optional
+        Median absolute difference that is used together with 'window_size' as a convergence threshold for optimization.
+        Default is 0.03.
+    window_size : float, optional
+        Trailing window size to determine convergence.
+        Default is 10 (iterations).
+    eps_l1 : float, optional
+        Epsilon value to compute parameter space derivative in Lambda_1 direction.
+        Default is 0.1.
+    eps_l2 : float, optional
+        Epsilon value to compute parameter space derivative in Lambda_2 direction.
+        Default is 0.1.
+    learning_rate_l1 : float, optional
+        Step size to go in direction of Lambda_1 derivative at each iteration.
+        Default is 0.5.
+    learning_rate_l2 : float, optional
+        Step size to go in direction of Lambda_2 derivative at each iteration.
+        Default is 0.5.
+    mom : float, optional
+        Momentum that influences the following step in the gradient descent run.
+        Default is 0.3.
+    get_trace : bool, optional
+        If get_trace is set to True, the tracks of (lam1,lam2) will be returned and saved,
+        instead of the final optimized smoothing parameters. Default is False.
+    niters : int, optional
+        Maximum number of iterations of the smoothing.
+        Only used to generate test data. Default is 20.
+    iterations_for_convergence : int, optional
+        Number of iterations of the major cycle for the baseline to be considered converged.
+        Only used to generate test data. Default is 3.
+    add_residual : bool, optional
+        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
+        Only used to generate test data. Default is True.
+    sig : float, optional
+        Defines how many sigma of the noise is used as a convergence criterion.
+        If the change in baseline between major cycle iterations is smaller than 'sig' * noise for 'iterations_for_convergence',
+        then the baseline is considered converged. Only used to generate test data. Default is 1.0.
+    velo_range : float, optional
+        Velocity range [in km/s] of the spectra that has to contain significant signal
+        for it to be considered in the baseline extraction. Default is 15.0.
+    check_signal_sigma : float, optional
+        Defines the significance of the signal that has to be present in the spectra
+        for at least the range defined by 'velo_range'. Default is 6.0.
+    p_limit : float, optional
+        The p-limit of the Markov chain to estimate signal ranges in the spectra.
+        Default is 0.01.
+    ncpus : int
+        Number of CPUs to use.
+        Defaults to 1.
+    suffix : str, optional
+        Optional suffix to add to the output filenames.
+    filename_out : str, optional
+        Output filename of the pickled file that contains the training and test data.
+        The default is the fits filename base with the number of training spectra.
+    seed : int, optional
+        Seed to initialize the random generator.
+        Default is 111.
+
+    Methods
+    -------
+    getting_ready()
+        Prints a message when preparation starts.
+    prepare_data()
+        Prepares the optimization by reading in data and
+        setting parameters.
+    training()
+        
+    train()
+        
+    objective_function_lambda_set()
+        
+    single_cost(i)
+        
+    single_cost_endofloop(i)
+        
+    gradient_descent_lambda_set()
+        
+    train_lambda_set()
+        
+    save_data()
+        Saves all the prepared and baseline data into a pickled file.
+    update_pickle_file()
+        
+    save_pickle()
+        
+    """
+    def __init__(self, pickle_file : str, path_to_data : Optional[Path] = '.', iterations : Optional[int] = 100, phase : Optional[str] = 'two',
+                 lam1_initial : float = None, p1 : Optional[float] = 0.90, lam2_initial : float = None, p2 : Optional[float] = 0.90,
+                 weight_1 : Optional[float] = None, weight_2 : Optional[float] = None, lam1_bounds : Optional[List] = None, lam2_bounds : Optional[List] = None,
+                 MAD : Optional[float] = None, window_size : Optional[int] = None,
+                 eps_l1 : Optional[float] = None, eps_l2 : Optional[float] = None, learning_rate_l1 : Optional[float] = None, learning_rate_l2 : Optional[float] = None, mom : Optional[float] = None,
+                 get_trace : bool = False, niters : Optional[int] = 20, iterations_for_convergence : Optional[int] = 3, add_residual : bool = True, sig : Optional[float] = 1.0,
+                 velo_range : Optional[float] = 15.0, check_signal_sigma : Optional[float] = 6., p_limit : Optional[float] = 0.01,
+                 ncpus : Optional[int] = None, suffix : Optional[str] = '', filename_out : Optional[str] = None, seed : Optional[int] = 111):
+        
         self.pickle_file = pickle_file
         self.path_to_data = path_to_data
 
