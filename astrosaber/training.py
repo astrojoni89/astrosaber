@@ -4,7 +4,7 @@ import pickle
 import warnings
 import os
 from pathlib import Path
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Callable
 
 from astropy.io import fits
 from astropy import units as u
@@ -27,7 +27,6 @@ class saberTraining(object):
     """
     A class used to optimize smoothing parameters based on training data.
 
-    
     Attributes
     ----------
     picklefile : str
@@ -40,15 +39,15 @@ class saberTraining(object):
         Default is 100.
     phase : str, optional
         Mode of saber smoothing.
-        Either 'one' or 'two' (default) phase smoothing. Default is 'two'.
+        Either `one` or `two` (default) phase smoothing. Default is `two`.
     lam1_initial : float
         Initial value of the Lambda_1 smoothing parameter that is to be optimized.
     p1 : float, optional
-        Asymmetry weight of the minor (and major if phase=='one') cycle smoothing.
+        Asymmetry weight of the minor (and major if phase=`one`) cycle smoothing.
         Default is 0.90.
     lam1_initial : float
         Initial value of the Lambda_2 smoothing parameter that is to be optimized.
-        Has to be specified if phase is set to 'two'.
+        Has to be specified if phase is set to `two`.
     p2 : float, optional
         Asymmetry weight of the major cycle smoothing to generate test data.
         Default is 0.90.
@@ -65,7 +64,7 @@ class saberTraining(object):
         List of two constraints on Lambda_2 smoothing parameter to limit the parameter space.
         Default is no limit.
     MAD : float, optional
-        Median absolute difference that is used together with 'window_size' as a convergence threshold for optimization.
+        Median absolute difference that is used together with `window_size` as a convergence threshold for optimization.
         Default is 0.03.
     window_size : float, optional
         Trailing window size to determine convergence.
@@ -99,10 +98,10 @@ class saberTraining(object):
         Only used to generate test data. Default is True.
     sig : float, optional
         Defines how many sigma of the noise is used as a convergence criterion.
-        If the change in baseline between major cycle iterations is smaller than 'sig' * noise for 'iterations_for_convergence',
+        If the change in baseline between major cycle iterations is smaller than `sig` * noise for `iterations_for_convergence`,
         then the baseline is considered converged. Only used to generate test data. Default is 1.0.
     velo_range : float, optional
-        Velocity range [in km/s] of the spectra that has to contain significant signal
+        Velocity range [km/s] of the spectra that has to contain significant signal
         for it to be considered in the baseline extraction. Default is 15.0.
     check_signal_sigma : float, optional
         Defines the significance of the signal that has to be present in the spectra
@@ -134,15 +133,18 @@ class saberTraining(object):
     train()
         Optimizes the Lambda smoothing parameters.
     objective_function_lambda_set()
-        
+        Kicks off the parallel process and computes the cost function based on the current Lambda parameters.
     single_cost(i)
-        
+        Computes the cost, and optionally the reduced chi square and the median absolute deviation (MAD)
+        of a single spectrum fit.
     single_cost_endofloop(i)
-        
+        Computes the cost, and optionally the reduced chi square and the median absolute deviation (MAD)
+        of a single spectrum fit using fixed lambda values.
     gradient_descent_lambda_set()
         
     train_lambda_set()
-        
+        Performs the gradient descent using an objective function
+        (which is in this case the cost function evaluated for asymmetric smoothing with lambda_1, lambda_2 parameters).
     save_data()
         If get_trace is set to False, this will save the optimized Lambda smoothing parameters in a .txt file.
         If get_trace is set to True, this will save the tracks of Lambda positions in the parameter space in a .txt file.
@@ -281,11 +283,11 @@ class saberTraining(object):
         Parameters
         ----------
         lam1 : float
-            Lambda_1 smooting parameter.
+            Lambda_1 smoothing parameter.
         p1 : float
             Asymmetry weight parameter.
         lam2 : float
-            Lambda_2 smooting parameter.
+            Lambda_2 smoothing parameter.
         p2 : float
             Asymmetry weight parameter
         get_all : bool, optional
@@ -300,9 +302,9 @@ class saberTraining(object):
         cost : float
             Median of costs.
         rchi2 : float
-            Median of reduced chi square values. Only returned if get_all==True.
+            Median of reduced chi square values. Only returned if get_all=True.
         MAD : float
-            Median of MAD values. Only returned if get_all==True
+            Median of MAD values. Only returned if get_all=True.
         """
         self.lam1_updt, self.lam2_updt = lam1, lam2
         import astrosaber.parallel_processing
@@ -317,7 +319,29 @@ class saberTraining(object):
             assert results_list_array.shape == (len(self.training_data),1), 'Shape is {}'.format(results_list_array.shape)
             return np.nanmedian(results_list_array[:,0])
 
-    def single_cost(self, i, get_all=True):
+    def single_cost(self, i : int, get_all : Optional[bool] = True) -> Tuple[float, float, float]:
+        """
+        Computes the cost, and optionally the reduced chi square and the median absolute deviation (MAD)
+        of a single spectrum fit.
+         
+        Parameters
+        ----------
+        i : int
+            Index of spectrum.
+        get_all : bool, optional
+            If set to True (default), returns cost, reduced chi square, and MAD.
+            If False, returns only cost.
+
+        Returns
+        -------
+        cost : float
+            Cost.
+            In this case, it is the reduced chi square.
+        rchi2 : float
+            Reduced chi square value. Only returned if get_all=True.
+        MAD : float
+            MAD value. Only returned if get_all=True.
+        """
         ###TODO
         try:
             mask_hisa = self.hisa_mask[i]
@@ -404,7 +428,33 @@ class saberTraining(object):
             else:
                 return np.nan
         
-    def single_cost_endofloop(self, i, lam1_final=None, lam2_final=None, get_all=True):
+    def single_cost_endofloop(self, i : int, lam1_final : float = None, lam2_final : float = None, get_all : Optional[bool] = True) -> Tuple[float, float, float]:
+        """
+        Computes the cost, and optionally the reduced chi square and the median absolute deviation (MAD)
+        of a single spectrum fit using fixed lambda values.
+         
+        Parameters
+        ----------
+        i : int
+            Index of spectrum.
+        lam1_final : float
+            Final lambda_1 smoothing parameter.
+        lam2_final : float
+            Final lambda_2 smoothing parameter.
+        get_all : bool, optional
+            If set to True (default), returns cost, reduced chi square, and MAD.
+            If False, returns only cost.
+
+        Returns
+        -------
+        cost : float
+            Cost.
+            In this case, it is the reduced chi square.
+        rchi2 : float
+            Reduced chi square value. Only returned if get_all=True.
+        MAD : float
+            MAD value. Only returned if get_all=True.
+        """
         ###TODO
         try:
             mask_hisa = self.hisa_mask[i]
@@ -506,17 +556,63 @@ class saberTraining(object):
             self.fracdiff_lam2 = np.zeros(iterations) * np.nan
             self.iter_of_convergence = np.nan
 
-    def train_lambda_set(self, objective_function, training_data=None, test_data=None, noise=None, lam1_initial=None, p1=None, lam2_initial=None, p2=None, lam1_bounds=None, lam2_bounds=None, iterations=100, MAD=None, eps_l1=None, eps_l2=None, learning_rate_l1=None, learning_rate_l2=None, mom=None, window_size=None, iterations_for_convergence_training=10, get_trace=False, ncpus=None):
+    def train_lambda_set(self, objective_function : Callable[[], Tuple[float, float, float]], training_data : np.ndarray = None,
+                         test_data : np.ndarray = None, noise : float = None, lam1_initial : float = None, p1 : float = None,
+                         lam2_initial : float = None, p2 : float = None, lam1_bounds : Optional[List] = None, lam2_bounds : Optional[List] = None,
+                         iterations : Optional[int] = 100, MAD : Optional[float] = None, eps_l1 : Optional[float] = None, eps_l2 : Optional[float] = None,
+                         learning_rate_l1 : Optional[float] = None, learning_rate_l2 : Optional[float] = None,
+                         mom : Optional[float] = None, window_size : Optional[int] = None, iterations_for_convergence_training : Optional[int] = 10,
+                         get_trace : Optional[bool] = False, ncpus : Optional[int] = None):
         """
-        lam1_initial =
-        lam2_initial =
-        iterations =
-        MAD = mean absolute difference
-        eps = 'epsilson; finite offset for computing derivatives in gradient'
-        learning_rate
-        mom = 'Momentum value'
-        window_size = trailing window size to determine convergence,
-        iterations_for_convergence_training = number of continuous iterations within threshold tolerence required to achieve convergence
+        Performs the gradient descent using an objective function
+        (which is in this case the cost function evaluated for asymmetric smoothing with lambda_1, lambda_2 parameters).
+        
+        Parameters
+        ----------
+        objective_function : func
+            Objective function whose parameters are to be optimized.
+        training_data : numpy.ndarray
+            
+        test_data : numpy.ndarray
+            
+        noise : float
+            
+        lam1_initial : float
+             
+        p1 : float
+            
+        lam2_initial : float
+             
+        p2 : float
+            
+        lam1_bounds : List
+            
+        lam2_bounds : List
+            
+        iterations : int, optional
+            
+        MAD : float, optional
+            Mean absolute deviation used as a convergence threshold.
+            Defaults to 0.03.
+        eps_l1, eps_l2 : float, optional
+            Finite offset for computing derivatives in gradient in direction of lambda_1,lambda_2.
+            Defaults to 0.1
+        learning_rate_l1, learning_rate_l2 : float, optional
+            Step size to go during optimization in direction of gradient of objective_function(lam1,lam2).
+            Defaults to 0.5.
+        mom : float, optional
+            Momentum value.
+            Defaults to 0.3.
+        window_size : int, optional
+            Trailing window size to determine convergence.
+            Default=10.
+        iterations_for_convergence_training : int, optional
+            Number of continuous iterations within threshold tolerence required to achieve convergence.
+            Default=10.
+        get_trace : bool, optional
+            
+        ncpus : int, optional
+            
         """
 
         # Default settings for hyper parameters; these seem to be the most robust hyperparams
