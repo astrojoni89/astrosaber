@@ -12,12 +12,14 @@ from scipy import sparse
 from scipy.sparse.linalg import spsolve
 
 from tqdm import tqdm, trange
-from tqdm.utils import _is_utf, _supports_unicode
+from tqdm.utils import _supports_unicode
 
-from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
-from .utils.aslsq_helper import velocity_axes, count_ones_in_row, check_signal_ranges, IterationWarning, say, format_warning
-from .utils.aslsq_fit import baseline_als_optimized, one_step_extraction, two_step_extraction
+from .utils.quality_checks import get_max_consecutive_channels, determine_peaks, mask_channels
+from .utils.aslsq_helper import count_ones_in_row, IterationWarning, say, format_warning
+from .utils.aslsq_fit import one_step_extraction, two_step_extraction
 from .plotting import plot_pickle_spectra
+
+import astrosaber.parallel_processing
 
 warnings.showwarning = format_warning
 
@@ -271,7 +273,7 @@ class saberTraining(object):
         -------
         popt_lam : List
             Optimized Lambda parameters.
-            Returns an array of lambda positions from the gradient descent run if get_trace is set to True.
+            Returns an array of lambda positions from the gradient descent run if `get_trace` is set to True.
         """
         popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps_l1=self.eps_l1, eps_l2=self.eps_l2, learning_rate_l1=self.learning_rate_l1, learning_rate_l2=self.learning_rate_l2, mom=self.mom, window_size=self.window_size, iterations_for_convergence_training=10, get_trace=False, ncpus=self.ncpus)
         return popt_lam
@@ -307,7 +309,6 @@ class saberTraining(object):
             Median of MAD values. Only returned if get_all=True.
         """
         self.lam1_updt, self.lam2_updt = lam1, lam2
-        import astrosaber.parallel_processing
         astrosaber.parallel_processing.init([self.training_data, [self]])
         results_list = astrosaber.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')
         results_list_array = np.array(results_list)
