@@ -50,11 +50,11 @@ class saberPrepare(object):
     mean_linewidth : int | float, optional
         Mean of linewidth distribution in units of km/s [FWHM].
         This sets the mean value of the Gaussian distribution of self-absorption linewidths
-        from which the training data are generated. Default is 4.0.
+        from which the training data are generated. Default is None.
     std_linewidth : int | float, optional
         Standard deviation of linewidth distribution in units of km/s [FWHM].
         This sets the standard deviation of the Gaussian distribution of self-absorption linewidths
-        from which the training data are generated. Default is 1.0.
+        from which the training data are generated. Default is None.
     mean_ncomponent : int | float, optional
         Mean number of self-absorption components.
         This sets the mean value of the Gaussian distribution
@@ -142,7 +142,7 @@ class saberPrepare(object):
     def __init__(self, fitsfile : str, training_set_size : Union[int, float] = 100,
                  path_to_noise_map : Path =None, path_to_data : Path = '.',
                  mean_amp_snr : Union[int, float] = 7., std_amp_snr : Union[int, float] = 1.,
-                 mean_linewidth : Union[int, float] = 4., std_linewidth : Union[int, float] = 1.,
+                 mean_linewidth : Union[int, float] = None, std_linewidth : Union[int, float] = None,
                  mean_ncomponent : Union[int, float] = 2., std_ncomponent : Union[int, float] = .5,
                  fix_velocities : Optional[List] = None, fix_velocities_sigma : Optional[float] = None,
                  lam1 : Optional[float] = None, p1 : Optional[float] = None,
@@ -309,6 +309,8 @@ class saberPrepare(object):
         edges = int(0.2 * min(self.header['NAXIS1'],self.header['NAXIS2']))
         indices = np.column_stack((self.rng.integers(edges,self.header['NAXIS2']-edges+1,self.training_set_size), self.rng.integers(edges,self.header['NAXIS1']-edges+1,self.training_set_size)))
 
+        if self.mean_linewidth is None or self.std_linewidth is None:
+            raise ValueError('No linewidth parameters are given to create test data.')
         mu_lws_HISA, sigma_lws_HISA = (self.mean_linewidth / channel_width) / np.sqrt(8*np.log(2)), self.std_linewidth / channel_width # mean and standard deviation
         # TODO
         if self.fix_velocities is None:
