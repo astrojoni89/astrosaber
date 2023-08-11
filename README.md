@@ -11,7 +11,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/astrojoni89/astrosaber?style=for-the-badge)
 
 ## About
-The `astroSABER` (**S**elf-**A**bsorption **B**aseline **E**xtracto**R**) algorithm is an automated baseline extraction routine that is designed to recover baselines of absorption features that are convoluted with HI emission spectra. It utilizes asymmetric least squares smoothing first proposed by [Eilers (2004)](https://pubs.acs.org/doi/10.1021/ac034800e). The algorithm progresses iteratively in two cycles to obtain a smoothed baseline, the major (outer) cycle and the minor (inner) cycle executed at each iteration of the major cycle. The basis of the minor cycle is to find a solution that minimizes the penalized least squares function:
+The astroSABER (**S**elf-**A**bsorption **B**aseline **E**xtracto**R**) algorithm is an automated baseline extraction routine that is designed to recover baselines of absorption features that are convoluted with HI emission spectra. It utilizes asymmetric least squares smoothing first proposed by [Eilers (2004)](https://pubs.acs.org/doi/10.1021/ac034800e). The algorithm progresses iteratively in two cycles to obtain a smoothed baseline, the major (outer) cycle and the minor (inner) cycle executed at each iteration of the major cycle. The basis of the minor cycle is to find a solution that minimizes the penalized least squares function:
 
 
 $$\begin{equation}
