@@ -208,8 +208,12 @@ class saberTraining(object):
         
         self.debug_data = None # for debugging
       
-    def __str__(self):
-        return f'saberTraining:\npickle_file: {self.pickle_file}\npath_to_data: {self.path_to_data}\niterations: {self.iterations}\nphase: {self.phase}\nlam1_initial: {self.lam1_initial}\np1: {self.p1}\nlam2_initial: {self.lam2_initial}\np2: {self.p2}\nweight_1: {self.weight_1}\nweight_2: {self.weight_2}\nlam1_bounds: {self.lam1_bounds}\nlam2_bounds: {self.lam2_bounds}\nMAD: {self.MAD}\nwindow_size: {self.window_size}\neps_l1: {self.eps_l1}\neps_l2: {self.eps_l2}\nlearning_rate_l1: {self.learning_rate_l1}\nlearning_rate_l2: {self.learning_rate_l2}\nmom: {self.mom}\nget_trace: {self.get_trace}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
+    def __repr__(self):
+        return f'''saberTraining:
+                   pickle_file: {self.pickle_file}
+                   path_to_data: {self.path_to_data}
+                   iterations: {self.iterations}
+                   phase: {self.phase}\nlam1_initial: {self.lam1_initial}\np1: {self.p1}\nlam2_initial: {self.lam2_initial}\np2: {self.p2}\nweight_1: {self.weight_1}\nweight_2: {self.weight_2}\nlam1_bounds: {self.lam1_bounds}\nlam2_bounds: {self.lam2_bounds}\nMAD: {self.MAD}\nwindow_size: {self.window_size}\neps_l1: {self.eps_l1}\neps_l2: {self.eps_l2}\nlearning_rate_l1: {self.learning_rate_l1}\nlearning_rate_l2: {self.learning_rate_l2}\nmom: {self.mom}\nget_trace: {self.get_trace}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
 
     def getting_ready(self):
         string = 'preparation'
