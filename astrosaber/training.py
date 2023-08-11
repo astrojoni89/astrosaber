@@ -157,11 +157,14 @@ class saberTraining(object):
     """
     def __init__(self, pickle_file : str, path_to_data : Optional[Path] = '.', iterations : Optional[int] = 100, phase : Optional[str] = 'two',
                  lam1_initial : float = None, p1 : Optional[float] = 0.90, lam2_initial : float = None, p2 : Optional[float] = 0.90,
-                 weight_1 : Optional[float] = None, weight_2 : Optional[float] = None, lam1_bounds : Optional[List] = None, lam2_bounds : Optional[List] = None,
+                 weight_1 : Optional[float] = None, weight_2 : Optional[float] = None,
+                 lam1_bounds : Optional[List] = None, lam2_bounds : Optional[List] = None,
                  MAD : Optional[float] = None, window_size : Optional[int] = None,
-                 eps_l1 : Optional[float] = None, eps_l2 : Optional[float] = None, learning_rate_l1 : Optional[float] = None, learning_rate_l2 : Optional[float] = None, mom : Optional[float] = None,
-                 get_trace : bool = False, niters : Optional[int] = 20, iterations_for_convergence : Optional[int] = 3, add_residual : bool = True, sig : Optional[float] = 1.0,
-                 velo_range : Optional[float] = 15.0, check_signal_sigma : Optional[float] = 6., p_limit : Optional[float] = 0.01,
+                 eps_l1 : Optional[float] = None, eps_l2 : Optional[float] = None,
+                 learning_rate_l1 : Optional[float] = None, learning_rate_l2 : Optional[float] = None, mom : Optional[float] = None,
+                 get_trace : bool = False, niters : Optional[int] = 20, iterations_for_convergence : Optional[int] = 3,
+                 add_residual : bool = True, sig : Optional[float] = 1.0, velo_range : Optional[float] = 15.0,
+                 check_signal_sigma : Optional[float] = 6., p_limit : Optional[float] = 0.01,
                  ncpus : Optional[int] = None, suffix : Optional[str] = '', filename_out : Optional[str] = None, seed : Optional[int] = 111):
         
         self.pickle_file = pickle_file
@@ -240,7 +243,8 @@ class saberTraining(object):
                    ncpus: {self.ncpus}
                    suffix: {self.suffix}
                    filename_out: {self.filename_out}
-                   seed: {self.seed}'''
+                   seed: {self.seed}
+                   )'''
 
     def getting_ready(self):
         string = 'preparation'
