@@ -223,7 +223,8 @@ class saberPrepare(object):
                 ncpus: {self.ncpus}
                 suffix: {self.suffix}
                 filename_out: {self.filename_out}
-                seed: {self.seed}'''
+                seed: {self.seed}
+                )'''
     
     def getting_ready(self):
         """
