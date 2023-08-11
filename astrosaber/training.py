@@ -683,13 +683,13 @@ class saberTraining(object):
 
             # lam cannot be negative; keep lambda within bounds
             if self.lam1_bounds is None:
-                self.lam1_bounds = [0.0,100.0]
+                self.lam1_bounds = [0.1,100.0]
             if gd.lam1_trace[i+1] < min(self.lam1_bounds):
                 gd.lam1_trace[i+1] = 1.1 * min(self.lam1_bounds) 
             if gd.lam1_trace[i+1] > max(self.lam1_bounds):
                 gd.lam1_trace[i+1] = 0.9 * max(self.lam1_bounds)
             if self.lam2_bounds is None:
-                self.lam2_bounds = [0.0,100.0]
+                self.lam2_bounds = [0.1,100.0]
             if gd.lam2_trace[i+1] < min(self.lam2_bounds):
                 gd.lam2_trace[i+1] = 1.1 * min(self.lam2_bounds)
             if gd.lam2_trace[i+1] > max(self.lam2_bounds):
