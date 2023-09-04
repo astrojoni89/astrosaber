@@ -72,7 +72,7 @@ class saberPrepare(object):
         Standard deviation of the fixed velocities.
         If a list of fixed velocities is given, some 'wiggle room' defined by this attribute can be added.
         This is the standard deviation of a Gaussian distribution around the fixed velocities
-        in units of the thirds axis of the fits file. The default is one spectral channel.
+        in units of the third axis of the fits file. The default is one spectral channel.
     lam1 : float, optional
         Lambda_1 smoothing parameter to generate test data.
         Default is 2.0.
