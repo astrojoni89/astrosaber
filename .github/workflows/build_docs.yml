@@ -3,7 +3,7 @@ name: Build and Deploy Documentation
 on:
   push:
     branches:
-      - astrojoni89-patch-1
+      - master
 
 jobs:
   build:
