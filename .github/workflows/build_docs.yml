@@ -24,11 +24,11 @@ jobs:
 
     - name: Build Documentation
       run: |
+        git checkout -B gh_pages
         sphinx-build -b html docs/ docs/build/
 
-    - name: Deploy to Another Branch
+    - name: Deploy to gh-pages
       run: |
-        git checkout -B gh_pages
         git add -f docs/build/
         git commit -m "Update docs"
         git push -f origin gh_pages
