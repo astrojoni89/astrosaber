@@ -50,11 +50,11 @@ class saberPrepare(object):
     mean_linewidth : int | float, optional
         Mean of linewidth distribution in units of km/s [FWHM].
         This sets the mean value of the Gaussian distribution of self-absorption linewidths
-        from which the training data are generated. Default is 4.0.
+        from which the training data are generated. Default is None.
     std_linewidth : int | float, optional
         Standard deviation of linewidth distribution in units of km/s [FWHM].
         This sets the standard deviation of the Gaussian distribution of self-absorption linewidths
-        from which the training data are generated. Default is 1.0.
+        from which the training data are generated. Default is None.
     mean_ncomponent : int | float, optional
         Mean number of self-absorption components.
         This sets the mean value of the Gaussian distribution
@@ -72,7 +72,7 @@ class saberPrepare(object):
         Standard deviation of the fixed velocities.
         If a list of fixed velocities is given, some 'wiggle room' defined by this attribute can be added.
         This is the standard deviation of a Gaussian distribution around the fixed velocities
-        in units of the thirds axis of the fits file. The default is one spectral channel.
+        in units of the third axis of the fits file. The default is one spectral channel.
     lam1 : float, optional
         Lambda_1 smoothing parameter to generate test data.
         Default is 2.0.
@@ -134,7 +134,7 @@ class saberPrepare(object):
     prepare_training()
         Creates the test and training data and saves them into a pickled file.
     two_step_extraction_prepare()
-        Runs the two-phase smoothing with default parameters to generate test data.
+        Runs the two-phase smoothing with default parameters to generate test data and self-absorption parameters.
     save_data()
         Saves all the test and training data into a pickled file.
     """
@@ -142,7 +142,7 @@ class saberPrepare(object):
     def __init__(self, fitsfile : str, training_set_size : Union[int, float] = 100,
                  path_to_noise_map : Path =None, path_to_data : Path = '.',
                  mean_amp_snr : Union[int, float] = 7., std_amp_snr : Union[int, float] = 1.,
-                 mean_linewidth : Union[int, float] = 4., std_linewidth : Union[int, float] = 1.,
+                 mean_linewidth : Union[int, float] = None, std_linewidth : Union[int, float] = None,
                  mean_ncomponent : Union[int, float] = 2., std_ncomponent : Union[int, float] = .5,
                  fix_velocities : Optional[List] = None, fix_velocities_sigma : Optional[float] = None,
                  lam1 : Optional[float] = None, p1 : Optional[float] = None,
@@ -223,15 +223,25 @@ class saberPrepare(object):
                 ncpus: {self.ncpus}
                 suffix: {self.suffix}
                 filename_out: {self.filename_out}
-                seed: {self.seed}'''
+                seed: {self.seed}
+                )'''
     
     def getting_ready(self):
+        """
+        Prints a message when preparation starts.
+
+        """
         string = 'preparation'
         banner = len(string) * '='
         heading = '\n' + banner + '\n' + string + '\n' + banner
         say(heading)
 
     def prepare_data(self):
+        """
+        Prepares the training data by reading in data and
+        setting up lists for Gaussian parameter distributions.
+
+        """
         self.getting_ready()
         self.image = fits.getdata(self.fitsfile) #load data
         self.image[np.where(np.isnan(self.image))] = 0.0
@@ -254,6 +264,10 @@ class saberPrepare(object):
         say(string)
 
     def prepare_training(self):
+        """
+        Creates the test and training data and saves them into a pickled file.
+        
+        """
         self.rng = np.random.default_rng(self.seed)
         self.prepare_data()
 
@@ -296,6 +310,8 @@ class saberPrepare(object):
         edges = int(0.2 * min(self.header['NAXIS1'],self.header['NAXIS2']))
         indices = np.column_stack((self.rng.integers(edges,self.header['NAXIS2']-edges+1,self.training_set_size), self.rng.integers(edges,self.header['NAXIS1']-edges+1,self.training_set_size)))
 
+        if self.mean_linewidth is None or self.std_linewidth is None:
+            raise ValueError('No linewidth parameters are given to create test data.')
         mu_lws_HISA, sigma_lws_HISA = (self.mean_linewidth / channel_width) / np.sqrt(8*np.log(2)), self.std_linewidth / channel_width # mean and standard deviation
         # TODO
         if self.fix_velocities is None:
@@ -420,6 +436,22 @@ class saberPrepare(object):
         plot_pickle_spectra(self.path_to_file, outfile=None, ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[self.velocity[0],self.velocity[-1]], vel_unit=u.km/u.s, seed=self.seed)
 
     def two_step_extraction_prepare(self, i):
+        """
+        Runs the two-phase smoothing with default parameters to generate test data and self-absorption parameters.
+        
+        Returns
+        -------
+        mock_emission : numpy.ndarray
+            'Pure' emission spectrum w/o self-absorption.
+        mask_ranges : numpy.ndarray
+            Array of range indices that contain signal.
+        mask : numpy.ndarray
+            Array of signal mask.
+        mu_amps_HISA : float
+            Mean amplitude value of self-absorption features.
+        sigma_amps_HISA : float
+            Standard deviation of self-absorption features.
+        """
         bg, _, _, _  = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.spectrum_list[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise_list[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh_list[i])
         
         pad_ch = 5
@@ -435,6 +467,10 @@ class saberPrepare(object):
         return mock_emission, mask_ranges, mask, mu_amps_HISA, sigma_amps_HISA, i
 
     def save_data(self):
+        """
+        Saves all the test and training data into a pickled file.
+        
+        """
         if self.filename_out is None:
             filename_wext = os.path.basename(self.fitsfile)
             filename_base, file_extension = os.path.splitext(filename_wext)

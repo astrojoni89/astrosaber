@@ -7,11 +7,11 @@
 # astroSABER
 
 ![astroSABER logo](./docs/astrosaber_promo_lowres.png)  
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/astrojoni89/astroSABER?style=for-the-badge)
-![GitHub Repo stars](https://img.shields.io/github/stars/astrojoni89/astroSABER?style=for-the-badge)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/astrojoni89/astrosaber?style=for-the-badge)
+![GitHub Repo stars](https://img.shields.io/github/stars/astrojoni89/astrosaber?style=for-the-badge)
 
 ## About
-The `astroSABER` (**S**elf-**A**bsorption **B**aseline **E**xtracto**R**) algorithm is an automated baseline extraction routine that is designed to recover baselines of absorption features that are convoluted with HI emission spectra. It utilizes asymmetric least squares smoothing first proposed by [Eilers (2004)](https://pubs.acs.org/doi/10.1021/ac034800e). The algorithm progresses iteratively in two cycles to obtain a smoothed baseline, the major (outer) cycle and the minor (inner) cycle executed at each iteration of the major cycle. The basis of the minor cycle is to find a solution that minimizes the penalized least squares function:
+The astroSABER (**S**elf-**A**bsorption **B**aseline **E**xtracto**R**) algorithm is an automated baseline extraction routine that is designed to recover baselines of absorption features that are convoluted with HI emission spectra. It utilizes asymmetric least squares smoothing first proposed by [Eilers (2004)](https://pubs.acs.org/doi/10.1021/ac034800e). The algorithm progresses iteratively in two cycles to obtain a smoothed baseline, the major (outer) cycle and the minor (inner) cycle executed at each iteration of the major cycle. The basis of the minor cycle is to find a solution that minimizes the penalized least squares function:
 
 
 $$\begin{equation}
@@ -31,11 +31,11 @@ The asymmetry parameter $p\in[0,1]$ is set to favor either peaks or dips while s
 
 After $n_{\mathrm{minor}}$ iterations, the minor cycle converges, such that the iteratively updated baseline $\mathbf{z}$ will not change anymore given the input spectrum $\mathbf{y}$. However, in order to effectively smooth out dips while still retaining real signal peaks in the spectra, the smoothed baseline $\mathbf{z}$ is then passed to the next iteration of the major cycle as an input (i.e. now $\mathbf{y}$) for its minor cycle smoothing.
 
-In the case of the THOR HI data, the minor cycle has shown to already converge after only three iterations. Hence, the number of minor cycle iterations has been fixed at $n_{\mathrm{minor}}=3$ in the algorithm. This parameter affects the output of `astroSABER` only mildly since the final smoothed baseline is mostly dependent on the number of iterations in the major cycle and on the $\lambda$ parameter that tunes the smoothing.
+In the case of the THOR HI data, the minor cycle has shown to already converge after three iterations. Hence, the number of minor cycle iterations has been fixed at $n_{\mathrm{minor}}=3$ in the algorithm. This parameter affects the output of `astrosaber` only mildly since the final smoothed baseline is mostly dependent on the number of iterations in the major cycle and on the $\lambda$ parameter that tunes the smoothing.
 
 ## Installation
 ### Dependencies
-You will need the following packages to run `astroSABER`. We list the version of each package which we know to be compatible with `astroSABER`:
+You will need the following packages to run `astrosaber`. We list the version of each package which we know to be compatible with `astrosaber`:
 
 * [python3.6](https://www.python.org/) 
 * [astropy (v4.0.2)](https://www.astropy.org/)
@@ -45,13 +45,20 @@ You will need the following packages to run `astroSABER`. We list the version of
 * [tqdm (v4.56.2)](https://tqdm.github.io/)
 
 ### Download astroSABER
-Download `astroSABER` using git `$ git clone https://github.com/astrojoni89/astrosaber.git`
+Download `astrosaber` using git `$ git clone https://github.com/astrojoni89/astrosaber.git`
 
 ### Installing astroSABER
-To install `astroSABER`, make sure that all dependencies are already installed and properly linked to python. We recommend using anaconda and creating a new environment. Then cd to the local directory containing `astroSABER` and install via
+To install `astrosaber`, make sure that all dependencies are already installed and properly linked to python. We recommend using anaconda and creating a new environment. Then cd to the local directory containing `astrosaber` and install via
+```
+pip install astrosaber
+```
+or without using pip
 ```
 python setup.py install
 ```
+from within the `astrosaber` directory.
 
 ## Getting started
 You can find example scripts and a jupyter notebook for an HI self-absorption (HISA) baseline extraction run in the `example` directory. The data used in this example are taken from The HI/OH Recombination line survey of the inner Milky Way (THOR; [Beuther et al. 2016](https://ui.adsabs.harvard.edu/abs/2016A%26A...595A..32B/abstract), [Wang et al. 2020](https://ui.adsabs.harvard.edu/abs/2020A%26A...634A..83W/abstract)).
+
+More information is available in the documentation under [astrojoni89.github.io/astrosaber/](https://astrojoni89.github.io/astrosaber/).

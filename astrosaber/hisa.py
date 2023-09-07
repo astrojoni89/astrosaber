@@ -4,8 +4,6 @@
 # @Last modified by:   syed
 # @Last modified time: 05-02-2022
 
-'''hisa extraction'''
-
 import os
 import sys
 import numpy as np
@@ -172,12 +170,20 @@ class HisaExtraction(object):
                  ncpus: {self.ncpus})'''
 
     def getting_ready(self):
+        """
+        Prints a message when preparation starts.
+        
+        """
         string = 'preparation'
         banner = len(string) * '='
         heading = '\n' + banner + '\n' + string + '\n' + banner
         say(heading)
 
     def prepare_data(self):
+        """
+        Prepares the extraction by reading in data and put them in a raveled list of spectra.
+        
+        """
         self.getting_ready()
         self.image = fits.getdata(self.fitsfile) #load data
         self.image[np.where(np.isnan(self.image))] = 0.0
@@ -198,6 +204,11 @@ class HisaExtraction(object):
 
     #TODO
     def saber(self):
+        """
+        Runs the self-absorption extraction and saves the data.
+        It takes the instance attributes and reads in the noise to kick off the extraction routine.
+        
+        """
         self.prepare_data()
 
         if self.lam1 is None:
@@ -284,17 +295,66 @@ class HisaExtraction(object):
             raise Exception("No smoothing applied. Set smoothing to 'Y'")
         
         
-    def two_step_extraction_single(self, i):
+    def two_step_extraction_single(self, i : int) -> Tuple[int, np.ndarray, np.ndarray, int, int]:
+        """
+        Runs the two-phase extraction for a single spectrum i.
+        
+        Parameters
+        ----------
+        i : int
+            Index of input spectrum.
+
+        Returns
+        -------
+        index_1d : int
+            Index of the spectrum.
+        bg : numpy.ndarray
+            Background spectrum w/o self-absorption.
+        hisa : numpy.ndarray
+            Inverted self-absorption spectrum (i.e. expressed as equivalent emission).
+        iterations : int
+            Number of iterations until algorithm converged.
+        flag_map : int
+            Flag whether background did/did not converge or whether spectrum does/does not contain signal.
+            If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
+        """
         bg, hisa, iterations, flag_map = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.list_data[i][1], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.list_data_thresh[i][1], p_limit=self.p_limit)
         return self.list_data[i][0], bg, hisa, iterations, flag_map
     
     
     def one_step_extraction_single(self, i):
+        """
+        Runs the one-phase extraction for a single spectrum i.
+        
+        Parameters
+        ----------
+        i : int
+            Index of input spectrum.
+
+        Returns
+        -------
+        index_1d : int
+            Index of the spectrum.
+        bg : numpy.ndarray
+            Background spectrum w/o self-absorption.
+        hisa : numpy.ndarray
+            Inverted self-absorption spectrum (i.e. expressed as equivalent emission).
+        iterations : int
+            Number of iterations until algorithm converged.
+        flag_map : int
+            Flag whether background did/did not converge or whether spectrum does/does not contain signal.
+            If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
+        
+        """
         bg, hisa, iterations, flag_map = one_step_extraction(self.lam1, self.p1, spectrum=self.list_data[i][1], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.list_data_thresh[i][1], p_limit=self.p_limit)
         return self.list_data[i][0], bg, hisa, iterations, flag_map
        
         
     def save_data(self):
+        """
+        Saves all the extracted data into FITS files.
+        
+        """
         filename_wext = os.path.basename(self.fitsfile)
         filename_base, file_extension = os.path.splitext(filename_wext)
         filename_bg = filename_base + '_aslsq_bg_spectrum{}.fits'.format(self.suffix)
