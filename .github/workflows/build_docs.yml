@@ -1,0 +1,34 @@
+name: Build and Deploy Documentation
+
+on:
+  push:
+    branches:
+      - astrojoni89-patch-1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python (if using Sphinx)
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+
+    - name: Install dependencies
+      run: |
+        pip install -e .
+
+    - name: Build Documentation
+      run: |
+        sphinx-build -b html docs/ docs/build/
+
+    - name: Deploy to Another Branch
+      run: |
+        git checkout -B gh_pages
+        git add -f docs/build/
+        git commit -m "Update docs"
+        git push -f origin gh_pages
