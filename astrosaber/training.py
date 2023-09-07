@@ -19,7 +19,7 @@ from .utils.aslsq_helper import count_ones_in_row, IterationWarning, say, format
 from .utils.aslsq_fit import one_step_extraction, two_step_extraction
 from .plotting import plot_pickle_spectra
 
-import astrosaber.parallel_processing
+import .parallel_processing
 
 warnings.showwarning = format_warning
 
