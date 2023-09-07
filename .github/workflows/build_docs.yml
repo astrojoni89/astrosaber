@@ -36,5 +36,5 @@ jobs:
         git config user.name github-actions
         git config user.email github-actions@github.com
         git add -f docs/build/
-        git commit -m "Auto update docs"
+        git commit -m "Auto update documentation"
         git push
