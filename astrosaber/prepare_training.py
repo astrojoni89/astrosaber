@@ -1,5 +1,8 @@
 import numpy as np
 import pickle
+from pathlib import Path
+from typing import Union, Optional, List, Tuple
+
 from astropy.io import fits
 from astropy import units as u
 from scipy import sparse
@@ -20,7 +23,137 @@ np.seterr('raise')
 
 
 class saberPrepare(object):
-    def __init__(self, fitsfile, training_set_size=100, path_to_noise_map=None, path_to_data='.', mean_amp_snr=7., std_amp_snr=1., mean_linewidth=4., std_linewidth=1., mean_ncomponent=2., std_ncomponent=.5, fix_velocities=None, fix_velocities_sigma=None, lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence=3, noise=None, add_residual = False, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=1, suffix='', filename_out=None, path_to_file='.', seed=111):
+    """
+    A class used to obtain and prepare training data for the optimization.
+
+    
+    Attributes
+    ----------
+    fitsfile : str
+        Name of the fitsfile.
+    training_set_size : int, optional
+        Number of spectra to draw from the data.
+        Default is 100.
+    path_to_noise_map : Path
+        Path to the noise map.
+        If no noise map is given, a single value must be provided instead using the 'noise' attribute.
+    path_to_data : Path
+        Path to the fitsfile.
+    mean_amp_snr : int | float, optional
+        Mean of amplitude distribution.
+        This sets the mean value of the Gaussian distribution of self-absorption amplitude values
+        from which the training data are generated. Default is 7.0.
+    std_amp_snr : int | float, optional
+        Standard deviation of amplitude distribution.
+        This sets the standard deviation of the Gaussian distribution of self-absorption amplitude values
+        from which the training data are generated. Default is 1.0.
+    mean_linewidth : int | float, optional
+        Mean of linewidth distribution in units of km/s [FWHM].
+        This sets the mean value of the Gaussian distribution of self-absorption linewidths
+        from which the training data are generated. Default is None.
+    std_linewidth : int | float, optional
+        Standard deviation of linewidth distribution in units of km/s [FWHM].
+        This sets the standard deviation of the Gaussian distribution of self-absorption linewidths
+        from which the training data are generated. Default is None.
+    mean_ncomponent : int | float, optional
+        Mean number of self-absorption components.
+        This sets the mean value of the Gaussian distribution
+        from which the number of self-absorption features added per spectrum is determined.
+        Default is 2.0.
+    std_ncomponent : int | float, optional
+        Standard deviation of self-absorption components.
+        This sets the standard deviation of the Gaussian distribution
+        from which the number of self-absorption features added per spectrum is determined.
+        Default is 0.5.
+    fix_velocities : list, optional
+        List of fixed velocities where self-absorption features should be added (in units of the third axis in the fits file).
+        If the velocities of absorption features are known, this information can be provided here to aid the optimization.
+    fix_velocities_sigma : float, optional
+        Standard deviation of the fixed velocities.
+        If a list of fixed velocities is given, some 'wiggle room' defined by this attribute can be added.
+        This is the standard deviation of a Gaussian distribution around the fixed velocities
+        in units of the third axis of the fits file. The default is one spectral channel.
+    lam1 : float, optional
+        Lambda_1 smoothing parameter to generate test data.
+        Default is 2.0.
+    p1 : float, optional
+        Asymmetry weight of the minor cycle smoothing to generate test data.
+        Default is 0.90.
+    lam2 : float, optional
+        Lambda_2 smoothing parameter to generate test data.
+        Default is 2.0.
+    p2 : float, optional
+        Asymmetry weight of the major cycle smoothing to generate test data.
+        Default is 0.90.
+    niters : int, optional
+        Maximum number of iterations of the smoothing.
+        Only used to generate test data. Default is 20.
+    iterations_for_convergence : int, optional
+        Number of iterations of the major cycle for the baseline to be considered converged.
+        Only used to generate test data. Default is 3.
+    noise : float
+        Noise level of the data. Has to be specified if no path to noise map is given.
+    add_residual : bool, optional
+        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
+        Only used to generate test data. Default is True.
+    sig : float, optional
+        Defines how many sigma of the noise is used as a convergence criterion.
+        If the change in baseline between major cycle iterations is smaller than 'sig' * noise for 'iterations_for_convergence',
+        then the baseline is considered converged. Only used to generate test data. Default is 1.0.
+    velo_range : float, optional
+        Velocity range [in km/s] of the spectra that has to contain significant signal
+        for it to be considered in the baseline extraction. Default is 15.0.
+    check_signal_sigma : float, optional
+        Defines the significance of the signal that has to be present in the spectra
+        for at least the range defined by 'velo_range'. Default is 6.0.
+    p_limit : float, optional
+        The p-limit of the Markov chain to estimate signal ranges in the spectra.
+        Default is 0.01.
+    ncpus : int
+        Number of CPUs to use.
+        Defaults to 1.
+    suffix : str, optional
+        Optional suffix to add to the output filenames.
+    filename_out : str, optional
+        Output filename of the pickled file that contains the training and test data.
+        The default is the fits filename base with the number of training spectra.
+    path_to_file : str, optional
+        Optional path to where the pickled training data should be stored.
+        The training data are stored by default in the subfolder 'astrosaber_training'
+        of the working directory.
+    seed : int, optional
+        Seed to initialize the random generator.
+
+    Methods
+    -------
+    getting_ready()
+        Prints a message when preparation starts.
+    prepare_data()
+        Prepares the training data by reading in data and
+        setting up lists for Gaussian parameter distributions.
+    prepare_training()
+        Creates the test and training data and saves them into a pickled file.
+    two_step_extraction_prepare()
+        Runs the two-phase smoothing with default parameters to generate test data and self-absorption parameters.
+    save_data()
+        Saves all the test and training data into a pickled file.
+    """
+
+    def __init__(self, fitsfile : str, training_set_size : Union[int, float] = 100,
+                 path_to_noise_map : Path =None, path_to_data : Path = '.',
+                 mean_amp_snr : Union[int, float] = 7., std_amp_snr : Union[int, float] = 1.,
+                 mean_linewidth : Union[int, float] = None, std_linewidth : Union[int, float] = None,
+                 mean_ncomponent : Union[int, float] = 2., std_ncomponent : Union[int, float] = .5,
+                 fix_velocities : Optional[List] = None, fix_velocities_sigma : Optional[float] = None,
+                 lam1 : Optional[float] = None, p1 : Optional[float] = None,
+                 lam2 : Optional[float] = None, p2 : Optional[float] = None,
+                 niters : Optional[int] = 20, iterations_for_convergence : Optional[int] = 3,
+                 noise : float = None, add_residual : Optional[bool] = False, sig : Optional[float] = 1.0,
+                 velo_range : Optional[float] = 15.0, check_signal_sigma : Optional[float] = 6.,
+                 p_limit : Optional[float] = 0.01, ncpus : Optional[int] = 1,
+                 suffix : Optional[str] = '', filename_out : Optional[str] = None,
+                 path_to_file : Optional[Path] = '.', seed : Optional[int] = 111):
+        
         self.fitsfile = fitsfile
         self.training_set_size = int(training_set_size)
         self.path_to_noise_map = path_to_noise_map
@@ -61,18 +194,54 @@ class saberPrepare(object):
         
         self.seed = seed
         
-        self.debug_data = None # for debugging
-        
-    def __str__(self):
-        return f'saberPrepare:\nfitsfile: {self.fitsfile}\ntraining_set_size: {self.training_set_size}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nmean_amp_snr: {self.mean_amp_snr}\nstd_amp_snr: {self.std_amp_snr}\nmean_linewidth: {self.mean_linewidth}\nstd_linewidth: {self.std_linewidth}\nmean_ncomponent: {self.mean_ncomponent}\nstd_ncomponent: {self.std_ncomponent}\nfix_velocities: {self.fix_velocities}\nfix_velocities_sigma: {self.fix_velocities_sigma}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
+    def __repr__(self):
+        return f'''saberPrepare(
+                fitsfile: {self.fitsfile}
+                training_set_size: {self.training_set_size}
+                path_to_noise_map: {self.path_to_noise_map}
+                path_to_data: {self.path_to_data}
+                mean_amp_snr: {self.mean_amp_snr}
+                std_amp_snr: {self.std_amp_snr}
+                mean_linewidth: {self.mean_linewidth}
+                std_linewidth: {self.std_linewidth}
+                mean_ncomponent: {self.mean_ncomponent}
+                std_ncomponent: {self.std_ncomponent}
+                fix_velocities: {self.fix_velocities}
+                fix_velocities_sigma: {self.fix_velocities_sigma}
+                lam1: {self.lam1}
+                p1: {self.p1}
+                lam2: {self.lam2}
+                p2: {self.p2}
+                niters: {self.niters}
+                iterations_for_convergence: {self.iterations_for_convergence}
+                noise: {self.noise}
+                add_residual: {self.add_residual}
+                sig: {self.sig}
+                velo_range: {self.velo_range}
+                check_signal_sigma: {self.check_signal_sigma}
+                p_limit: {self.p_limit}
+                ncpus: {self.ncpus}
+                suffix: {self.suffix}
+                filename_out: {self.filename_out}
+                seed: {self.seed}
+                )'''
     
     def getting_ready(self):
+        """
+        Prints a message when preparation starts.
+
+        """
         string = 'preparation'
         banner = len(string) * '='
         heading = '\n' + banner + '\n' + string + '\n' + banner
         say(heading)
 
     def prepare_data(self):
+        """
+        Prepares the training data by reading in data and
+        setting up lists for Gaussian parameter distributions.
+
+        """
         self.getting_ready()
         self.image = fits.getdata(self.fitsfile) #load data
         self.image[np.where(np.isnan(self.image))] = 0.0
@@ -95,6 +264,10 @@ class saberPrepare(object):
         say(string)
 
     def prepare_training(self):
+        """
+        Creates the test and training data and saves them into a pickled file.
+        
+        """
         self.rng = np.random.default_rng(self.seed)
         self.prepare_data()
 
@@ -137,6 +310,8 @@ class saberPrepare(object):
         edges = int(0.2 * min(self.header['NAXIS1'],self.header['NAXIS2']))
         indices = np.column_stack((self.rng.integers(edges,self.header['NAXIS2']-edges+1,self.training_set_size), self.rng.integers(edges,self.header['NAXIS1']-edges+1,self.training_set_size)))
 
+        if self.mean_linewidth is None or self.std_linewidth is None:
+            raise ValueError('No linewidth parameters are given to create test data.')
         mu_lws_HISA, sigma_lws_HISA = (self.mean_linewidth / channel_width) / np.sqrt(8*np.log(2)), self.std_linewidth / channel_width # mean and standard deviation
         # TODO
         if self.fix_velocities is None:
@@ -164,7 +339,6 @@ class saberPrepare(object):
         results_list = astrosaber.parallel_processing.func(use_ncpus=self.ncpus, function='hisa') # initiate parallel process
         # sort results from parallel process by original indices to keep the same order (not needed for single core use)
         results_list.sort(key=lambda x: x[5])
-        self.debug_data = results_list
         for i in trange(len(results_list)):
             amp_list = []
             fwhm_list = []
@@ -262,6 +436,22 @@ class saberPrepare(object):
         plot_pickle_spectra(self.path_to_file, outfile=None, ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[self.velocity[0],self.velocity[-1]], vel_unit=u.km/u.s, seed=self.seed)
 
     def two_step_extraction_prepare(self, i):
+        """
+        Runs the two-phase smoothing with default parameters to generate test data and self-absorption parameters.
+        
+        Returns
+        -------
+        mock_emission : numpy.ndarray
+            'Pure' emission spectrum w/o self-absorption.
+        mask_ranges : numpy.ndarray
+            Array of range indices that contain signal.
+        mask : numpy.ndarray
+            Array of signal mask.
+        mu_amps_HISA : float
+            Mean amplitude value of self-absorption features.
+        sigma_amps_HISA : float
+            Standard deviation of self-absorption features.
+        """
         bg, _, _, _  = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.spectrum_list[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise_list[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh_list[i])
         
         pad_ch = 5
@@ -277,8 +467,14 @@ class saberPrepare(object):
         return mock_emission, mask_ranges, mask, mu_amps_HISA, sigma_amps_HISA, i
 
     def save_data(self):
+        """
+        Saves all the test and training data into a pickled file.
+        
+        """
         if self.filename_out is None:
-            filename_out = '{}-training_set-{}_spectra{}.pickle'.format(self.fitsfile.split('/')[-1].split('.fits')[0], self.training_set_size, self.suffix)
+            filename_wext = os.path.basename(self.fitsfile)
+            filename_base, file_extension = os.path.splitext(filename_wext)
+            filename_out = '{}-training_set-{}_spectra{}.pickle'.format(filename_base, self.training_set_size, self.suffix)
         elif not self.filename_out.endswith('.pickle'):
             filename_out = self.filename_out + '.pickle'
         else:

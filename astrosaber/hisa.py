@@ -4,11 +4,11 @@
 # @Last modified by:   syed
 # @Last modified time: 05-02-2022
 
-'''hisa extraction'''
-
 import os
 import sys
 import numpy as np
+from pathlib import Path
+from typing import Optional, List, Tuple
 
 from astropy.io import fits
 from astropy import units as u
@@ -26,7 +26,96 @@ warnings.showwarning = format_warning
 
 
 class HisaExtraction(object):
-    def __init__(self, fitsfile, path_to_noise_map=None, path_to_data='.', smoothing='Y', phase='two', lam1=None, p1=None, lam2=None, p2=None, niters=20, iterations_for_convergence = 3, noise=None, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., output_flags = True, baby_yoda = False, p_limit=None, ncpus=None, suffix=''):
+    """
+    A class used to execute the self-absorption extraction.
+
+    
+    Attributes
+    ----------
+    fitsfile : str
+        Name of the fitsfile.
+    path_to_noise_map : Path
+        Path to the noise map.
+        If no noise map is given, a single value must be provided instead using the 'noise' attribute.
+    path_to_data : Path
+        Path to the fitsfile.
+    smoothing : bool, optional
+        Whether to execute the asymmetric least squares smoothing routine.
+        Default is True.
+    phase : str, optional
+        Mode of saber smoothing.
+        Either 'one' or 'two' (default) phase smoothing. Default is 'two'.
+    lam1 : float
+        Lambda_1 smoothing parameter.
+    p1 : float, optional
+        Asymmetry weight of the minor cycle smoothing.
+        Default is 0.90.
+    lam2 : float
+        Lambda_2 smoothing parameter. Has to be specified if phase is set to 'two'.
+    p2 : float, optional
+        Asymmetry weight of the major cycle smoothing.
+        Has to be specified if phase is set to 'two'. Default is 0.90.
+    niters : int, optional
+        Maximum number of iterations of the smoothing.
+        Default is 20.
+    iterations_for_convergence : int, optional
+        Number of iterations of the major cycle for the baseline to be considered converged.
+        Default is 3.
+    noise : float
+        Noise level of the data. Has to be specified if no path to noise map is given.
+    add_residual : bool, optional
+        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
+        Default is True.
+    sig : float, optional
+        Defines how many sigma of the noise is used as a convergence criterion.
+        If the change in baseline between major cycle iterations is smaller than 'sig' * noise for 'iterations_for_convergence',
+        then the baseline is considered converged. Default is 1.0.
+    velo_range : float, optional
+        Velocity range [in km/s] of the spectra that has to contain significant signal
+        for it to be considered in the baseline extraction. Default is 15.0.
+    check_signal_sigma : float, optional
+        Defines the significance of the signal that has to be present in the spectra
+        for at least the range defined by 'velo_range'. Default is 6.0.
+    output_flags : bool, optional
+        Whether to save a mask containing the flags.
+        Default is True.
+    baby_yoda : bool, optional
+        Whether to show a star wars-themed progress bar.
+        Default is False.
+    p_limit : float, optional
+        The p-limit of the Markov chain to estimate signal ranges in the spectra.
+        Default is 0.02.
+    ncpus : int
+        Number of CPUs to use.
+        Defaults to 75% of the available cpus.
+    suffix : str, optional
+        Optional suffix to add to the output filenames.
+
+    Methods
+    -------
+    getting_ready()
+        Prints a message when preparation starts.
+    prepare_data()
+        Prepares the extraction by reading in data and put them in a raveled list of spectra.
+    saber()
+        Runs the self-absorption extraction and saves the data.
+        It takes the instance attributes and reads in the noise to kick off the extraction routine.
+    two_step_extraction_single(i)
+        Runs the two-phase extraction for a single spectrum i.
+    one_step_extraction_single(i)
+        Runs the one-phase extraction for a single spectrum i.
+    save_data()
+        Saves all the extracted data into FITS files.
+    """
+
+    def __init__(self, fitsfile : str, path_to_noise_map : Path = None, path_to_data : Path = '.',
+                 smoothing : Optional[str] = 'Y', phase : Optional[str] = 'two', lam1 : float = None, p1 : Optional[float] = 0.90,
+                 lam2 : float = None, p2 : Optional[float] = 0.90, niters : Optional[int] = 20,
+                 iterations_for_convergence : Optional[int] = 3, noise : float = None,
+                 add_residual : Optional[bool] = True, sig : Optional[float] = 1.0, velo_range : Optional[float] = 15.0,
+                 check_signal_sigma : Optional[float] = 6., output_flags : Optional[bool] = True, baby_yoda : Optional[bool] = False,
+                 p_limit : Optional[float] = 0.02, ncpus : Optional[int] = None, suffix : Optional[str] = ''):
+        
         self.fitsfile = fitsfile
         self.path_to_noise_map = path_to_noise_map
         self.path_to_data = path_to_data
@@ -58,16 +147,43 @@ class HisaExtraction(object):
         
         self.suffix = suffix
         
-    def __str__(self):
-        return f'HisaExtraction:\nfitsfile: {self.fitsfile}\npath_to_noise_map: {self.path_to_noise_map}\npath_to_data: {self.path_to_data}\nsmoothing: {self.smoothing}\nphase: {self.phase}\nlam1: {self.lam1}\np1: {self.p1}\nlam2: {self.lam2}\np2: {self.p2}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nnoise: {self.noise}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\noutput_flags: {self.output_flags}\np_limit: {self.p_limit}\nncpus: {self.ncpus}'
+    def __repr__(self):
+        return f'''HisaExtraction(
+                 fitsfile: {self.fitsfile}
+                 path_to_noise_map: {self.path_to_noise_map}
+                 path_to_data: {self.path_to_data}
+                 smoothing: {self.smoothing}
+                 phase: {self.phase}
+                 lam1: {self.lam1}
+                 p1: {self.p1}
+                 lam2: {self.lam2}
+                 p2: {self.p2}
+                 niters: {self.niters}
+                 iterations_for_convergence: {self.iterations_for_convergence}
+                 noise: {self.noise}
+                 add_residual: {self.add_residual}
+                 sig: {self.sig}
+                 velo_range: {self.velo_range}
+                 check_signal_sigma: {self.check_signal_sigma}
+                 output_flags: {self.output_flags}
+                 p_limit: {self.p_limit}
+                 ncpus: {self.ncpus})'''
 
     def getting_ready(self):
+        """
+        Prints a message when preparation starts.
+        
+        """
         string = 'preparation'
         banner = len(string) * '='
         heading = '\n' + banner + '\n' + string + '\n' + banner
         say(heading)
 
     def prepare_data(self):
+        """
+        Prepares the extraction by reading in data and put them in a raveled list of spectra.
+        
+        """
         self.getting_ready()
         self.image = fits.getdata(self.fitsfile) #load data
         self.image[np.where(np.isnan(self.image))] = 0.0
@@ -88,6 +204,11 @@ class HisaExtraction(object):
 
     #TODO
     def saber(self):
+        """
+        Runs the self-absorption extraction and saves the data.
+        It takes the instance attributes and reads in the noise to kick off the extraction routine.
+        
+        """
         self.prepare_data()
 
         if self.lam1 is None:
@@ -174,17 +295,66 @@ class HisaExtraction(object):
             raise Exception("No smoothing applied. Set smoothing to 'Y'")
         
         
-    def two_step_extraction_single(self, i):
+    def two_step_extraction_single(self, i : int) -> Tuple[int, np.ndarray, np.ndarray, int, int]:
+        """
+        Runs the two-phase extraction for a single spectrum i.
+        
+        Parameters
+        ----------
+        i : int
+            Index of input spectrum.
+
+        Returns
+        -------
+        index_1d : int
+            Index of the spectrum.
+        bg : numpy.ndarray
+            Background spectrum w/o self-absorption.
+        hisa : numpy.ndarray
+            Inverted self-absorption spectrum (i.e. expressed as equivalent emission).
+        iterations : int
+            Number of iterations until algorithm converged.
+        flag_map : int
+            Flag whether background did/did not converge or whether spectrum does/does not contain signal.
+            If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
+        """
         bg, hisa, iterations, flag_map = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.list_data[i][1], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.list_data_thresh[i][1], p_limit=self.p_limit)
         return self.list_data[i][0], bg, hisa, iterations, flag_map
     
     
     def one_step_extraction_single(self, i):
+        """
+        Runs the one-phase extraction for a single spectrum i.
+        
+        Parameters
+        ----------
+        i : int
+            Index of input spectrum.
+
+        Returns
+        -------
+        index_1d : int
+            Index of the spectrum.
+        bg : numpy.ndarray
+            Background spectrum w/o self-absorption.
+        hisa : numpy.ndarray
+            Inverted self-absorption spectrum (i.e. expressed as equivalent emission).
+        iterations : int
+            Number of iterations until algorithm converged.
+        flag_map : int
+            Flag whether background did/did not converge or whether spectrum does/does not contain signal.
+            If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
+        
+        """
         bg, hisa, iterations, flag_map = one_step_extraction(self.lam1, self.p1, spectrum=self.list_data[i][1], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.list_data_thresh[i][1], p_limit=self.p_limit)
         return self.list_data[i][0], bg, hisa, iterations, flag_map
        
         
     def save_data(self):
+        """
+        Saves all the extracted data into FITS files.
+        
+        """
         filename_wext = os.path.basename(self.fitsfile)
         filename_base, file_extension = os.path.splitext(filename_wext)
         filename_bg = filename_base + '_aslsq_bg_spectrum{}.fits'.format(self.suffix)

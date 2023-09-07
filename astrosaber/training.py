@@ -1,19 +1,22 @@
 import sys
 import numpy as np
 import pickle
+import warnings
+import os
+from pathlib import Path
+from typing import Optional, List, Tuple, Callable
+
 from astropy.io import fits
 from astropy import units as u
 from scipy import sparse
 from scipy.sparse.linalg import spsolve
 
 from tqdm import tqdm, trange
-from tqdm.utils import _is_utf, _supports_unicode
-import warnings
-import os
+from tqdm.utils import _supports_unicode
 
-from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
-from .utils.aslsq_helper import velocity_axes, count_ones_in_row, check_signal_ranges, IterationWarning, say, format_warning
-from .utils.aslsq_fit import baseline_als_optimized, one_step_extraction, two_step_extraction
+from .utils.quality_checks import get_max_consecutive_channels, determine_peaks, mask_channels
+from .utils.aslsq_helper import count_ones_in_row, IterationWarning, say, format_warning
+from .utils.aslsq_fit import one_step_extraction, two_step_extraction
 from .plotting import plot_pickle_spectra
 
 warnings.showwarning = format_warning
@@ -21,7 +24,148 @@ warnings.showwarning = format_warning
 np.seterr('raise')
 
 class saberTraining(object):
-    def __init__(self, pickle_file, path_to_data='.', iterations=100, phase='two', lam1_initial=None, p1=None, lam2_initial=None, p2=None, weight_1=None, weight_2=None, lam1_bounds=None, lam2_bounds=None, MAD=None, window_size=None, eps_l1=None, eps_l2=None, learning_rate_l1=None, learning_rate_l2=None, mom=None, get_trace=False, niters=20, iterations_for_convergence=3, add_residual = True, sig = 1.0, velo_range = 15.0, check_signal_sigma = 6., p_limit=None, ncpus=None, suffix='', filename_out=None, seed=111):
+    """
+    A class used to optimize smoothing parameters based on training data.
+
+    Attributes
+    ----------
+    picklefile : str
+        Name of the pickled file to use as an input.
+    path_to_data : Path, optional
+        Path to the pickled file.
+        Default is the working directory.
+    iterations : int, optional
+        Maximum number of iterations for gradient descent algorithm.
+        Default is 100.
+    phase : str, optional
+        Mode of saber smoothing.
+        Either `one` or `two` (default) phase smoothing. Default is `two`.
+    lam1_initial : float
+        Initial value of the Lambda_1 smoothing parameter that is to be optimized.
+    p1 : float, optional
+        Asymmetry weight of the minor (and major if phase=`one`) cycle smoothing.
+        Default is 0.90.
+    lam1_initial : float
+        Initial value of the Lambda_2 smoothing parameter that is to be optimized.
+        Has to be specified if phase is set to `two`.
+    p2 : float, optional
+        Asymmetry weight of the major cycle smoothing to generate test data.
+        Default is 0.90.
+    weight_1 : float, optional
+        (DEPRECATED) Additional penalty that can be imposed on the Lambda_1 smoothing weight.
+        This is deprecated and will be ignored.
+    weight_2 : float, optional
+        (DEPRECATED) Additional penalty that can be imposed on the Lambda_2 smoothing weight.
+        This is deprecated and will be ignored.
+    lam1_bounds : List, optional
+        List of two constraints on Lambda_1 smoothing parameter to limit the parameter space.
+        Default is [0.1, 100.].
+    lam2_bounds : List, optional
+        List of two constraints on Lambda_2 smoothing parameter to limit the parameter space.
+        Default is [0.1, 100.].
+    MAD : float, optional
+        Median absolute difference that is used together with `window_size` as a convergence threshold for optimization.
+        Default is 0.03.
+    window_size : float, optional
+        Trailing window size to determine convergence.
+        Default is 10 (iterations).
+    eps_l1 : float, optional
+        Epsilon value to compute parameter space derivative in Lambda_1 direction.
+        Default is 0.1.
+    eps_l2 : float, optional
+        Epsilon value to compute parameter space derivative in Lambda_2 direction.
+        Default is 0.1.
+    learning_rate_l1 : float, optional
+        Step size to go in direction of Lambda_1 derivative at each iteration.
+        Default is 0.5.
+    learning_rate_l2 : float, optional
+        Step size to go in direction of Lambda_2 derivative at each iteration.
+        Default is 0.5.
+    mom : float, optional
+        Momentum that influences the following step in the gradient descent run.
+        Default is 0.3.
+    get_trace : bool, optional
+        If get_trace is set to True, the tracks of (lam1,lam2) will be returned and saved,
+        instead of the final optimized smoothing parameters. Default is False.
+    niters : int, optional
+        Maximum number of iterations of the smoothing.
+        Only used to generate test data. Default is 20.
+    iterations_for_convergence : int, optional
+        Number of iterations of the major cycle for the baseline to be considered converged.
+        Only used to generate test data. Default is 3.
+    add_residual : bool, optional
+        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
+        Only used to generate test data. Default is True.
+    sig : float, optional
+        Defines how many sigma of the noise is used as a convergence criterion.
+        If the change in baseline between major cycle iterations is smaller than `sig` * noise for `iterations_for_convergence`,
+        then the baseline is considered converged. Only used to generate test data. Default is 1.0.
+    velo_range : float, optional
+        Velocity range [km/s] of the spectra that has to contain significant signal
+        for it to be considered in the baseline extraction. Default is 15.0.
+    check_signal_sigma : float, optional
+        Defines the significance of the signal that has to be present in the spectra
+        for at least the range defined by 'velo_range'. Default is 6.0.
+    p_limit : float, optional
+        The p-limit of the Markov chain to estimate signal ranges in the spectra.
+        Default is 0.01.
+    ncpus : int
+        Number of CPUs to use.
+        Defaults to 1.
+    suffix : str, optional
+        Optional suffix to add to the output filenames.
+    filename_out : str, optional
+        Output filename of the pickled file that contains the training and test data.
+        The default is the fits filename base with the number of training spectra.
+    seed : int, optional
+        Seed to initialize the random generator.
+        Default is 111.
+
+    Methods
+    -------
+    getting_ready()
+        Prints a message when preparation starts.
+    prepare_data()
+        Prepares the optimization by reading in data and
+        setting parameters.
+    training()
+        Prepares the data and kicks off the optimization routine.
+    train()
+        Optimizes the Lambda smoothing parameters.
+    objective_function_lambda_set()
+        Kicks off the parallel process and computes the cost function based on the current Lambda parameters.
+    single_cost(i)
+        Computes the cost, and optionally the reduced chi square and the median absolute deviation (MAD)
+        of a single spectrum fit.
+    single_cost_endofloop(i)
+        Computes the cost, and optionally the reduced chi square and the median absolute deviation (MAD)
+        of a single spectrum fit using fixed lambda values.
+    gradient_descent_lambda_set()
+        Book-keeping object of the gradient descent.
+    train_lambda_set()
+        Performs the gradient descent using an objective function
+        (which is in this case the cost function evaluated for asymmetric smoothing with lambda_1, lambda_2 parameters).
+    save_data()
+        If get_trace is set to False, this will save the optimized Lambda smoothing parameters in a .txt file.
+        If get_trace is set to True, this will save the tracks of Lambda positions in the parameter space in a .txt file.
+    update_pickle_file()
+        Updates the input pickle file with final background fit
+        and reduced chi square value for each training spectrum and saves the data.
+    save_pickle()
+        Saves the updated pickle file.
+    """
+    def __init__(self, pickle_file : str, path_to_data : Optional[Path] = '.', iterations : Optional[int] = 100, phase : Optional[str] = 'two',
+                 lam1_initial : float = None, p1 : Optional[float] = 0.90, lam2_initial : float = None, p2 : Optional[float] = 0.90,
+                 weight_1 : Optional[float] = None, weight_2 : Optional[float] = None,
+                 lam1_bounds : Optional[List] = None, lam2_bounds : Optional[List] = None,
+                 MAD : Optional[float] = None, window_size : Optional[int] = None,
+                 eps_l1 : Optional[float] = None, eps_l2 : Optional[float] = None,
+                 learning_rate_l1 : Optional[float] = None, learning_rate_l2 : Optional[float] = None, mom : Optional[float] = None,
+                 get_trace : bool = False, niters : Optional[int] = 20, iterations_for_convergence : Optional[int] = 3,
+                 add_residual : bool = True, sig : Optional[float] = 1.0, velo_range : Optional[float] = 15.0,
+                 check_signal_sigma : Optional[float] = 6., p_limit : Optional[float] = 0.01,
+                 ncpus : Optional[int] = None, suffix : Optional[str] = '', filename_out : Optional[str] = None, seed : Optional[int] = 111):
+        
         self.pickle_file = pickle_file
         self.path_to_data = path_to_data
 
@@ -66,16 +210,57 @@ class saberTraining(object):
         
         self.debug_data = None # for debugging
       
-    def __str__(self):
-        return f'saberTraining:\npickle_file: {self.pickle_file}\npath_to_data: {self.path_to_data}\niterations: {self.iterations}\nphase: {self.phase}\nlam1_initial: {self.lam1_initial}\np1: {self.p1}\nlam2_initial: {self.lam2_initial}\np2: {self.p2}\nweight_1: {self.weight_1}\nweight_2: {self.weight_2}\nlam1_bounds: {self.lam1_bounds}\nlam2_bounds: {self.lam2_bounds}\nMAD: {self.MAD}\nwindow_size: {self.window_size}\neps_l1: {self.eps_l1}\neps_l2: {self.eps_l2}\nlearning_rate_l1: {self.learning_rate_l1}\nlearning_rate_l2: {self.learning_rate_l2}\nmom: {self.mom}\nget_trace: {self.get_trace}\nniters: {self.niters}\niterations_for_convergence: {self.iterations_for_convergence}\nadd_residual: {self.add_residual}\nsig: {self.sig}\nvelo_range: {self.velo_range}\ncheck_signal_sigma: {self.check_signal_sigma}\np_limit: {self.p_limit}\nncpus: {self.ncpus}\nsuffix: {self.suffix}\nfilename_out: {self.filename_out}\nseed: {self.seed}'
+    def __repr__(self):
+        return f'''saberTraining(
+                   pickle_file: {self.pickle_file}
+                   path_to_data: {self.path_to_data}
+                   iterations: {self.iterations}
+                   phase: {self.phase}
+                   lam1_initial: {self.lam1_initial}
+                   p1: {self.p1}
+                   lam2_initial: {self.lam2_initial}
+                   p2: {self.p2}
+                   weight_1: {self.weight_1}
+                   weight_2: {self.weight_2}
+                   lam1_bounds: {self.lam1_bounds}
+                   lam2_bounds: {self.lam2_bounds}
+                   MAD: {self.MAD}
+                   window_size: {self.window_size}
+                   eps_l1: {self.eps_l1}
+                   eps_l2: {self.eps_l2}
+                   learning_rate_l1: {self.learning_rate_l1}
+                   learning_rate_l2: {self.learning_rate_l2}
+                   mom: {self.mom}
+                   get_trace: {self.get_trace}
+                   niters: {self.niters}
+                   iterations_for_convergence: {self.iterations_for_convergence}
+                   add_residual: {self.add_residual}
+                   sig: {self.sig}
+                   velo_range: {self.velo_range}
+                   check_signal_sigma: {self.check_signal_sigma}
+                   p_limit: {self.p_limit}
+                   ncpus: {self.ncpus}
+                   suffix: {self.suffix}
+                   filename_out: {self.filename_out}
+                   seed: {self.seed}
+                   )'''
 
     def getting_ready(self):
+        """
+        Prints a message when preparation starts.
+
+        """
         string = 'preparation'
         banner = len(string) * '='
         heading = '\n' + banner + '\n' + string + '\n' + banner
         say(heading)
 
     def prepare_data(self):
+        """
+        Prepares the optimization by reading in data and
+        setting parameters.
+        
+        """
         self.rng = np.random.default_rng(self.seed)
         self.getting_ready()
         input_path = os.path.join(self.path_to_data, self.pickle_file)
@@ -105,6 +290,13 @@ class saberTraining(object):
         say(string)
 
     def training(self):
+        """
+        Prepares the data using :meth:`~astrosaber.saberTraining.prepare_data`
+        and calls the methods :meth:`~astrosaber.saberTraining.train`,
+        :meth:`~astrosaber.saberTraining.save_data`; and
+        :meth:`~astrosaber.saberTraining.update_pickle_file` and :func:`astrosaber.plotting.plot_pickle_spectra`
+        if get_trace is set to False.
+        """
         self.prepare_data()
         string = 'Optimizing smoothing parameters'
         banner = len(string) * '='
@@ -117,17 +309,54 @@ class saberTraining(object):
             plot_pickle_spectra(self.path_to_updated_pickle, outfile=None, ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[self.velocity[0],self.velocity[-1]], vel_unit=u.km/u.s, seed=self.seed)
 
     def train(self):
+        """
+        Optimizes the Lambda smoothing parameter(s).
+        
+        Returns
+        -------
+        popt_lam : List
+            Optimized Lambda parameters.
+            Returns an array of lambda positions from the gradient descent run if `get_trace` is set to True.
+        """
         popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps_l1=self.eps_l1, eps_l2=self.eps_l2, learning_rate_l1=self.learning_rate_l1, learning_rate_l2=self.learning_rate_l2, mom=self.mom, window_size=self.window_size, iterations_for_convergence_training=10, get_trace=False, ncpus=self.ncpus)
         return popt_lam
 
-    def objective_function_lambda_set(self, lam1, p1, lam2, p2, get_all=True, ncpus=None): 
-   
+    def objective_function_lambda_set(self, lam1 : float, p1 : float, lam2 : float, p2 : float, get_all : bool = True, ncpus : int = None) -> Tuple[float, float, float]:
+        """
+        Kicks off the parallel process and computes the cost function based on the current Lambda parameters.
+         
+        Parameters
+        ----------
+        lam1 : float
+            Lambda_1 smoothing parameter.
+        p1 : float
+            Asymmetry weight parameter.
+        lam2 : float
+            Lambda_2 smoothing parameter.
+        p2 : float
+            Asymmetry weight parameter
+        get_all : bool, optional
+            If get_all is set to True, it will return the median results of the cost function, the reduced chi square, and the median absolute deviation (MAD).
+            If set to False, it will return just the median result of the costs.
+        ncpus : int, optional
+            Number of CPUs to use.
+            Defaults to 75% of the available CPUs.
+
+        Returns
+        -------
+        cost : float
+            Median of costs.
+        rchi2 : float
+            Median of reduced chi square values. Only returned if get_all=True.
+        MAD : float
+            Median of MAD values. Only returned if get_all=True.
+        """
         self.lam1_updt, self.lam2_updt = lam1, lam2
         import astrosaber.parallel_processing
         astrosaber.parallel_processing.init([self.training_data, [self]])
         results_list = astrosaber.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')
         results_list_array = np.array(results_list)
-   
+    
         if get_all:
             assert results_list_array.shape == (len(self.training_data),3), 'Shape is {}'.format(results_list_array.shape)
             return np.nanmedian(results_list_array[:,0]), np.nanmedian(results_list_array[:,1]), np.nanmedian(results_list_array[:,2])
@@ -135,7 +364,29 @@ class saberTraining(object):
             assert results_list_array.shape == (len(self.training_data),1), 'Shape is {}'.format(results_list_array.shape)
             return np.nanmedian(results_list_array[:,0])
 
-    def single_cost(self, i, get_all=True):
+    def single_cost(self, i : int, get_all : Optional[bool] = True) -> Tuple[float, float, float]:
+        """
+        Computes the cost, and optionally the reduced chi square and the median absolute deviation (MAD)
+        of a single spectrum fit.
+         
+        Parameters
+        ----------
+        i : int
+            Index of spectrum.
+        get_all : bool, optional
+            If set to True (default), returns cost, reduced chi square, and MAD.
+            If False, returns only cost.
+
+        Returns
+        -------
+        cost : float
+            Cost.
+            In this case, it is the reduced chi square.
+        rchi2 : float
+            Reduced chi square value. Only returned if get_all=True.
+        MAD : float
+            MAD value. Only returned if get_all=True.
+        """
         ###TODO
         try:
             mask_hisa = self.hisa_mask[i]
@@ -222,7 +473,33 @@ class saberTraining(object):
             else:
                 return np.nan
         
-    def single_cost_endofloop(self, i, lam1_final=None, lam2_final=None, get_all=True):
+    def single_cost_endofloop(self, i : int, lam1_final : float = None, lam2_final : float = None, get_all : Optional[bool] = True) -> Tuple[float, float, float]:
+        """
+        Computes the cost, and optionally the reduced chi square and the median absolute deviation (MAD)
+        of a single spectrum fit using fixed lambda values.
+         
+        Parameters
+        ----------
+        i : int
+            Index of spectrum.
+        lam1_final : float
+            Final lambda_1 smoothing parameter.
+        lam2_final : float
+            Final lambda_2 smoothing parameter.
+        get_all : bool, optional
+            If set to True (default), returns cost, reduced chi square, and MAD.
+            If False, returns only cost.
+
+        Returns
+        -------
+        cost : float
+            Cost.
+            In this case, it is the reduced chi square.
+        rchi2 : float
+            Reduced chi square value. Only returned if get_all=True.
+        MAD : float
+            MAD value. Only returned if get_all=True.
+        """
         ###TODO
         try:
             mask_hisa = self.hisa_mask[i]
@@ -309,7 +586,10 @@ class saberTraining(object):
                 return np.nan, np.nan
 
     class gradient_descent_lambda_set(object):
-        """Bookkeeping object."""
+        """
+        Bookkeeping object.
+        
+        """
         def __init__(self, iterations):
             self.lam1_trace = np.zeros(iterations+1) * np.nan
             self.lam2_trace = np.zeros(iterations+1) * np.nan
@@ -324,17 +604,77 @@ class saberTraining(object):
             self.fracdiff_lam2 = np.zeros(iterations) * np.nan
             self.iter_of_convergence = np.nan
 
-    def train_lambda_set(self, objective_function, training_data=None, test_data=None, noise=None, lam1_initial=None, p1=None, lam2_initial=None, p2=None, lam1_bounds=None, lam2_bounds=None, iterations=100, MAD=None, eps_l1=None, eps_l2=None, learning_rate_l1=None, learning_rate_l2=None, mom=None, window_size=None, iterations_for_convergence_training=10, get_trace=False, ncpus=None):
+    def train_lambda_set(self, objective_function : Callable[[], Tuple[float, float, float]], training_data : np.ndarray = None,
+                         test_data : np.ndarray = None, noise : np.ndarray = None, lam1_initial : float = None, p1 : float = None,
+                         lam2_initial : float = None, p2 : float = None, lam1_bounds : Optional[List] = None, lam2_bounds : Optional[List] = None,
+                         iterations : Optional[int] = 100, MAD : Optional[float] = None, eps_l1 : Optional[float] = None, eps_l2 : Optional[float] = None,
+                         learning_rate_l1 : Optional[float] = None, learning_rate_l2 : Optional[float] = None,
+                         mom : Optional[float] = None, window_size : Optional[int] = None, iterations_for_convergence_training : Optional[int] = 10,
+                         get_trace : Optional[bool] = False, ncpus : Optional[int] = None):
         """
-        lam1_initial =
-        lam2_initial =
-        iterations =
-        MAD = mean absolute difference
-        eps = 'epsilson; finite offset for computing derivatives in gradient'
-        learning_rate
-        mom = 'Momentum value'
-        window_size = trailing window size to determine convergence,
-        iterations_for_convergence_training = number of continuous iterations within threshold tolerence required to achieve convergence
+        Performs the gradient descent using an objective function
+        (which is in this case the cost function evaluated for asymmetric smoothing with lambda_1, lambda_2 parameters).
+        
+        Parameters
+        ----------
+        objective_function : func
+            Objective function whose parameters are to be optimized.
+        training_data : numpy.ndarray
+            Array containing training spectra.
+        test_data : numpy.ndarray
+            Array containing reference test spectra to evaluate the goodness of fit after each iteration.
+        noise : numpy.ndarray
+            Array of noise values.
+            Array of length N, with N being the number of training spectra.
+        lam1_initial : float
+             Initial lambda_1 parameter at which gradient descent takes off.
+        p1 : float
+            Asymmetry weight of first major cycle iteration. Default is None.
+        lam2_initial : float
+             Initial lambda_2 parameter at which gradient descent takes off.
+        p2 : float
+            Asymmetry weight of following major cycle iterations. Default is None.
+        lam1_bounds : List
+            Imposed bounds of the lambda_1 parameter.
+            If the gradient descent converges toward a value that is outside the range given by lam1_bounds,
+            the next iteration of the gradient descent will be pushed in the other direction by an amount that is 0.1 times the current lam1 location.
+            Default is [0.1, 100.]
+        lam2_bounds : List
+            Imposed bounds of the lambda_2 parameter.
+            If the gradient descent converges toward a value that is outside the range given by lam2_bounds,
+            the next iteration of the gradient descent will be pushed in the other direction by an amount that is 0.1 times the current lam2 location.
+            Default is [0.1, 100.]
+        iterations : int, optional
+            Maximum number of iterations to reach a stable convergence.
+            If the gradient descent did not converge until then, the lambda values at this point will be saved.
+            Default is 100.
+        MAD : float, optional
+            Mean absolute deviation used as a convergence threshold.
+            Defaults to 0.03.
+        eps_l1, eps_l2 : float, optional
+            Finite offset for computing derivatives in gradient in direction of lambda_1,lambda_2.
+            Defaults to 0.1
+        learning_rate_l1, learning_rate_l2 : float, optional
+            Step size to go during optimization in direction of gradient of objective_function(lam1,lam2).
+            Defaults to 0.5.
+        mom : float, optional
+            Momentum value.
+            Defaults to 0.3.
+        window_size : int, optional
+            Trailing window size to determine convergence.
+            Default=10.
+        iterations_for_convergence_training : int, optional
+            Number of continuous iterations within threshold tolerence required to achieve convergence.
+            Default=10.
+        get_trace : bool, optional
+            Option to save the lambda traces instead of final values.
+            Default is False.
+        ncpus : int, optional
+            Number of CPUs to use. Defaults to 0.5 of the available CPUs.
+            
+        Returns
+        -------
+            Returns the lam1, lam2 traces if get_trace is True. Else it returns the lam1, lam2 value after the gradient descent terminates.
         """
 
         # Default settings for hyper parameters; these seem to be the most robust hyperparams
@@ -404,24 +744,24 @@ class saberTraining(object):
 
             # lam cannot be negative; keep lambda within bounds
             if self.lam1_bounds is None:
-                self.lam1_bounds = [0.1,10.0]
+                self.lam1_bounds = [0.1,100.0]
             if gd.lam1_trace[i+1] < min(self.lam1_bounds):
-                gd.lam1_trace[i+1] = min(self.lam1_bounds) + 0.5
+                gd.lam1_trace[i+1] = 1.1 * min(self.lam1_bounds) 
             if gd.lam1_trace[i+1] > max(self.lam1_bounds):
-                gd.lam1_trace[i+1] = max(self.lam1_bounds) - 0.5
+                gd.lam1_trace[i+1] = 0.9 * max(self.lam1_bounds)
             if self.lam2_bounds is None:
-                self.lam2_bounds = [0.1,10.0]
+                self.lam2_bounds = [0.1,100.0]
             if gd.lam2_trace[i+1] < min(self.lam2_bounds):
-                gd.lam2_trace[i+1] = min(self.lam2_bounds) + 0.5
+                gd.lam2_trace[i+1] = 1.1 * min(self.lam2_bounds)
             if gd.lam2_trace[i+1] > max(self.lam2_bounds):
-                gd.lam2_trace[i+1] = max(self.lam2_bounds) - 0.5
+                gd.lam2_trace[i+1] = 0.9 * max(self.lam2_bounds)
         
             if gd.lam1_trace[i+1] < 0.:
                 gd.lam1_trace[i+1] = 0.
             if gd.lam2_trace[i+1] < 0.:
                 gd.lam2_trace[i+1] = 0.
 
-            say('\niter {0}: red.chi2={1:4.2f}, [lam1, lam2]=[{2:.3f}, {3:.3f}], [p1, p2]=[{4:.3f}, {5:.3f}], mom=[{6:.2f}, {7:4.2f}]'.format(i, gd.accuracy_trace[i], np.round(gd.lam1_trace[i], 3), np.round(gd.lam2_trace[i], 3), np.round(p1, 3), np.round(p2, 3), np.round(momentum_lam1, 2), np.round(momentum_lam2, 2)), end=' ')
+            say('\niter {0}: red.chi2={1:4.2f}, [lam1, lam2]=[{2:.3f}, {3:.3f}], [p1, p2]=[{4:.3f}, {5:.3f}], mom=[{6:.3f}, {7:4.3f}]'.format(i, gd.accuracy_trace[i], np.round(gd.lam1_trace[i], 3), np.round(gd.lam2_trace[i], 3), np.round(p1, 3), np.round(p2, 3), np.round(momentum_lam1, 2), np.round(momentum_lam2, 2)), end=' ')
 
             # if False: (use this to avoid convergence testing)
             if i <= 2 * self.window_size:
@@ -470,6 +810,10 @@ class saberTraining(object):
         return np.around(gd.lam1means1[i], decimals=2), np.around(gd.lam2means1[i], decimals=2)
     
     def save_data(self):
+        """
+        If get_trace is set to False, this will save the optimized Lambda smoothing parameters in a .txt file.
+        If get_trace is set to True, this will save the tracks of Lambda positions in the parameter space in a .txt file.
+        """
         if self.filename_out is None:
             filename_wext = os.path.basename(self.pickle_file)
             filename_base, file_extension = os.path.splitext(filename_wext)
@@ -486,6 +830,11 @@ class saberTraining(object):
         print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_lam, self.path_to_data))
     
     def update_pickle_file(self, training_data, lam1, lam2):
+        """
+        Updates the input pickle file with final background fit
+        and reduced chi square value for each training spectrum and saves the data.
+        
+        """
         print('\nUpdating pickle file...')
         for j in trange(len(self.training_data)):
             cost_function_i, bg_fit_i = self.single_cost_endofloop(j, lam1_final=lam1, lam2_final=lam2, get_all=False)
@@ -496,6 +845,10 @@ class saberTraining(object):
         self.save_pickle()
     
     def save_pickle(self):
+        """
+        Saves the updated pickle file.
+        
+        """
         filename_wext = os.path.basename(self.pickle_file)
         filename_base, file_extension = os.path.splitext(filename_wext)
         updated_picklename = filename_base + '_astrosaber_fit{}.pickle'.format(self.suffix)
