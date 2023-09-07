@@ -3,6 +3,8 @@ import sys
 import datetime
 from importlib import import_module
 
+sys.path.insert(0, os.path.abspath('../'))
+
 # Get configuration information from setup.cfg
 from configparser import ConfigParser
 conf = ConfigParser()
@@ -33,7 +35,7 @@ version = release = get_distribution(setup_cfg['package_name']).version
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autodoc']
+extensions = ['sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autodoc', 'sphinx.ext.napoleon']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '_templates']
