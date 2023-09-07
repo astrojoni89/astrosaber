@@ -19,8 +19,6 @@ from .utils.aslsq_helper import count_ones_in_row, IterationWarning, say, format
 from .utils.aslsq_fit import one_step_extraction, two_step_extraction
 from .plotting import plot_pickle_spectra
 
-from . import parallel_processing
-
 warnings.showwarning = format_warning
 
 np.seterr('raise')
@@ -354,6 +352,7 @@ class saberTraining(object):
             Median of MAD values. Only returned if get_all=True.
         """
         self.lam1_updt, self.lam2_updt = lam1, lam2
+        import astrosaber.parallel_processing
         astrosaber.parallel_processing.init([self.training_data, [self]])
         results_list = astrosaber.parallel_processing.func_wo_bar(use_ncpus=ncpus, function='cost')
         results_list_array = np.array(results_list)
