@@ -22,13 +22,19 @@ jobs:
       run: |
         pip install -e .
 
+    - name: Checkout gh-pages
+      uses: actions/checkout@v4
+      with:
+        ref: gh-pages
+
     - name: Build Documentation
       run: |
-        git checkout -B gh_pages
         sphinx-build -b html docs/ docs/build/
 
     - name: Deploy to gh-pages
       run: |
-        git add -f docs/build/
-        git commit -m "Update docs"
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add docs/build/
+        git commit -m "Auto update docs"
         git push -f origin gh_pages
