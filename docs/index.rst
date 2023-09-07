@@ -1,10 +1,10 @@
-.. astrosaber Documentation documentation master file, created by
-   sphinx-quickstart on Tue May  9 16:36:48 2023.
+.. astrosaber documentation master file, created by
+   sphinx-quickstart on Thu Sep  7 22:30:40 2023.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to astrosaber Documentation's documentation!
-====================================================
+Welcome to astrosaber's documentation!
+======================================
 
 .. toctree::
    :maxdepth: 2
