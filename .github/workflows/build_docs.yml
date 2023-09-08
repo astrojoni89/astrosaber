@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -26,15 +26,34 @@ jobs:
       run: |
         sphinx-build -b html docs/ docs/build/
 
+    - name: Commit and Stash Documentation
+      run: |
+        git add -f docs/build/
+        git stash
+
     - name: Checkout gh-pages
       uses: actions/checkout@v4
       with:
         ref: gh-pages
 
-    - name: Deploy to gh-pages
+    - name: Git Configuration
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
-        git add -f docs/build/
+
+    - name: Cleanup Old Folders
+      run: |
+        rm -rf _static/
+        rm -rf _modules/
+        rm -rf _sources/
+        rm -rf examples/
+        rm -rf modules/
+
+    - name: Deploy to gh-pages
+      run: |
+        git stash pop
+        mv -f docs/build/* .
+        rm -rf docs/build
+        git add .
         git commit -m "Auto update docs"
         git push
