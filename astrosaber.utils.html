@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>astrosaber.utils package &mdash; astrosaber v0.2.1</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="astrosaber package" href="astrosaber.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            astrosaber
+          </a>
+              <div class="version">
+                0.2.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">astrosaber</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="astrosaber.html">astrosaber package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="astrosaber.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">astrosaber.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="astrosaber.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="astrosaber.html#module-astrosaber.hisa">astrosaber.hisa module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="astrosaber.html#module-astrosaber.parallel_processing">astrosaber.parallel_processing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="astrosaber.html#module-astrosaber.plotting">astrosaber.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="astrosaber.html#module-astrosaber.prepare_training">astrosaber.prepare_training module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="astrosaber.html#module-astrosaber.training">astrosaber.training module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="astrosaber.html#module-astrosaber">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">astrosaber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">astrosaber</a></li>
+          <li class="breadcrumb-item"><a href="astrosaber.html">astrosaber package</a></li>
+      <li class="breadcrumb-item active">astrosaber.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/astrosaber.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="astrosaber-utils-package">
+<h1>astrosaber.utils package<a class="headerlink" href="#astrosaber-utils-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-astrosaber.utils.aslsq_fit">
+<span id="astrosaber-utils-aslsq-fit-module"></span><h2>astrosaber.utils.aslsq_fit module<a class="headerlink" href="#module-astrosaber.utils.aslsq_fit" title="Permalink to this heading"></a></h2>
+<p>asymmetric least squares fit</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.baseline_als">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">baseline_als</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#baseline_als"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.baseline_als" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.baseline_als_optimized">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">baseline_als_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#baseline_als_optimized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.baseline_als_optimized" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.one_step_extraction">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">one_step_extraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_signal_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velo_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations_for_convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_residual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#one_step_extraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.one_step_extraction" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.two_step_extraction">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">two_step_extraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_signal_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velo_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations_for_convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_residual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#two_step_extraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.two_step_extraction" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-astrosaber.utils.aslsq_helper">
+<span id="astrosaber-utils-aslsq-helper-module"></span><h2>astrosaber.utils.aslsq_helper module<a class="headerlink" href="#module-astrosaber.utils.aslsq_helper" title="Permalink to this heading"></a></h2>
+<p>helper functions</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.IterationWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">IterationWarning</span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#IterationWarning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.IterationWarning" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">UserWarning</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.check_signal">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">check_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#check_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.check_signal" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.check_signal_ranges">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">check_signal_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velo_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#check_signal_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.check_signal_ranges" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.count_ones_in_row">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">count_ones_in_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#count_ones_in_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.count_ones_in_row" title="Permalink to this definition"></a></dt>
+<dd><p>Counts number of continuous trailing ‘1’s
+Used in the convergence criteria</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.find_nearest">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">find_nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#find_nearest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.find_nearest" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.format_warning">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">format_warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineno</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#format_warning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.format_warning" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.md_header_2d">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">md_header_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitsfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#md_header_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.md_header_2d" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.merge_ranges">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">merge_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ranges</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#merge_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.merge_ranges" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.pixel_to_world">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">pixel_to_world</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#pixel_to_world"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.pixel_to_world" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.say">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">say</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#say"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.say" title="Permalink to this definition"></a></dt>
+<dd><p>Diagnostic messages.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.velocity_axes">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">velocity_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#velocity_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.velocity_axes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-astrosaber.utils.grogu">
+<span id="astrosaber-utils-grogu-module"></span><h2>astrosaber.utils.grogu module<a class="headerlink" href="#module-astrosaber.utils.grogu" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="astrosaber.utils.grogu.TqdmDefaultWriteLock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">astrosaber.utils.grogu.</span></span><span class="sig-name descname"><span class="pre">TqdmDefaultWriteLock</span></span><a class="reference internal" href="_modules/astrosaber/utils/grogu.html#TqdmDefaultWriteLock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.grogu.TqdmDefaultWriteLock" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>acquire</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>release</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="astrosaber.utils.grogu.TqdmDefaultWriteLock.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/grogu.html#TqdmDefaultWriteLock.acquire"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.grogu.TqdmDefaultWriteLock.acquire" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="astrosaber.utils.grogu.TqdmDefaultWriteLock.release">
+<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/grogu.html#TqdmDefaultWriteLock.release"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.grogu.TqdmDefaultWriteLock.release" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="astrosaber.utils.grogu.yoda">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">astrosaber.utils.grogu.</span></span><span class="sig-name descname"><span class="pre">yoda</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">__</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/grogu.html#yoda"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.grogu.yoda" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tqdm</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_dict</span></code></dt><dd><p>Public API for read-only member access.</p>
+</dd>
+<dt><strong>monitor</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>([nolock])</p></td>
+<td><p>Clear current bar display.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code>()</p></td>
+<td><p>Cleanup and (if leave=False) close the progressbar.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">display</span></code>([msg, pos])</p></td>
+<td><p>Use <cite>self.sp</cite> to display <cite>msg</cite> in the specified <cite>pos</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">external_write_mode</span></code>([file, nolock])</p></td>
+<td><p>Disable tqdm within context and refresh tqdm when exits.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_interval</span></code>(t)</p></td>
+<td><p>Formats a number of seconds as a clock time, [H:]MM:SS</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_meter</span></code>(n, total, elapsed[, ncols, ...])</p></td>
+<td><p>Return a string-based progress bar given some parameters</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_num</span></code>(n)</p></td>
+<td><p>Intelligent scientific notation (.3g).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_sizeof</span></code>(num[, suffix, divisor])</p></td>
+<td><p>Formats a number (greater than unity) with SI Order of Magnitude prefixes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_lock</span></code>()</p></td>
+<td><p>Get the global lock.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas</span></code>(**tqdm_kwargs)</p></td>
+<td><p>Registers the current <cite>tqdm</cite> class with</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">refresh</span></code>([nolock, lock_args])</p></td>
+<td><p>Force refresh the display of this bar.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset</span></code>([total])</p></td>
+<td><p>Resets to 0 iterations for repeated use.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_description</span></code>([desc, refresh])</p></td>
+<td><p>Set/modify description of the progress bar.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_description_str</span></code>([desc, refresh])</p></td>
+<td><p>Set/modify description without ': ' appended.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_lock</span></code>(lock)</p></td>
+<td><p>Set the global lock.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_postfix</span></code>([ordered_dict, refresh])</p></td>
+<td><p>Set/modify postfix (additional stats) with automatic formatting based on datatype.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_postfix_str</span></code>([s, refresh])</p></td>
+<td><p>Postfix without dictionary expansion, similar to prefix handling.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">status_printer</span></code>(file)</p></td>
+<td><p>Manage the printing and in-place updating of a line of characters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unpause</span></code>()</p></td>
+<td><p>Restart tqdm timer from last print time.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>([n])</p></td>
+<td><p>Manually update the progress bar, useful for streams such as reading files.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrapattr</span></code>(stream, method[, total, bytes])</p></td>
+<td><p>stream  : file-like object. method  : str, &quot;read&quot; or &quot;write&quot;. The result of <cite>read()</cite> and     the first argument of <cite>write()</cite> should have a <cite>len()</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code>(s[, file, end, nolock])</p></td>
+<td><p>Print a message via tqdm (without overlap with bars).</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>moveto</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="astrosaber.utils.grogu.yoda.monitor">
+<span class="sig-name descname"><span class="pre">monitor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#astrosaber.utils.grogu.yoda.monitor" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="astrosaber.utils.grogu.yoda.monitor_interval">
+<span class="sig-name descname"><span class="pre">monitor_interval</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#astrosaber.utils.grogu.yoda.monitor_interval" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-astrosaber.utils.quality_checks">
+<span id="astrosaber-utils-quality-checks-module"></span><h2>astrosaber.utils.quality_checks module<a class="headerlink" href="#module-astrosaber.utils.quality_checks" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.quality_checks.determine_peaks">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.quality_checks.</span></span><span class="sig-name descname"><span class="pre">determine_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'both'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/quality_checks.html#determine_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.quality_checks.determine_peaks" title="Permalink to this definition"></a></dt>
+<dd><p>Find peaks in a spectrum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spectrum</strong> (<em>numpy.ndarray</em>) – Array of the data values of the spectrum.</p></li>
+<li><p><strong>peak</strong> (<em>'both'</em><em> (</em><em>default</em><em>)</em><em>, </em><em>'positive'</em><em>, </em><em>'negative'</em>) – Description of parameter <cite>peak</cite>.</p></li>
+<li><p><strong>amp_threshold</strong> (<em>float</em>) – Required minimum threshold that at least one data point in a peak feature has to exceed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>consecutive_channels or amp_vals</strong> (<em>numpy.ndarray</em>) – If the ‘amp_threshold’ value is supplied an array with the maximum data values of the ranges is returned. Otherwise, the number of spectral channels of the ranges is returned.</p></li>
+<li><p><strong>ranges</strong> (<em>list</em>) – List of intervals [(low, upp), …] determined to contain peaks.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.quality_checks.get_max_consecutive_channels">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.quality_checks.</span></span><span class="sig-name descname"><span class="pre">get_max_consecutive_channels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_limit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/quality_checks.html#get_max_consecutive_channels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.quality_checks.get_max_consecutive_channels" title="Permalink to this definition"></a></dt>
+<dd><p>Determine the maximum number of random consecutive positive/negative channels.
+Calculate the number of consecutive positive or negative channels,
+whose probability of occurring due to random chance in a spectrum
+is less than p_limit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_channels</strong> (<em>int</em>) – Number of spectral channels.</p></li>
+<li><p><strong>p_limit</strong> (<em>float</em>) – Maximum probability for consecutive positive/negative channels being
+due to chance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>consec_channels</strong> – Number of consecutive positive/negative channels that have a probability
+less than p_limit to be due to chance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.quality_checks.goodness_of_fit">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.quality_checks.</span></span><span class="sig-name descname"><span class="pre">goodness_of_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dof</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_aicc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/quality_checks.html#goodness_of_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.quality_checks.goodness_of_fit" title="Permalink to this definition"></a></dt>
+<dd><p>Determine the goodness of fit (reduced chi-square, AICc).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy.ndarray</em>) – Original data.</p></li>
+<li><p><strong>fit</strong> (<em>numpy.ndarray</em>) – Fit to the original data.</p></li>
+<li><p><strong>errors</strong> (<em>numpy.ndarray</em><em> or </em><em>float</em>) – Root-mean-square noise for each channel.</p></li>
+<li><p><strong>dof</strong> (<em>int</em>) – Degrees of freedom.</p></li>
+<li><p><strong>mask</strong> (<em>numpy.ndarray</em>) – Boolean array specifying which regions of the spectrum should be used.</p></li>
+<li><p><strong>get_aicc</strong> (<em>bool</em>) – If set to <cite>True</cite>, the AICc value will be returned in addition to the
+reduced chi2 value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>rchi2</strong> (<em>float</em>) – Reduced chi2 value.</p></li>
+<li><p><strong>aicc</strong> (<em>float</em>) – (optional): The AICc value is returned if get_aicc is set to <cite>True</cite>.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.quality_checks.mask_channels">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.quality_checks.</span></span><span class="sig-name descname"><span class="pre">mask_channels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_intervals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/quality_checks.html#mask_channels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.quality_checks.mask_channels" title="Permalink to this definition"></a></dt>
+<dd><p>Determine the 1D boolean mask for a given list of spectral ranges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_channels</strong> (<em>int</em>) – Number of spectral channels.</p></li>
+<li><p><strong>ranges</strong> (<em>list</em>) – List of intervals [(low, upp), …].</p></li>
+<li><p><strong>pad_channels</strong> (<em>int</em>) – Number of channels by which an interval (low, upp) gets extended on both sides, resulting in (low - pad_channels, upp + pad_channels).</p></li>
+<li><p><strong>remove_intervals</strong> (<em>type</em>) – Nested list containing info about ranges of the spectrum that should be masked out.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mask</strong> – 1D boolean mask that has ‘True’ values at the position of the channels contained in ranges.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-astrosaber.utils.spectrum_utils">
+<span id="astrosaber-utils-spectrum-utils-module"></span><h2>astrosaber.utils.spectrum_utils module<a class="headerlink" href="#module-astrosaber.utils.spectrum_utils" title="Permalink to this heading"></a></h2>
+<p>spectrum utils</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.spectrum_utils.calculate_spectrum">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.spectrum_utils.</span></span><span class="sig-name descname"><span class="pre">calculate_spectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/spectrum_utils.html#calculate_spectrum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.spectrum_utils.calculate_spectrum" title="Permalink to this definition"></a></dt>
+<dd><p>This function returns an average spectrum
+pixel_array: pixel indices to average</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.spectrum_utils.pixel_circle_calculation">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.spectrum_utils.</span></span><span class="sig-name descname"><span class="pre">pixel_circle_calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">glon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">glat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/spectrum_utils.html#pixel_circle_calculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.spectrum_utils.pixel_circle_calculation" title="Permalink to this definition"></a></dt>
+<dd><p>This function returns array of pixels corresponding to circle region with central coordinates Glon, Glat, and radius r
+glon: Galactic longitude of central pixel
+glat: Galactic latitude of central pixel
+r: radius of region in arcseconds</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.spectrum_utils.pixel_circle_calculation_px">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.spectrum_utils.</span></span><span class="sig-name descname"><span class="pre">pixel_circle_calculation_px</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/spectrum_utils.html#pixel_circle_calculation_px"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.spectrum_utils.pixel_circle_calculation_px" title="Permalink to this definition"></a></dt>
+<dd><p>This function returns array of pixels corresponding to circle region with central coordinates Glon, Glat, and radius r
+x: central pixel x
+y: central pixel y
+r: radius of region in arcseconds</p>
+</dd></dl>
+
+</section>
+<section id="module-astrosaber.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-astrosaber.utils" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="astrosaber.html" class="btn btn-neutral float-left" title="astrosaber package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Jonas Syed.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
