@@ -4,23 +4,20 @@
 import glob
 import os
 import sys
-try:
-    from configparser import ConfigParser
-except ImportError:
-    from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 # Get some values from the setup.cfg
 conf = ConfigParser()
 conf.read(['setup.cfg'])
 metadata = dict(conf.items('metadata'))
 
-PACKAGENAME = metadata.get('package_name', 'astrosaber')
-DESCRIPTION = metadata.get('description', 'astroSABER: Self-Absorption Baseline ExtractoR developed for systematic baseline fitting')
-AUTHOR = metadata.get('author', 'Jonas Syed')
-AUTHOR_EMAIL = metadata.get('author_email', 'syed@mpia-hd.mpg.de')
-LICENSE = metadata.get('license', 'BSD 3-Clause')
-URL = metadata.get('url', 'https://github.com/astrojoni89/astrosaber')
-__minimum_python_version__ = metadata.get("minimum_python_version", "3.6")
+PACKAGENAME = metadata['package_name']
+DESCRIPTION = metadata['description']
+AUTHOR = metadata['author']
+AUTHOR_EMAIL = metadata['author_email']
+LICENSE = metadata['license']
+URL = metadata['url']
+__minimum_python_version__ = metadata["minimum_python_version"]
 
 # Enforce Python version check - this is the same check as in __init__.py but
 if sys.version_info < tuple((int(val) for val in __minimum_python_version__.split('.'))):
@@ -35,12 +32,11 @@ with open(glob.glob(readme_glob)[0]) as f:
     LONG_DESCRIPTION = f.read()
 
 # VERSION should be PEP440 compatible (http://www.python.org/dev/peps/pep-0440)
-VERSION = metadata.get('version', '0.2.1')
+VERSION = metadata['version']
 
 # Treat everything in scripts except README* as a script to be installed
 scripts = [fname for fname in glob.glob(os.path.join('scripts', '*'))
     if not os.path.basename(fname).startswith('README')]
-
 
 
 setup(name=PACKAGENAME,
