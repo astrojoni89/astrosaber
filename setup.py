@@ -53,7 +53,7 @@ setup(name=PACKAGENAME,
                       'sphinx-autodoc-typehints',
                       'sphinx-rtd-theme',
                       'numpydoc',
-                      ]
+                      ],
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     license=LICENSE,
