@@ -55,5 +55,5 @@ jobs:
         mv -f docs/build/* .
         rm -rf docs/build
         git add .
-        git commit -m "Auto update docs"
+        git commit -m "Auto update documentation"
         git push
