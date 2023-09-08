@@ -35,12 +35,25 @@ version = release = get_distribution(setup_cfg['package_name']).version
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autodoc', 'sphinx.ext.napoleon']
+extensions = [
+        "sphinx.ext.napoleon",
+        "sphinx.ext.autodoc",
+        "sphinx.ext.autosummary",
+        "sphinx.ext.viewcode",
+        "sphinx.ext.todo",
+        "sphinx.ext.autosectionlabel",
+        "sphinx.ext.githubpages",
+        "numpydoc",
+        ]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '_templates']
 
+language = 'en'
 
+autosummary_generate = True
+napolean_use_rtype = False
+napoleon_google_docstring = False
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
