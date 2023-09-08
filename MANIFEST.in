@@ -1,7 +1,0 @@
-include README.md
-include CHANGES.md
-include setup.cfg
-
-recursive-include astrosaber *.pyx *.c *.pxd
-
-global-exclude *.pyc *.o
