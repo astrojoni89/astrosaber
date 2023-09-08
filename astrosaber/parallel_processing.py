@@ -12,6 +12,10 @@ from tqdm import trange, tqdm
 
     
 def init(mp_info):
+    '''
+    Initializes global params for parallel process.
+    
+    '''
     global mp_ilist, mp_data, mp_params
     mp_data, mp_params = mp_info
     mp_ilist = np.arange(len(mp_data))
