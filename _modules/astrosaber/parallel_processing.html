@@ -291,7 +291,7 @@ document.write(`
   <h1>Source code for astrosaber.parallel_processing</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ProcessPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
 
 <span class="kn">from</span> <span class="nn">.training</span> <span class="kn">import</span> <span class="n">saberTraining</span>
@@ -329,7 +329,7 @@ document.write(`
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="parallel_process"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.parallel_process">[docs]</a><span class="k">def</span> <span class="nf">parallel_process</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">use_kwargs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">front_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">tqdm</span><span class="p">):</span>
+<div class="viewcode-block" id="parallel_process"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.parallel_process">[docs]</a><span class="k">def</span> <span class="nf">parallel_process</span><span class="p">(</span><span class="n">array</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">function</span> <span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">],</span> <span class="n">n_jobs</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">use_kwargs</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">front_num</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">bar</span> <span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Iterable</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A parallel version of the map function with a progress bar.</span>
 <span class="sd">    Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/</span>
@@ -381,8 +381,9 @@ document.write(`
     <span class="k">return</span> <span class="n">front</span> <span class="o">+</span> <span class="n">out</span></div>
 
 
-<div class="viewcode-block" id="parallel_process_wo_bar"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.parallel_process_wo_bar">[docs]</a><span class="k">def</span> <span class="nf">parallel_process_wo_bar</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">use_kwargs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">front_num</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A parallel version of the map function with a progress bar.</span>
+<div class="viewcode-block" id="parallel_process_wo_bar"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.parallel_process_wo_bar">[docs]</a><span class="k">def</span> <span class="nf">parallel_process_wo_bar</span><span class="p">(</span><span class="n">array</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">function</span> <span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">],</span> <span class="n">n_jobs</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">use_kwargs</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">front_num</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A parallel version of the map function with a progress bar.</span>
 <span class="sd">    Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/</span>
 
 <span class="sd">    array : numpy.ndarray </span>
@@ -432,7 +433,7 @@ document.write(`
     <span class="k">return</span> <span class="n">front</span> <span class="o">+</span> <span class="n">out</span></div>
 
 
-<div class="viewcode-block" id="func"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.func">[docs]</a><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">use_ncpus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">tqdm</span><span class="p">):</span>
+<div class="viewcode-block" id="func"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.func">[docs]</a><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">use_ncpus</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">function</span> <span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">tqdm</span><span class="p">):</span>
     <span class="c1"># Multiprocessing code</span>
     <span class="n">ncpus</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
     <span class="c1"># p = multiprocessing.Pool(ncpus, init_worker)</span>
@@ -459,7 +460,7 @@ document.write(`
     <span class="k">return</span> <span class="n">results_list</span></div>
 
 
-<div class="viewcode-block" id="func_wo_bar"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.func_wo_bar">[docs]</a><span class="k">def</span> <span class="nf">func_wo_bar</span><span class="p">(</span><span class="n">use_ncpus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="func_wo_bar"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.func_wo_bar">[docs]</a><span class="k">def</span> <span class="nf">func_wo_bar</span><span class="p">(</span><span class="n">use_ncpus</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">function</span> <span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="c1"># Multiprocessing code</span>
     <span class="n">ncpus</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
     <span class="c1"># p = multiprocessing.Pool(ncpus, init_worker)</span>
