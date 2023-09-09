@@ -22,18 +22,34 @@ def init(mp_info : List):
     mp_ilist = np.arange(len(mp_data))
       
 def single_cost_i(i : int) -> Tuple[float, float, float]:
+    '''
+    Compute the cost of a single baseline spectrum.
+
+    '''
     result = saberTraining.single_cost(mp_params[0], i)
     return result
 
 def lambda_extraction_i(i : int) -> Tuple[np.ndarray, np.ndarray, np.ndarray, float, float]:
+    '''
+    Generate the test data for a single spectrum.
+
+    '''
     result = saberPrepare.two_step_extraction_prepare(mp_params[0], i)
     return result
 
 def two_step_i(i : int) -> Tuple[int, np.ndarray, np.ndarray, int, int]:
+    '''
+    Compute the baseline etc. for a single spectrum using the two-phase extraction.
+
+    '''
     result = HisaExtraction.two_step_extraction_single(mp_params[0], i)
     return result
 
 def one_step_i(i : int) -> Tuple[int, np.ndarray, np.ndarray, int, int]:
+    '''
+    Compute the baseline etc. for a single spectrum using the one-phase extraction.
+
+    '''
     result = HisaExtraction.one_step_extraction_single(mp_params[0], i)
     return result
 
