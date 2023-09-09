@@ -1,6 +1,6 @@
 import numpy as np
 import multiprocessing
-from typing import List, Tuple
+from typing import List, Tuple, Callable, Iterable
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from .training import saberTraining
@@ -38,7 +38,7 @@ def one_step_i(i : int) -> Tuple[int, np.ndarray, np.ndarray, int, int]:
     return result
 
 
-def parallel_process(array, function, n_jobs=4, use_kwargs=False, front_num=3, bar=tqdm):
+def parallel_process(array : np.ndarray, function : Callable[[int], Tuple], n_jobs : int = 4, use_kwargs : bool = False, front_num : int = 3, bar : Callable[[Iterable], None] = tqdm):
     """
     A parallel version of the map function with a progress bar.
     Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/
@@ -90,8 +90,9 @@ def parallel_process(array, function, n_jobs=4, use_kwargs=False, front_num=3, b
     return front + out
 
 
-def parallel_process_wo_bar(array, function, n_jobs=4, use_kwargs=False, front_num=3):
-    """A parallel version of the map function with a progress bar.
+def parallel_process_wo_bar(array : np.ndarray, function : Callable[[int], Tuple], n_jobs : int = 4, use_kwargs : bool = False, front_num : int = 3):
+    """
+    A parallel version of the map function with a progress bar.
     Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/
 
     array : numpy.ndarray 
@@ -141,7 +142,7 @@ def parallel_process_wo_bar(array, function, n_jobs=4, use_kwargs=False, front_n
     return front + out
 
 
-def func(use_ncpus=None, function=None, bar=tqdm):
+def func(use_ncpus : int = None, function : Callable[..., Tuple] = None, bar=tqdm):
     # Multiprocessing code
     ncpus = multiprocessing.cpu_count()
     # p = multiprocessing.Pool(ncpus, init_worker)
@@ -168,7 +169,7 @@ def func(use_ncpus=None, function=None, bar=tqdm):
     return results_list
 
 
-def func_wo_bar(use_ncpus=None, function=None):
+def func_wo_bar(use_ncpus : int = None, function : Callable[..., Tuple] = None):
     # Multiprocessing code
     ncpus = multiprocessing.cpu_count()
     # p = multiprocessing.Pool(ncpus, init_worker)
