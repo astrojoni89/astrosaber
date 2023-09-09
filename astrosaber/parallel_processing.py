@@ -38,7 +38,7 @@ def one_step_i(i : int) -> Tuple[int, np.ndarray, np.ndarray, int, int]:
     return result
 
 
-def parallel_process(array : np.ndarray, function : Callable[[int], Tuple], n_jobs : int = 4, use_kwargs : bool = False, front_num : int = 3, bar : Callable[[Iterable], None] = tqdm):
+def parallel_process(array : np.ndarray, function : Callable[[int], Tuple], n_jobs : int = 4, use_kwargs : bool = False, front_num : int = 3, bar : Callable[[Iterable], None] = tqdm) -> List:
     """
     A parallel version of the map function with a progress bar.
     Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/
@@ -90,7 +90,7 @@ def parallel_process(array : np.ndarray, function : Callable[[int], Tuple], n_jo
     return front + out
 
 
-def parallel_process_wo_bar(array : np.ndarray, function : Callable[[int], Tuple], n_jobs : int = 4, use_kwargs : bool = False, front_num : int = 3):
+def parallel_process_wo_bar(array : np.ndarray, function : Callable[[int], Tuple], n_jobs : int = 4, use_kwargs : bool = False, front_num : int = 3) -> List:
     """
     A parallel version of the map function with a progress bar.
     Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/
