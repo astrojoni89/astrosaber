@@ -291,18 +291,19 @@ document.write(`
   <h1>Source code for astrosaber.parallel_processing</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ProcessPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
 
 <span class="kn">from</span> <span class="nn">.training</span> <span class="kn">import</span> <span class="n">saberTraining</span>
 <span class="kn">from</span> <span class="nn">.prepare_training</span> <span class="kn">import</span> <span class="n">saberPrepare</span>
 <span class="kn">from</span> <span class="nn">.hisa</span> <span class="kn">import</span> <span class="n">HisaExtraction</span>
-<span class="kn">from</span> <span class="nn">.utils.aslsq_fit</span> <span class="kn">import</span> <span class="n">baseline_als_optimized</span>
-<span class="kn">from</span> <span class="nn">.utils.quality_checks</span> <span class="kn">import</span> <span class="n">goodness_of_fit</span><span class="p">,</span> <span class="n">get_max_consecutive_channels</span><span class="p">,</span> <span class="n">determine_peaks</span><span class="p">,</span> <span class="n">mask_channels</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">trange</span><span class="p">,</span> <span class="n">tqdm</span>
+<span class="c1">#from .utils.aslsq_fit import baseline_als_optimized</span>
+<span class="c1">#from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 
     
-<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">mp_info</span><span class="p">):</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">mp_info</span> <span class="p">:</span> <span class="n">List</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Initializes global params for parallel process.</span>
 <span class="sd">    </span>
@@ -311,25 +312,26 @@ document.write(`
     <span class="n">mp_data</span><span class="p">,</span> <span class="n">mp_params</span> <span class="o">=</span> <span class="n">mp_info</span>
     <span class="n">mp_ilist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_data</span><span class="p">))</span></div>
       
-<div class="viewcode-block" id="single_cost_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.single_cost_i">[docs]</a><span class="k">def</span> <span class="nf">single_cost_i</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+<div class="viewcode-block" id="single_cost_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.single_cost_i">[docs]</a><span class="k">def</span> <span class="nf">single_cost_i</span><span class="p">(</span><span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">saberTraining</span><span class="o">.</span><span class="n">single_cost</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="lambda_extraction_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.lambda_extraction_i">[docs]</a><span class="k">def</span> <span class="nf">lambda_extraction_i</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+<div class="viewcode-block" id="lambda_extraction_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.lambda_extraction_i">[docs]</a><span class="k">def</span> <span class="nf">lambda_extraction_i</span><span class="p">(</span><span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">saberPrepare</span><span class="o">.</span><span class="n">two_step_extraction_prepare</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="two_step_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.two_step_i">[docs]</a><span class="k">def</span> <span class="nf">two_step_i</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+<div class="viewcode-block" id="two_step_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.two_step_i">[docs]</a><span class="k">def</span> <span class="nf">two_step_i</span><span class="p">(</span><span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">HisaExtraction</span><span class="o">.</span><span class="n">two_step_extraction_single</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="one_step_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.one_step_i">[docs]</a><span class="k">def</span> <span class="nf">one_step_i</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+<div class="viewcode-block" id="one_step_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.one_step_i">[docs]</a><span class="k">def</span> <span class="nf">one_step_i</span><span class="p">(</span><span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">HisaExtraction</span><span class="o">.</span><span class="n">one_step_extraction_single</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 
 <div class="viewcode-block" id="parallel_process"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.parallel_process">[docs]</a><span class="k">def</span> <span class="nf">parallel_process</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">use_kwargs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">front_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">tqdm</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A parallel version of the map function with a progress bar.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A parallel version of the map function with a progress bar.</span>
 <span class="sd">    Credit: http://danshiebler.com/2016-09-14-parallel-progress-bar/</span>
 
 <span class="sd">    array : numpy.ndarray </span>
