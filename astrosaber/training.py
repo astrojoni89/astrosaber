@@ -340,7 +340,7 @@ class saberTraining(object):
             If set to False, it will return just the median result of the costs.
         ncpus : int, optional
             Number of CPUs to use.
-            Defaults to 75% of the available CPUs.
+            Defaults to 50% of the available CPUs.
 
         Returns
         -------

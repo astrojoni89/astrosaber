@@ -2,23 +2,23 @@
 # @Date:   2021-01
 # @Filename: hisa.py
 # @Last modified by:   syed
-# @Last modified time: 05-02-2022
+# @Last modified time: 09-09-2023
 
 import os
 import sys
 import numpy as np
 from pathlib import Path
-from typing import Optional, List, Tuple
+from typing import Optional, Tuple
 
 from astropy.io import fits
 from astropy import units as u
 
 from tqdm import tqdm
-from tqdm.utils import _is_utf, _supports_unicode
+from tqdm.utils import _supports_unicode
 import warnings
 
-from .utils.aslsq_helper import count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say, format_warning
-from .utils.aslsq_fit import baseline_als_optimized, two_step_extraction, one_step_extraction
+from .utils.aslsq_helper import md_header_2d, say, format_warning
+from .utils.aslsq_fit import two_step_extraction, one_step_extraction
 from .utils.grogu import yoda
 
 warnings.showwarning = format_warning
@@ -87,7 +87,7 @@ class HisaExtraction(object):
         Default is 0.02.
     ncpus : int
         Number of CPUs to use.
-        Defaults to 75% of the available cpus.
+        Defaults to 50% of the available CPUs.
     suffix : str, optional
         Optional suffix to add to the output filenames.
 
@@ -322,7 +322,7 @@ class HisaExtraction(object):
         return self.list_data[i][0], bg, hisa, iterations, flag_map
     
     
-    def one_step_extraction_single(self, i):
+    def one_step_extraction_single(self, i : int)  -> Tuple[int, np.ndarray, np.ndarray, int, int]:
         """
         Runs the one-phase extraction for a single spectrum i.
         

@@ -5,16 +5,14 @@ from typing import Union, Optional, List, Tuple
 
 from astropy.io import fits
 from astropy import units as u
-from scipy import sparse
-from scipy.sparse.linalg import spsolve
 
-from tqdm import tqdm, trange
+from tqdm import trange
 import warnings
 import os
 
-from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
-from .utils.aslsq_helper import find_nearest, velocity_axes, count_ones_in_row, md_header_2d, check_signal_ranges, IterationWarning, say, format_warning
-from .utils.aslsq_fit import baseline_als_optimized, two_step_extraction
+from .utils.quality_checks import get_max_consecutive_channels, determine_peaks, mask_channels
+from .utils.aslsq_helper import find_nearest, velocity_axes, say, format_warning
+from .utils.aslsq_fit import two_step_extraction
 from .plotting import plot_pickle_spectra
 
 warnings.showwarning = format_warning
@@ -435,7 +433,7 @@ class saberPrepare(object):
         self.save_data()
         plot_pickle_spectra(self.path_to_file, outfile=None, ranges=None, path_to_plots='astrosaber_training/plots', n_spectra=20, rowsize=4., rowbreak=10, dpi=72, velocity_range=[self.velocity[0],self.velocity[-1]], vel_unit=u.km/u.s, seed=self.seed)
 
-    def two_step_extraction_prepare(self, i):
+    def two_step_extraction_prepare(self, i : int) -> Tuple[np.ndarray, np.ndarray, np.ndarray, float, float]:
         """
         Runs the two-phase smoothing with default parameters to generate test data and self-absorption parameters.
         
