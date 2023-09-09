@@ -313,18 +313,34 @@ document.write(`
     <span class="n">mp_ilist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mp_data</span><span class="p">))</span></div>
       
 <div class="viewcode-block" id="single_cost_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.single_cost_i">[docs]</a><span class="k">def</span> <span class="nf">single_cost_i</span><span class="p">(</span><span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Compute the cost of a single baseline spectrum.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">saberTraining</span><span class="o">.</span><span class="n">single_cost</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="lambda_extraction_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.lambda_extraction_i">[docs]</a><span class="k">def</span> <span class="nf">lambda_extraction_i</span><span class="p">(</span><span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generate the test data for a single spectrum.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">saberPrepare</span><span class="o">.</span><span class="n">two_step_extraction_prepare</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="two_step_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.two_step_i">[docs]</a><span class="k">def</span> <span class="nf">two_step_i</span><span class="p">(</span><span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Compute the baseline etc. for a single spectrum using the two-phase extraction.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">HisaExtraction</span><span class="o">.</span><span class="n">two_step_extraction_single</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="one_step_i"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.parallel_processing.one_step_i">[docs]</a><span class="k">def</span> <span class="nf">one_step_i</span><span class="p">(</span><span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Compute the baseline etc. for a single spectrum using the one-phase extraction.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">HisaExtraction</span><span class="o">.</span><span class="n">one_step_extraction_single</span><span class="p">(</span><span class="n">mp_params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
