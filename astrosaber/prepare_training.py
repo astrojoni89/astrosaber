@@ -75,13 +75,13 @@ class saberPrepare(object):
         Lambda_1 smoothing parameter to generate test data.
         Default is 2.0.
     p1 : float, optional
-        Asymmetry weight of the minor cycle smoothing to generate test data.
+        Asymmetry weight of the first iteration of the major cycle smoothing to generate test data.
         Default is 0.90.
     lam2 : float, optional
         Lambda_2 smoothing parameter to generate test data.
         Default is 2.0.
     p2 : float, optional
-        Asymmetry weight of the major cycle smoothing to generate test data.
+        Asymmetry weight of the remaining iterations of the major cycle smoothing to generate test data.
         Default is 0.90.
     niters : int, optional
         Maximum number of iterations of the smoothing.
@@ -96,18 +96,18 @@ class saberPrepare(object):
         Only used to generate test data. Default is True.
     sig : float, optional
         Defines how many sigma of the noise is used as a convergence criterion.
-        If the change in baseline between major cycle iterations is smaller than 'sig' * noise for 'iterations_for_convergence',
+        If the change in baseline between major cycle iterations is smaller than `sig` * `noise` for `iterations_for_convergence`,
         then the baseline is considered converged. Only used to generate test data. Default is 1.0.
     velo_range : float, optional
         Velocity range [in km/s] of the spectra that has to contain significant signal
         for it to be considered in the baseline extraction. Default is 15.0.
     check_signal_sigma : float, optional
         Defines the significance of the signal that has to be present in the spectra
-        for at least the range defined by 'velo_range'. Default is 6.0.
+        for at least the range defined by `velo_range`. Default is 6.0.
     p_limit : float, optional
         The p-limit of the Markov chain to estimate signal ranges in the spectra.
         Default is 0.01.
-    ncpus : int
+    ncpus : int, optional
         Number of CPUs to use.
         Defaults to 1.
     suffix : str, optional

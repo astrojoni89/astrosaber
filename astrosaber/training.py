@@ -9,9 +9,8 @@ from typing import Optional, List, Tuple, Callable
 from astropy.io import fits
 from astropy import units as u
 from scipy import sparse
-from scipy.sparse.linalg import spsolve
 
-from tqdm import tqdm, trange
+from tqdm import trange
 from tqdm.utils import _supports_unicode
 
 from .utils.quality_checks import get_max_consecutive_channels, determine_peaks, mask_channels
@@ -39,15 +38,15 @@ class saberTraining(object):
         Default is 100.
     phase : str, optional
         Mode of saber smoothing.
-        Either `one` or `two` (default) phase smoothing. Default is `two`.
+        Either `'one'` or `'two'` (default) phase smoothing. Default is `'two'`.
     lam1_initial : float
         Initial value of the Lambda_1 smoothing parameter that is to be optimized.
     p1 : float, optional
-        Asymmetry weight of the minor (and major if phase=`one`) cycle smoothing.
+        Asymmetry weight of the minor (and major if phase=`'one'`) cycle smoothing.
         Default is 0.90.
     lam1_initial : float
         Initial value of the Lambda_2 smoothing parameter that is to be optimized.
-        Has to be specified if phase is set to `two`.
+        Has to be specified if phase is set to `'two'`.
     p2 : float, optional
         Asymmetry weight of the major cycle smoothing to generate test data.
         Default is 0.90.
@@ -109,9 +108,9 @@ class saberTraining(object):
     p_limit : float, optional
         The p-limit of the Markov chain to estimate signal ranges in the spectra.
         Default is 0.01.
-    ncpus : int
+    ncpus : int, optional
         Number of CPUs to use.
-        Defaults to 1.
+        Defaults to 50% of the available CPUs.
     suffix : str, optional
         Optional suffix to add to the output filenames.
     filename_out : str, optional
