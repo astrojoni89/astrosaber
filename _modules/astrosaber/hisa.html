@@ -327,7 +327,7 @@ document.write(`
 <span class="sd">        Name of the fitsfile.</span>
 <span class="sd">    path_to_noise_map : Path</span>
 <span class="sd">        Path to the noise map.</span>
-<span class="sd">        If no noise map is given, a single value must be provided instead using the &#39;noise&#39; attribute.</span>
+<span class="sd">        If no noise map is given, a single value must be provided instead using the `noise` attribute.</span>
 <span class="sd">    path_to_data : Path</span>
 <span class="sd">        Path to the fitsfile.</span>
 <span class="sd">    smoothing : bool, optional</span>
@@ -335,17 +335,19 @@ document.write(`
 <span class="sd">        Default is True.</span>
 <span class="sd">    phase : str, optional</span>
 <span class="sd">        Mode of saber smoothing.</span>
-<span class="sd">        Either &#39;one&#39; or &#39;two&#39; (default) phase smoothing. Default is &#39;two&#39;.</span>
+<span class="sd">        Either `one` or `two` (default) phase smoothing.</span>
 <span class="sd">    lam1 : float</span>
-<span class="sd">        Lambda_1 smoothing parameter.</span>
+<span class="sd">        Lambda_1 smoothing parameter of the first major cycle iteration if `phase` is set to `two`.</span>
+<span class="sd">        Else smoothing parameter of all major cycle iterations.</span>
 <span class="sd">    p1 : float, optional</span>
-<span class="sd">        Asymmetry weight of the minor cycle smoothing.</span>
+<span class="sd">        Asymmetry weight of the first iteration of the major cycle smoothing.</span>
 <span class="sd">        Default is 0.90.</span>
 <span class="sd">    lam2 : float</span>
-<span class="sd">        Lambda_2 smoothing parameter. Has to be specified if phase is set to &#39;two&#39;.</span>
+<span class="sd">        Lambda_2 smoothing parameter.</span>
+<span class="sd">        Has to be specified if phase is set to `two`.</span>
 <span class="sd">    p2 : float, optional</span>
-<span class="sd">        Asymmetry weight of the major cycle smoothing.</span>
-<span class="sd">        Has to be specified if phase is set to &#39;two&#39;. Default is 0.90.</span>
+<span class="sd">        Asymmetry weight of the remaining iterations of the major cycle smoothing.</span>
+<span class="sd">        Has to be specified if phase is set to `two`. Default is 0.90.</span>
 <span class="sd">    niters : int, optional</span>
 <span class="sd">        Maximum number of iterations of the smoothing.</span>
 <span class="sd">        Default is 20.</span>
@@ -359,7 +361,7 @@ document.write(`
 <span class="sd">        Default is True.</span>
 <span class="sd">    sig : float, optional</span>
 <span class="sd">        Defines how many sigma of the noise is used as a convergence criterion.</span>
-<span class="sd">        If the change in baseline between major cycle iterations is smaller than &#39;sig&#39; * noise for &#39;iterations_for_convergence&#39;,</span>
+<span class="sd">        If the change in baseline between major cycle iterations is smaller than `sig` * `noise` for `iterations_for_convergence`,</span>
 <span class="sd">        then the baseline is considered converged. Default is 1.0.</span>
 <span class="sd">    velo_range : float, optional</span>
 <span class="sd">        Velocity range [in km/s] of the spectra that has to contain significant signal</span>
@@ -561,7 +563,7 @@ document.write(`
             <span class="c1">#flags</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">flag_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS1&#39;</span><span class="p">]))</span>
             
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">+</span><span class="s1">&#39;Asymmetric least squares fitting in progress...&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">+</span><span class="s1">&#39;Asymmetric least squares smoothing in progress...&#39;</span><span class="p">)</span>
             
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;two&#39;</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">astrosaber.parallel_processing</span>

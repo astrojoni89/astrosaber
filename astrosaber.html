@@ -392,7 +392,7 @@ document.write(`
 <dt class="sig sig-object py" id="astrosaber.hisa.HisaExtraction.path_to_noise_map">
 <span class="sig-name descname"><span class="pre">path_to_noise_map</span></span><a class="headerlink" href="#astrosaber.hisa.HisaExtraction.path_to_noise_map" title="Permalink to this definition">#</a></dt>
 <dd><p>Path to the noise map.
-If no noise map is given, a single value must be provided instead using the ‘noise’ attribute.</p>
+If no noise map is given, a single value must be provided instead using the <cite>noise</cite> attribute.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Path</p>
@@ -427,7 +427,7 @@ Default is True.</p>
 <dt class="sig sig-object py" id="astrosaber.hisa.HisaExtraction.phase">
 <span class="sig-name descname"><span class="pre">phase</span></span><a class="headerlink" href="#astrosaber.hisa.HisaExtraction.phase" title="Permalink to this definition">#</a></dt>
 <dd><p>Mode of saber smoothing.
-Either ‘one’ or ‘two’ (default) phase smoothing. Default is ‘two’.</p>
+Either <cite>one</cite> or <cite>two</cite> (default) phase smoothing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str, optional</p>
@@ -438,7 +438,8 @@ Either ‘one’ or ‘two’ (default) phase smoothing. Default is ‘two’.</
 <dl class="py attribute">
 <dt class="sig sig-object py" id="astrosaber.hisa.HisaExtraction.lam1">
 <span class="sig-name descname"><span class="pre">lam1</span></span><a class="headerlink" href="#astrosaber.hisa.HisaExtraction.lam1" title="Permalink to this definition">#</a></dt>
-<dd><p>Lambda_1 smoothing parameter.</p>
+<dd><p>Lambda_1 smoothing parameter of the first major cycle iteration if <cite>phase</cite> is set to <cite>two</cite>.
+Else smoothing parameter of all major cycle iterations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -449,7 +450,7 @@ Either ‘one’ or ‘two’ (default) phase smoothing. Default is ‘two’.</
 <dl class="py attribute">
 <dt class="sig sig-object py" id="astrosaber.hisa.HisaExtraction.p1">
 <span class="sig-name descname"><span class="pre">p1</span></span><a class="headerlink" href="#astrosaber.hisa.HisaExtraction.p1" title="Permalink to this definition">#</a></dt>
-<dd><p>Asymmetry weight of the minor cycle smoothing.
+<dd><p>Asymmetry weight of the first iteration of the major cycle smoothing.
 Default is 0.90.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -461,7 +462,8 @@ Default is 0.90.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="astrosaber.hisa.HisaExtraction.lam2">
 <span class="sig-name descname"><span class="pre">lam2</span></span><a class="headerlink" href="#astrosaber.hisa.HisaExtraction.lam2" title="Permalink to this definition">#</a></dt>
-<dd><p>Lambda_2 smoothing parameter. Has to be specified if phase is set to ‘two’.</p>
+<dd><p>Lambda_2 smoothing parameter.
+Has to be specified if phase is set to <cite>two</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -472,8 +474,8 @@ Default is 0.90.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="astrosaber.hisa.HisaExtraction.p2">
 <span class="sig-name descname"><span class="pre">p2</span></span><a class="headerlink" href="#astrosaber.hisa.HisaExtraction.p2" title="Permalink to this definition">#</a></dt>
-<dd><p>Asymmetry weight of the major cycle smoothing.
-Has to be specified if phase is set to ‘two’. Default is 0.90.</p>
+<dd><p>Asymmetry weight of the remaining iterations of the major cycle smoothing.
+Has to be specified if phase is set to <cite>two</cite>. Default is 0.90.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, optional</p>
@@ -532,7 +534,7 @@ Default is True.</p>
 <dt class="sig sig-object py" id="astrosaber.hisa.HisaExtraction.sig">
 <span class="sig-name descname"><span class="pre">sig</span></span><a class="headerlink" href="#astrosaber.hisa.HisaExtraction.sig" title="Permalink to this definition">#</a></dt>
 <dd><p>Defines how many sigma of the noise is used as a convergence criterion.
-If the change in baseline between major cycle iterations is smaller than ‘sig’ * noise for ‘iterations_for_convergence’,
+If the change in baseline between major cycle iterations is smaller than <cite>sig</cite> * <cite>noise</cite> for <cite>iterations_for_convergence</cite>,
 then the baseline is considered converged. Default is 1.0.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
