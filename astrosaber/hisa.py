@@ -44,19 +44,19 @@ class HisaExtraction(object):
         Default is True.
     phase : str, optional
         Mode of saber smoothing.
-        Either `one` or `two` (default) phase smoothing.
+        Either `'one'` or `'two'` (default) phase smoothing.
     lam1 : float
-        Lambda_1 smoothing parameter of the first major cycle iteration if `phase` is set to `two`.
+        Lambda_1 smoothing parameter of the first major cycle iteration if `phase` is set to `'two'`.
         Else smoothing parameter of all major cycle iterations.
     p1 : float, optional
         Asymmetry weight of the first iteration of the major cycle smoothing.
         Default is 0.90.
     lam2 : float
         Lambda_2 smoothing parameter.
-        Has to be specified if phase is set to `two`.
+        Has to be specified if phase is set to `'two'`.
     p2 : float, optional
         Asymmetry weight of the remaining iterations of the major cycle smoothing.
-        Has to be specified if phase is set to `two`. Default is 0.90.
+        Has to be specified if phase is set to `'two'`. Default is 0.90.
     niters : int, optional
         Maximum number of iterations of the smoothing.
         Default is 20.
