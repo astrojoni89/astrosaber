@@ -36,7 +36,7 @@ class HisaExtraction(object):
         Name of the fitsfile.
     path_to_noise_map : Path
         Path to the noise map.
-        If no noise map is given, a single value must be provided instead using the 'noise' attribute.
+        If no noise map is given, a single value must be provided instead using the `noise` attribute.
     path_to_data : Path
         Path to the fitsfile.
     smoothing : bool, optional
@@ -44,17 +44,19 @@ class HisaExtraction(object):
         Default is True.
     phase : str, optional
         Mode of saber smoothing.
-        Either 'one' or 'two' (default) phase smoothing. Default is 'two'.
+        Either `one` or `two` (default) phase smoothing.
     lam1 : float
-        Lambda_1 smoothing parameter.
+        Lambda_1 smoothing parameter of the first major cycle iteration if `phase` is set to `two`.
+        Else smoothing parameter of all major cycle iterations.
     p1 : float, optional
-        Asymmetry weight of the minor cycle smoothing.
+        Asymmetry weight of the first iteration of the major cycle smoothing.
         Default is 0.90.
     lam2 : float
-        Lambda_2 smoothing parameter. Has to be specified if phase is set to 'two'.
+        Lambda_2 smoothing parameter.
+        Has to be specified if phase is set to `two`.
     p2 : float, optional
-        Asymmetry weight of the major cycle smoothing.
-        Has to be specified if phase is set to 'two'. Default is 0.90.
+        Asymmetry weight of the remaining iterations of the major cycle smoothing.
+        Has to be specified if phase is set to `two`. Default is 0.90.
     niters : int, optional
         Maximum number of iterations of the smoothing.
         Default is 20.
@@ -68,7 +70,7 @@ class HisaExtraction(object):
         Default is True.
     sig : float, optional
         Defines how many sigma of the noise is used as a convergence criterion.
-        If the change in baseline between major cycle iterations is smaller than 'sig' * noise for 'iterations_for_convergence',
+        If the change in baseline between major cycle iterations is smaller than `sig` * `noise` for `iterations_for_convergence`,
         then the baseline is considered converged. Default is 1.0.
     velo_range : float, optional
         Velocity range [in km/s] of the spectra that has to contain significant signal
@@ -270,7 +272,7 @@ class HisaExtraction(object):
             #flags
             self.flag_map = np.ones((self.header['NAXIS2'],self.header['NAXIS1']))
             
-            print('\n'+'Asymmetric least squares fitting in progress...')
+            print('\n'+'Asymmetric least squares smoothing in progress...')
             
             if self.phase == 'two':
                 import astrosaber.parallel_processing
