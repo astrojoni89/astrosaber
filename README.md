@@ -1,6 +1,6 @@
 <!--
   Title: astroSABER
-  Description: Self-Absorption Baseline ExtractoR developed for systematic baseline fitting.
+  Description: Self-Absorption Baseline ExtractoR developed for systematic baseline smoothing.
   Author: astrojoni89
 -->
 
@@ -9,6 +9,8 @@
 ![astroSABER logo](./docs/astrosaber_promo_lowres.png)  
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/astrojoni89/astrosaber?style=for-the-badge)
 ![GitHub Repo stars](https://img.shields.io/github/stars/astrojoni89/astrosaber?style=for-the-badge)
+
+* **Documentation**: [https://astrojoni89.github.io/astrosaber/](https://astrojoni89.github.io/astrosaber/)
 
 ## About
 The astroSABER (**S**elf-**A**bsorption **B**aseline **E**xtracto**R**) algorithm is an automated baseline extraction routine that is designed to recover baselines of absorption features that are convoluted with HI emission spectra. It utilizes asymmetric least squares smoothing first proposed by [Eilers (2004)](https://pubs.acs.org/doi/10.1021/ac034800e). The algorithm progresses iteratively in two cycles to obtain a smoothed baseline, the major (outer) cycle and the minor (inner) cycle executed at each iteration of the major cycle. The basis of the minor cycle is to find a solution that minimizes the penalized least squares function:
@@ -60,5 +62,3 @@ from within the `astrosaber` directory.
 
 ## Getting started
 You can find example scripts and a jupyter notebook for an HI self-absorption (HISA) baseline extraction run in the `example` directory. The data used in this example are taken from The HI/OH Recombination line survey of the inner Milky Way (THOR; [Beuther et al. 2016](https://ui.adsabs.harvard.edu/abs/2016A%26A...595A..32B/abstract), [Wang et al. 2020](https://ui.adsabs.harvard.edu/abs/2020A%26A...634A..83W/abstract)).
-
-More information is available in the documentation under [astrojoni89.github.io/astrosaber/](https://astrojoni89.github.io/astrosaber/).
