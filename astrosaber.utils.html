@@ -319,22 +319,138 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.baseline_als">
 <span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">baseline_als</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#baseline_als"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.baseline_als" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Baseline smoothing using asymmetric least squares.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – Spectrum to be smoothed.</p></li>
+<li><p><strong>lam</strong> (<em>float</em>) – Smoothing weight. Adjusts the amount of smoothing.</p></li>
+<li><p><strong>p</strong> (<em>float</em>) – Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</p></li>
+<li><p><strong>niter</strong> (<em>int</em>) – Number of iterations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>z</strong> – Smoothed baseline.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.baseline_als_optimized">
 <span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">baseline_als_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#baseline_als_optimized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.baseline_als_optimized" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Baseline smoothing using asymmetric least squares.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – Spectrum to be smoothed.</p></li>
+<li><p><strong>lam</strong> (<em>float</em>) – Smoothing weight. Adjusts the amount of smoothing.</p></li>
+<li><p><strong>p</strong> (<em>float</em>) – Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</p></li>
+<li><p><strong>niter</strong> (<em>int</em>) – Number of iterations.</p></li>
+<li><p><strong>mask</strong> (<em>bool</em>) – Boolean mask indicating signal ranges, with <cite>True</cite> indicating signal, <cite>False</cite> indicating noise.
+Will be used to set asymmetry weights to 0.5 where there is noise.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>z</strong> – Smoothed baseline.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.one_step_extraction">
 <span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">one_step_extraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_signal_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velo_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations_for_convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_residual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#one_step_extraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.one_step_extraction" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Baseline smoothing routine using one lambda smoothing value for all major iterations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lam1</strong> (<em>float</em>) – Smoothing weight. Adjusts the amount of smoothing.</p></li>
+<li><p><strong>p1</strong> (<em>float</em>) – Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</p></li>
+<li><p><strong>spectrum</strong> (<em>numpy.ndarray</em>) – Spectrum to be smoothed.</p></li>
+<li><p><strong>header</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Header</span></code>) – Header of the file containing the <cite>spectrum</cite>.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code>.</p></li>
+<li><p><strong>check_signal_sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Defines the significance of the signal that has to be present in the spectra
+for at least the range defined by <cite>velo_range</cite>. Default is 6.0.</p></li>
+<li><p><strong>noise</strong> (<em>float</em>) – Noise level of the data.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code></p></li>
+<li><p><strong>velo_range</strong> (<em>float</em><em>, </em><em>optional</em>) – Velocity range [in km/s] of the spectra that has to contain significant signal
+for it to be considered in the baseline extraction. Default is 15.0.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code>.</p></li>
+<li><p><strong>niters</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of iterations of the smoothing.
+Default is 20.</p></li>
+<li><p><strong>iterations_for_convergence</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of iterations of the major cycle for the baseline to be considered converged.
+Default is 3.</p></li>
+<li><p><strong>add_residual</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
+Default is False.</p></li>
+<li><p><strong>thresh</strong> (<em>float</em>) – Convergence threshold.
+If residual falls below this threshold for <cite>iterations_for_convergence</cite> iterations, the algorithm terminates the smoothing.</p></li>
+<li><p><strong>p_limit</strong> (<em>float</em><em>, </em><em>optional</em>) – The p-limit of the Markov chain to estimate signal ranges in the spectra.
+Default is 0.02.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bg</strong> (<em>numpy.ndarray</em>) – Background spectrum w/o self-absorption.</p></li>
+<li><p><strong>hisa</strong> (<em>numpy.ndarray</em>) – Inverted self-absorption spectrum (i.e. expressed as equivalent emission).</p></li>
+<li><p><strong>iterations</strong> (<em>int</em>) – Number of iterations until algorithm converged.</p></li>
+<li><p><strong>flag_map</strong> (<em>int</em>) – Flag whether background did/did not converge or whether spectrum does/does not contain signal.
+If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.two_step_extraction">
 <span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">two_step_extraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_signal_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velo_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations_for_convergence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_residual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#two_step_extraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.two_step_extraction" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Baseline smoothing routine using one lambda smoothing value for all major iterations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lam1</strong> (<em>float</em>) – Smoothing weight of the very first smoothing iteration. Adjusts the amount of smoothing.</p></li>
+<li><p><strong>p1</strong> (<em>float</em>) – Asymmetry weight of the very first smoothing iteration. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</p></li>
+<li><p><strong>lam2</strong> (<em>float</em>) – Smoothing weight of all remaining smoothing iterations. Adjusts the amount of smoothing.</p></li>
+<li><p><strong>p2</strong> (<em>float</em>) – Asymmetry weight of all remaining smoothing iterations. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</p></li>
+<li><p><strong>spectrum</strong> (<em>numpy.ndarray</em>) – Spectrum to be smoothed.</p></li>
+<li><p><strong>header</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Header</span></code>) – Header of the file containing the <cite>spectrum</cite>.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code>.</p></li>
+<li><p><strong>check_signal_sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Defines the significance of the signal that has to be present in the spectra
+for at least the range defined by <cite>velo_range</cite>. Default is 6.0.</p></li>
+<li><p><strong>noise</strong> (<em>float</em>) – Noise level of the data.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code></p></li>
+<li><p><strong>velo_range</strong> (<em>float</em><em>, </em><em>optional</em>) – Velocity range [in km/s] of the spectra that has to contain significant signal
+for it to be considered in the baseline extraction. Default is 15.0.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code>.</p></li>
+<li><p><strong>niters</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of iterations of the smoothing.
+Default is 20.</p></li>
+<li><p><strong>iterations_for_convergence</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of iterations of the major cycle for the baseline to be considered converged.
+Default is 3.</p></li>
+<li><p><strong>add_residual</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
+Default is False.</p></li>
+<li><p><strong>thresh</strong> (<em>float</em>) – Convergence threshold.
+If residual falls below this threshold for <cite>iterations_for_convergence</cite> iterations, the algorithm terminates the smoothing.</p></li>
+<li><p><strong>p_limit</strong> (<em>float</em><em>, </em><em>optional</em>) – The p-limit of the Markov chain to estimate signal ranges in the spectra.
+Default is 0.02.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bg</strong> (<em>numpy.ndarray</em>) – Background spectrum w/o self-absorption.</p></li>
+<li><p><strong>hisa</strong> (<em>numpy.ndarray</em>) – Inverted self-absorption spectrum (i.e. expressed as equivalent emission).</p></li>
+<li><p><strong>iterations</strong> (<em>int</em>) – Number of iterations until algorithm converged.</p></li>
+<li><p><strong>flag_map</strong> (<em>int</em>) – Flag whether background did/did not converge or whether spectrum does/does not contain signal.
+If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-astrosaber.utils.aslsq_helper">

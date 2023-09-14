@@ -309,6 +309,24 @@ document.write(`
 
 <span class="c1">#Asymmetric least squares baseline fit from Eilers et al. 2005</span>
 <div class="viewcode-block" id="baseline_als"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_fit.baseline_als">[docs]</a><span class="k">def</span> <span class="nf">baseline_als</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">lam</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">niter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Baseline smoothing using asymmetric least squares.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : numpy.ndarray</span>
+<span class="sd">        Spectrum to be smoothed.</span>
+<span class="sd">    lam : float</span>
+<span class="sd">        Smoothing weight. Adjusts the amount of smoothing.</span>
+<span class="sd">    p : float</span>
+<span class="sd">        Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</span>
+<span class="sd">    niter : int</span>
+<span class="sd">        Number of iterations.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    z : numpy.ndarray</span>
+<span class="sd">        Smoothed baseline.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="n">D</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">diags</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
@@ -322,13 +340,34 @@ document.write(`
 
 <span class="c1">#optimized version; this should be faster by a factor ~1.5</span>
 <div class="viewcode-block" id="baseline_als_optimized"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_fit.baseline_als_optimized">[docs]</a><span class="k">def</span> <span class="nf">baseline_als_optimized</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">lam</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">niter</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Baseline smoothing using asymmetric least squares.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : numpy.ndarray</span>
+<span class="sd">        Spectrum to be smoothed.</span>
+<span class="sd">    lam : float</span>
+<span class="sd">        Smoothing weight. Adjusts the amount of smoothing.</span>
+<span class="sd">    p : float</span>
+<span class="sd">        Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</span>
+<span class="sd">    niter : int</span>
+<span class="sd">        Number of iterations.</span>
+<span class="sd">    mask : bool</span>
+<span class="sd">        Boolean mask indicating signal ranges, with `True` indicating signal, `False` indicating noise.</span>
+<span class="sd">        Will be used to set asymmetry weights to 0.5 where there is noise.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    z : numpy.ndarray</span>
+<span class="sd">        Smoothed baseline.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="n">D</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">diags</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span>
     <span class="n">D</span> <span class="o">=</span> <span class="n">lam</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
     <span class="n">W</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">spdiags</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">niter</span><span class="p">):</span>
-        <span class="n">W</span><span class="o">.</span><span class="n">setdiag</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> 
+        <span class="n">W</span><span class="o">.</span><span class="n">setdiag</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="n">Z</span> <span class="o">=</span> <span class="n">W</span> <span class="o">+</span> <span class="n">D</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">spsolve</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">w</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;</span> <span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">z</span><span class="p">)</span>
@@ -338,6 +377,57 @@ document.write(`
 
 
 <div class="viewcode-block" id="one_step_extraction"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_fit.one_step_extraction">[docs]</a><span class="k">def</span> <span class="nf">one_step_extraction</span><span class="p">(</span><span class="n">lam1</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">spectrum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check_signal_sigma</span><span class="o">=</span><span class="mf">6.</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">velo_range</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">niters</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">iterations_for_convergence</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">add_residual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">p_limit</span><span class="o">=</span><span class="mf">0.02</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Baseline smoothing routine using one lambda smoothing value for all major iterations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lam1 : float</span>
+<span class="sd">        Smoothing weight. Adjusts the amount of smoothing.</span>
+<span class="sd">    p1 : float</span>
+<span class="sd">        Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</span>
+<span class="sd">    spectrum : numpy.ndarray</span>
+<span class="sd">        Spectrum to be smoothed.</span>
+<span class="sd">    header : :class:`~astropy.io.fits.Header`</span>
+<span class="sd">        Header of the file containing the `spectrum`.</span>
+<span class="sd">        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`.</span>
+<span class="sd">    check_signal_sigma : float, optional</span>
+<span class="sd">        Defines the significance of the signal that has to be present in the spectra</span>
+<span class="sd">        for at least the range defined by `velo_range`. Default is 6.0.</span>
+<span class="sd">    noise : float</span>
+<span class="sd">        Noise level of the data.</span>
+<span class="sd">        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`</span>
+<span class="sd">    velo_range : float, optional</span>
+<span class="sd">        Velocity range [in km/s] of the spectra that has to contain significant signal</span>
+<span class="sd">        for it to be considered in the baseline extraction. Default is 15.0.</span>
+<span class="sd">        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`.</span>
+<span class="sd">    niters : int, optional</span>
+<span class="sd">        Maximum number of iterations of the smoothing.</span>
+<span class="sd">        Default is 20.</span>
+<span class="sd">    iterations_for_convergence : int, optional</span>
+<span class="sd">        Number of iterations of the major cycle for the baseline to be considered converged.</span>
+<span class="sd">        Default is 3.</span>
+<span class="sd">    add_residual : bool, optional</span>
+<span class="sd">        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.</span>
+<span class="sd">        Default is False.</span>
+<span class="sd">    thresh : float</span>
+<span class="sd">        Convergence threshold.</span>
+<span class="sd">        If residual falls below this threshold for `iterations_for_convergence` iterations, the algorithm terminates the smoothing.</span>
+<span class="sd">    p_limit : float, optional</span>
+<span class="sd">        The p-limit of the Markov chain to estimate signal ranges in the spectra.</span>
+<span class="sd">        Default is 0.02.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bg : numpy.ndarray</span>
+<span class="sd">        Background spectrum w/o self-absorption.</span>
+<span class="sd">    hisa : numpy.ndarray</span>
+<span class="sd">        Inverted self-absorption spectrum (i.e. expressed as equivalent emission).</span>
+<span class="sd">    iterations : int</span>
+<span class="sd">        Number of iterations until algorithm converged.</span>
+<span class="sd">    flag_map : int</span>
+<span class="sd">        Flag whether background did/did not converge or whether spectrum does/does not contain signal.</span>
+<span class="sd">        If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">flag_map</span> <span class="o">=</span> <span class="mf">1.</span>
     <span class="k">if</span> <span class="n">check_signal_ranges</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">check_signal_sigma</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span> <span class="n">velo_range</span><span class="o">=</span><span class="n">velo_range</span><span class="p">):</span>
         <span class="c1"># TODO</span>
@@ -354,7 +444,7 @@ document.write(`
             <span class="n">spectrum_next</span> <span class="o">=</span> <span class="n">baseline_als_optimized</span><span class="p">(</span><span class="n">spectrum_prior</span><span class="p">,</span> <span class="n">lam1</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
             <span class="n">residual</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">spectrum_next</span> <span class="o">-</span> <span class="n">spectrum_prior</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">residual</span><span class="p">)):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Residual contains NaNs&#39;</span><span class="p">)</span> 
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Residual contains NaNs&#39;</span><span class="p">)</span>
                 <span class="n">residual</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">residual</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="k">if</span> <span class="n">thresh</span><span class="o">==</span><span class="mf">0.</span><span class="p">:</span>
                 <span class="n">converge_test</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -399,6 +489,61 @@ document.write(`
 
 
 <div class="viewcode-block" id="two_step_extraction"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_fit.two_step_extraction">[docs]</a><span class="k">def</span> <span class="nf">two_step_extraction</span><span class="p">(</span><span class="n">lam1</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">lam2</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">spectrum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check_signal_sigma</span><span class="o">=</span><span class="mf">6.</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">velo_range</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">niters</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">iterations_for_convergence</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">add_residual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">p_limit</span><span class="o">=</span><span class="mf">0.02</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Baseline smoothing routine using one lambda smoothing value for all major iterations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lam1 : float</span>
+<span class="sd">        Smoothing weight of the very first smoothing iteration. Adjusts the amount of smoothing.</span>
+<span class="sd">    p1 : float</span>
+<span class="sd">        Asymmetry weight of the very first smoothing iteration. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</span>
+<span class="sd">    lam2 : float</span>
+<span class="sd">        Smoothing weight of all remaining smoothing iterations. Adjusts the amount of smoothing.</span>
+<span class="sd">    p2 : float</span>
+<span class="sd">        Asymmetry weight of all remaining smoothing iterations. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</span>
+<span class="sd">    spectrum : numpy.ndarray</span>
+<span class="sd">        Spectrum to be smoothed.</span>
+<span class="sd">    header : :class:`~astropy.io.fits.Header`</span>
+<span class="sd">        Header of the file containing the `spectrum`.</span>
+<span class="sd">        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`.</span>
+<span class="sd">    check_signal_sigma : float, optional</span>
+<span class="sd">        Defines the significance of the signal that has to be present in the spectra</span>
+<span class="sd">        for at least the range defined by `velo_range`. Default is 6.0.</span>
+<span class="sd">    noise : float</span>
+<span class="sd">        Noise level of the data.</span>
+<span class="sd">        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`</span>
+<span class="sd">    velo_range : float, optional</span>
+<span class="sd">        Velocity range [in km/s] of the spectra that has to contain significant signal</span>
+<span class="sd">        for it to be considered in the baseline extraction. Default is 15.0.</span>
+<span class="sd">        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`.</span>
+<span class="sd">    niters : int, optional</span>
+<span class="sd">        Maximum number of iterations of the smoothing.</span>
+<span class="sd">        Default is 20.</span>
+<span class="sd">    iterations_for_convergence : int, optional</span>
+<span class="sd">        Number of iterations of the major cycle for the baseline to be considered converged.</span>
+<span class="sd">        Default is 3.</span>
+<span class="sd">    add_residual : bool, optional</span>
+<span class="sd">        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.</span>
+<span class="sd">        Default is False.</span>
+<span class="sd">    thresh : float</span>
+<span class="sd">        Convergence threshold.</span>
+<span class="sd">        If residual falls below this threshold for `iterations_for_convergence` iterations, the algorithm terminates the smoothing.</span>
+<span class="sd">    p_limit : float, optional</span>
+<span class="sd">        The p-limit of the Markov chain to estimate signal ranges in the spectra.</span>
+<span class="sd">        Default is 0.02.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bg : numpy.ndarray</span>
+<span class="sd">        Background spectrum w/o self-absorption.</span>
+<span class="sd">    hisa : numpy.ndarray</span>
+<span class="sd">        Inverted self-absorption spectrum (i.e. expressed as equivalent emission).</span>
+<span class="sd">    iterations : int</span>
+<span class="sd">        Number of iterations until algorithm converged.</span>
+<span class="sd">    flag_map : int</span>
+<span class="sd">        Flag whether background did/did not converge or whether spectrum does/does not contain signal.</span>
+<span class="sd">        If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">flag_map</span> <span class="o">=</span> <span class="mf">1.</span>
     <span class="k">if</span> <span class="n">check_signal_ranges</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">check_signal_sigma</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span> <span class="n">velo_range</span><span class="o">=</span><span class="n">velo_range</span><span class="p">):</span>
         <span class="c1"># TODO</span>
@@ -415,7 +560,7 @@ document.write(`
             <span class="n">spectrum_next</span> <span class="o">=</span> <span class="n">baseline_als_optimized</span><span class="p">(</span><span class="n">spectrum_prior</span><span class="p">,</span> <span class="n">lam2</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
             <span class="n">residual</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">spectrum_next</span> <span class="o">-</span> <span class="n">spectrum_prior</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">residual</span><span class="p">)):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Residual contains NaNs&#39;</span><span class="p">)</span> 
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Residual contains NaNs&#39;</span><span class="p">)</span>
                 <span class="n">residual</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">residual</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="k">if</span> <span class="n">thresh</span><span class="o">==</span><span class="mf">0.</span><span class="p">:</span>
                 <span class="n">converge_test</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">)</span>
