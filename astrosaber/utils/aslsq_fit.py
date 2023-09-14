@@ -18,6 +18,24 @@ warnings.showwarning = format_warning
 
 #Asymmetric least squares baseline fit from Eilers et al. 2005
 def baseline_als(y, lam, p, niter):
+    """Baseline smoothing using asymmetric least squares.
+
+    Parameters
+    ----------
+    y : numpy.ndarray
+        Spectrum to be smoothed.
+    lam : float
+        Smoothing weight. Adjusts the amount of smoothing.
+    p : float
+        Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.
+    niter : int
+        Number of iterations.
+
+    Returns
+    -------
+    z : numpy.ndarray
+        Smoothed baseline.
+    """
     L = len(y)
     D = sparse.diags([1,-2,1],[0,-1,-2], shape=(L,L-2))
     w = np.ones(L)
@@ -31,13 +49,34 @@ def baseline_als(y, lam, p, niter):
 
 #optimized version; this should be faster by a factor ~1.5
 def baseline_als_optimized(y, lam, p, niter, mask=None):
+    """Baseline smoothing using asymmetric least squares.
+
+    Parameters
+    ----------
+    y : numpy.ndarray
+        Spectrum to be smoothed.
+    lam : float
+        Smoothing weight. Adjusts the amount of smoothing.
+    p : float
+        Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.
+    niter : int
+        Number of iterations.
+    mask : bool
+        Boolean mask indicating signal ranges, with `True` indicating signal, `False` indicating noise.
+        Will be used to set asymmetry weights to 0.5 where there is noise.
+
+    Returns
+    -------
+    z : numpy.ndarray
+        Smoothed baseline.
+    """
     L = len(y)
     D = sparse.diags([1,-2,1],[0,-1,-2], shape=(L,L-2))
     D = lam * D.dot(D.transpose())
     w = np.ones(L)
     W = sparse.spdiags(w, 0, L, L)
     for i in range(niter):
-        W.setdiag(w) 
+        W.setdiag(w)
         Z = W + D
         z = spsolve(Z, w*y)
         w = p * (y > z) + (1-p) * (y < z)
@@ -47,6 +86,57 @@ def baseline_als_optimized(y, lam, p, niter, mask=None):
 
 
 def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=20, iterations_for_convergence=3, add_residual=False, thresh=None, p_limit=0.02):
+    """Baseline smoothing routine using one lambda smoothing value for all major iterations.
+
+    Parameters
+    ----------
+    lam1 : float
+        Smoothing weight. Adjusts the amount of smoothing.
+    p1 : float
+        Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.
+    spectrum : numpy.ndarray
+        Spectrum to be smoothed.
+    header : :class:`~astropy.io.fits.Header`
+        Header of the file containing the `spectrum`.
+        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`.
+    check_signal_sigma : float, optional
+        Defines the significance of the signal that has to be present in the spectra
+        for at least the range defined by `velo_range`. Default is 6.0.
+    noise : float
+        Noise level of the data.
+        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`
+    velo_range : float, optional
+        Velocity range [in km/s] of the spectra that has to contain significant signal
+        for it to be considered in the baseline extraction. Default is 15.0.
+        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`.
+    niters : int, optional
+        Maximum number of iterations of the smoothing.
+        Default is 20.
+    iterations_for_convergence : int, optional
+        Number of iterations of the major cycle for the baseline to be considered converged.
+        Default is 3.
+    add_residual : bool, optional
+        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
+        Default is False.
+    thresh : float
+        Convergence threshold.
+        If residual falls below this threshold for `iterations_for_convergence` iterations, the algorithm terminates the smoothing.
+    p_limit : float, optional
+        The p-limit of the Markov chain to estimate signal ranges in the spectra.
+        Default is 0.02.
+
+    Returns
+    -------
+    bg : numpy.ndarray
+        Background spectrum w/o self-absorption.
+    hisa : numpy.ndarray
+        Inverted self-absorption spectrum (i.e. expressed as equivalent emission).
+    iterations : int
+        Number of iterations until algorithm converged.
+    flag_map : int
+        Flag whether background did/did not converge or whether spectrum does/does not contain signal.
+        If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
+    """
     flag_map = 1.
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
         # TODO
@@ -63,7 +153,7 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
             spectrum_next = baseline_als_optimized(spectrum_prior, lam1, p1, niter=3, mask=mask)
             residual = abs(spectrum_next - spectrum_prior)
             if np.any(np.isnan(residual)):
-                print('Residual contains NaNs') 
+                print('Residual contains NaNs')
                 residual[np.isnan(residual)] = 0.0
             if thresh==0.:
                 converge_test = (True)
@@ -108,6 +198,61 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
 
 
 def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=20, iterations_for_convergence=3, add_residual=True, thresh=None, p_limit=0.02):
+    """Baseline smoothing routine using one lambda smoothing value for all major iterations.
+
+    Parameters
+    ----------
+    lam1 : float
+        Smoothing weight of the very first smoothing iteration. Adjusts the amount of smoothing.
+    p1 : float
+        Asymmetry weight of the very first smoothing iteration. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.
+    lam2 : float
+        Smoothing weight of all remaining smoothing iterations. Adjusts the amount of smoothing.
+    p2 : float
+        Asymmetry weight of all remaining smoothing iterations. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.
+    spectrum : numpy.ndarray
+        Spectrum to be smoothed.
+    header : :class:`~astropy.io.fits.Header`
+        Header of the file containing the `spectrum`.
+        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`.
+    check_signal_sigma : float, optional
+        Defines the significance of the signal that has to be present in the spectra
+        for at least the range defined by `velo_range`. Default is 6.0.
+    noise : float
+        Noise level of the data.
+        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`
+    velo_range : float, optional
+        Velocity range [in km/s] of the spectra that has to contain significant signal
+        for it to be considered in the baseline extraction. Default is 15.0.
+        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`.
+    niters : int, optional
+        Maximum number of iterations of the smoothing.
+        Default is 20.
+    iterations_for_convergence : int, optional
+        Number of iterations of the major cycle for the baseline to be considered converged.
+        Default is 3.
+    add_residual : bool, optional
+        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
+        Default is False.
+    thresh : float
+        Convergence threshold.
+        If residual falls below this threshold for `iterations_for_convergence` iterations, the algorithm terminates the smoothing.
+    p_limit : float, optional
+        The p-limit of the Markov chain to estimate signal ranges in the spectra.
+        Default is 0.02.
+
+    Returns
+    -------
+    bg : numpy.ndarray
+        Background spectrum w/o self-absorption.
+    hisa : numpy.ndarray
+        Inverted self-absorption spectrum (i.e. expressed as equivalent emission).
+    iterations : int
+        Number of iterations until algorithm converged.
+    flag_map : int
+        Flag whether background did/did not converge or whether spectrum does/does not contain signal.
+        If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
+    """
     flag_map = 1.
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
         # TODO
@@ -124,7 +269,7 @@ def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_si
             spectrum_next = baseline_als_optimized(spectrum_prior, lam2, p2, niter=3, mask=mask)
             residual = abs(spectrum_next - spectrum_prior)
             if np.any(np.isnan(residual)):
-                print('Residual contains NaNs') 
+                print('Residual contains NaNs')
                 residual[np.isnan(residual)] = 0.0
             if thresh==0.:
                 converge_test = (True)

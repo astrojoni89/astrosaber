@@ -7,7 +7,7 @@ from astrosaber.hisa import HisaExtraction
 from astrosaber.plotting import plot_spectra
 
 
-###step 3: run the self-absorption extraction with optimal smoothing parameters obtained in step 2 
+###step 3: run the self-absorption extraction with optimal smoothing parameters obtained in step 2
 
 
 def main():
@@ -22,13 +22,15 @@ def main():
     hisa.noise = 4. #Kelvin
 
     ###put optimal asymmetric least squares smoothing parameters here
-    hisa.lam1 = 1.00
-    hisa.lam2 = 0.50
+    hisa.lam1 = 3.469
+    hisa.lam2 = 0.555
 
     ###maximum number of iterations (this limit is usually reached for strong continuum sources)
     hisa.niters = 20
 
     ###this runs the hisa extraction routine
+
+    hisa.ncpus = 8
     hisa.saber()
 
     '''
@@ -44,6 +46,6 @@ def main():
     fitsfiles = ['HI_THOR_test_cube.fits', 'HI_THOR_test_cube_aslsq_bg_spectrum.fits', 'HI_THOR_test_cube_HISA_spectrum.fits']
     plot_spectra(fitsfiles, outfile='spectra_astroSABER.pdf', coordinates=None, n_spectra=9, velocity_range=[-110,163])
 
-    
+
 if __name__ == '__main__':
     main()

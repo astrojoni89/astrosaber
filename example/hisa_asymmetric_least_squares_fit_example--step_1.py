@@ -6,7 +6,7 @@ from astropy import units as u
 from astrosaber.prepare_training import saberPrepare
 
 
-###step 1: create training data that are generated from 'pure' emission spectra (test_data) with randomly generated (but known) self-absorption features 
+###step 1: create training data that are generated from 'pure' emission spectra (test_data) with randomly generated (but known) self-absorption features
 
 
 def main():
