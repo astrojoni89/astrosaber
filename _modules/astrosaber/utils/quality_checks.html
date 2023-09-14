@@ -292,11 +292,12 @@ document.write(`
 <span></span><span class="c1"># this code is taken from Lindner (2014) &amp; Riener (2019); GaussPy(+) as is</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
 
-<div class="viewcode-block" id="goodness_of_fit"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.quality_checks.goodness_of_fit">[docs]</a><span class="k">def</span> <span class="nf">goodness_of_fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">dof</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">get_aicc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="goodness_of_fit"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.quality_checks.goodness_of_fit">[docs]</a><span class="k">def</span> <span class="nf">goodness_of_fit</span><span class="p">(</span><span class="n">data</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">fit</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">errors</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+                    <span class="n">dof</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">mask</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">get_aicc</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine the goodness of fit (reduced chi-square, AICc).</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    data : numpy.ndarray</span>
@@ -318,7 +319,8 @@ document.write(`
 <span class="sd">    rchi2 : float</span>
 <span class="sd">        Reduced chi2 value.</span>
 <span class="sd">    aicc : float</span>
-<span class="sd">        (optional): The AICc value is returned if get_aicc is set to `True`.</span>
+<span class="sd">        (optional:) The AICc value is returned if get_aicc is set to `True`.</span>
+<span class="sd">        Default is `False`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="n">errors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">*</span> <span class="n">errors</span>
@@ -348,7 +350,7 @@ document.write(`
     <span class="k">return</span> <span class="n">rchi2</span></div>
 
 
-<div class="viewcode-block" id="get_max_consecutive_channels"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.quality_checks.get_max_consecutive_channels">[docs]</a><span class="k">def</span> <span class="nf">get_max_consecutive_channels</span><span class="p">(</span><span class="n">n_channels</span><span class="p">,</span> <span class="n">p_limit</span><span class="p">):</span>
+<div class="viewcode-block" id="get_max_consecutive_channels"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.quality_checks.get_max_consecutive_channels">[docs]</a><span class="k">def</span> <span class="nf">get_max_consecutive_channels</span><span class="p">(</span><span class="n">n_channels</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">p_limit</span> <span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine the maximum number of random consecutive positive/negative channels.</span>
 <span class="sd">    Calculate the number of consecutive positive or negative channels,</span>
 <span class="sd">    whose probability of occurring due to random chance in a spectrum</span>
@@ -377,14 +379,15 @@ document.write(`
             <span class="k">return</span> <span class="n">consec_channels</span></div>
 
 
-<div class="viewcode-block" id="determine_peaks"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.quality_checks.determine_peaks">[docs]</a><span class="k">def</span> <span class="nf">determine_peaks</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="n">peak</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">amp_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="determine_peaks"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.quality_checks.determine_peaks">[docs]</a><span class="k">def</span> <span class="nf">determine_peaks</span><span class="p">(</span><span class="n">spectrum</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">peak</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">amp_threshold</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find peaks in a spectrum.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    spectrum : numpy.ndarray</span>
 <span class="sd">        Array of the data values of the spectrum.</span>
-<span class="sd">    peak : &#39;both&#39; (default), &#39;positive&#39;, &#39;negative&#39;</span>
+<span class="sd">    peak : str</span>
+<span class="sd">        &#39;both&#39; (default), &#39;positive&#39;, &#39;negative&#39;</span>
 <span class="sd">        Description of parameter `peak`.</span>
 <span class="sd">    amp_threshold : float</span>
 <span class="sd">        Required minimum threshold that at least one data point in a peak feature has to exceed.</span>
@@ -447,7 +450,7 @@ document.write(`
         <span class="k">return</span> <span class="n">consecutive_channels</span><span class="p">,</span> <span class="n">ranges</span></div>
 
 
-<div class="viewcode-block" id="mask_channels"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.quality_checks.mask_channels">[docs]</a><span class="k">def</span> <span class="nf">mask_channels</span><span class="p">(</span><span class="n">n_channels</span><span class="p">,</span> <span class="n">ranges</span><span class="p">,</span> <span class="n">pad_channels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove_intervals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="mask_channels"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.quality_checks.mask_channels">[docs]</a><span class="k">def</span> <span class="nf">mask_channels</span><span class="p">(</span><span class="n">n_channels</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ranges</span> <span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">pad_channels</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">remove_intervals</span> <span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine the 1D boolean mask for a given list of spectral ranges.</span>
 
 <span class="sd">    Parameters</span>
@@ -458,7 +461,7 @@ document.write(`
 <span class="sd">        List of intervals [(low, upp), ...].</span>
 <span class="sd">    pad_channels : int</span>
 <span class="sd">        Number of channels by which an interval (low, upp) gets extended on both sides, resulting in (low - pad_channels, upp + pad_channels).</span>
-<span class="sd">    remove_intervals : type</span>
+<span class="sd">    remove_intervals : list</span>
 <span class="sd">        Nested list containing info about ranges of the spectrum that should be masked out.</span>
 
 <span class="sd">    Returns</span>

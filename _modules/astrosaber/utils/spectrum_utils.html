@@ -292,18 +292,37 @@ document.write(`
 <span></span><span class="sd">&#39;&#39;&#39; spectrum utils &#39;&#39;&#39;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
+
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
 <span class="kn">from</span> <span class="nn">astropy.io</span> <span class="kn">import</span> <span class="n">fits</span>
 <span class="kn">from</span> <span class="nn">astropy.wcs</span> <span class="kn">import</span> <span class="n">WCS</span>
 
 
-<div class="viewcode-block" id="pixel_circle_calculation"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.spectrum_utils.pixel_circle_calculation">[docs]</a><span class="k">def</span> <span class="nf">pixel_circle_calculation</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">,</span><span class="n">glon</span><span class="p">,</span><span class="n">glat</span><span class="p">,</span><span class="n">r</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    This function returns array of pixels corresponding to circle region with central coordinates Glon, Glat, and radius r</span>
-<span class="sd">    glon: Galactic longitude of central pixel</span>
-<span class="sd">    glat: Galactic latitude of central pixel</span>
-<span class="sd">    r: radius of region in arcseconds</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="pixel_circle_calculation"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.spectrum_utils.pixel_circle_calculation">[docs]</a><span class="k">def</span> <span class="nf">pixel_circle_calculation</span><span class="p">(</span><span class="n">fitsfile</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                             <span class="n">glon</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                             <span class="n">glat</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                             <span class="n">r</span> <span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract a list of pixels [(y0,x0),(y1,x1),...] corresponding to the circle region</span>
+<span class="sd">    with central coordinates glon, glat, and radius r.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fitsfile : Path | str</span>
+<span class="sd">        Path to FITS file.</span>
+<span class="sd">    glon : float</span>
+<span class="sd">        x-coordinate of central pixel in units given in the header.</span>
+<span class="sd">    glat : float</span>
+<span class="sd">        y-coordinate of central pixel in units given in the header.</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Radius of region in units of arcseconds.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pixel_array : List</span>
+<span class="sd">        List of pixel coordinates [(y0,x0),(y1,x1),...].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">header</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">)</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">WCS</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">)</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;CDELT1&#39;</span><span class="p">])</span> <span class="c1">#in degree</span>
@@ -332,13 +351,29 @@ document.write(`
 
 
 
-<div class="viewcode-block" id="pixel_circle_calculation_px"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.spectrum_utils.pixel_circle_calculation_px">[docs]</a><span class="k">def</span> <span class="nf">pixel_circle_calculation_px</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">r</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    This function returns array of pixels corresponding to circle region with central coordinates Glon, Glat, and radius r</span>
-<span class="sd">    x: central pixel x</span>
-<span class="sd">    y: central pixel y</span>
-<span class="sd">    r: radius of region in arcseconds</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="pixel_circle_calculation_px"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.spectrum_utils.pixel_circle_calculation_px">[docs]</a><span class="k">def</span> <span class="nf">pixel_circle_calculation_px</span><span class="p">(</span><span class="n">fitsfile</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                                <span class="n">x</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                <span class="n">y</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                <span class="n">r</span> <span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract a list of pixels [(y0,x0),(y1,x1),...] corresponding to the circle region</span>
+<span class="sd">    with central pixels x, y, and radius r.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fitsfile : Path | str</span>
+<span class="sd">        Path to FITS file.</span>
+<span class="sd">    x : float</span>
+<span class="sd">        Central x-pixel.</span>
+<span class="sd">    y : float</span>
+<span class="sd">        Central y-pixel.</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Radius of region in units of arcseconds.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pixel_array : List</span>
+<span class="sd">        List of pixel coordinates [(y0,x0),(y1,x1),...].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">header</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">)</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">WCS</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">)</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;CDELT1&#39;</span><span class="p">])</span> <span class="c1">#in degree</span>
@@ -361,11 +396,23 @@ document.write(`
 
 
 
-<div class="viewcode-block" id="calculate_spectrum"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.spectrum_utils.calculate_spectrum">[docs]</a><span class="k">def</span> <span class="nf">calculate_spectrum</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">,</span><span class="n">pixel_array</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    This function returns an average spectrum</span>
-<span class="sd">    pixel_array: pixel indices to average</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="calculate_spectrum"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.spectrum_utils.calculate_spectrum">[docs]</a><span class="k">def</span> <span class="nf">calculate_spectrum</span><span class="p">(</span><span class="n">fitsfile</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">pixel_array</span> <span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate an average spectrum given a p-p-v FITS cube and pixel coordinates.</span>
+<span class="sd">    If NaN values are present at specific coordinates, these coordinates will be ignored.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fitsfile : Path | str</span>
+<span class="sd">        Path to FITS file to get average spectrum from.</span>
+<span class="sd">    pixel_array : List</span>
+<span class="sd">        List of tuples containing pixel coordinates [(y0,x0),(y1,x1),...]</span>
+<span class="sd">	    over which to average.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spectrum_average : numpy.ndarray</span>
+<span class="sd">        Averaged spectrum.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">header</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">)</span>
     <span class="n">image</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">getdata</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">)</span>
     <span class="n">number_of_channels</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS3&#39;</span><span class="p">]</span>
@@ -382,7 +429,6 @@ document.write(`
             <span class="n">spectrum_add</span> <span class="o">=</span> <span class="n">spectrum_add</span> <span class="o">+</span> <span class="n">spectrum_i</span>
     <span class="n">spectrum_average</span> <span class="o">=</span> <span class="n">spectrum_add</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pixel_array</span><span class="p">)</span><span class="o">-</span><span class="n">n</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">spectrum_average</span></div>
-
 </pre></div>
 
                 </article>
