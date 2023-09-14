@@ -1,11 +1,12 @@
 # this code is taken from Lindner (2014) & Riener (2019); GaussPy(+) as is
 
 import numpy as np
+from typing import Union, Tuple, List
 
-def goodness_of_fit(data, fit, errors, dof, mask=None,
-                    get_aicc=False):
+def goodness_of_fit(data : np.ndarray, fit : np.ndarray, errors : Union[np.ndarray, float],
+                    dof : int, mask : np.ndarray = None, get_aicc : bool = False) -> float:
     """Determine the goodness of fit (reduced chi-square, AICc).
-    
+
     Parameters
     ----------
     data : numpy.ndarray
@@ -27,7 +28,8 @@ def goodness_of_fit(data, fit, errors, dof, mask=None,
     rchi2 : float
         Reduced chi2 value.
     aicc : float
-        (optional): The AICc value is returned if get_aicc is set to `True`.
+        (optional:) The AICc value is returned if get_aicc is set to `True`.
+        Default is `False`.
     """
     if type(errors) is not np.ndarray:
         errors = np.ones(len(data)) * errors
@@ -57,7 +59,7 @@ def goodness_of_fit(data, fit, errors, dof, mask=None,
     return rchi2
 
 
-def get_max_consecutive_channels(n_channels, p_limit):
+def get_max_consecutive_channels(n_channels : int, p_limit : float) -> int:
     """Determine the maximum number of random consecutive positive/negative channels.
     Calculate the number of consecutive positive or negative channels,
     whose probability of occurring due to random chance in a spectrum
@@ -86,14 +88,15 @@ def get_max_consecutive_channels(n_channels, p_limit):
             return consec_channels
 
 
-def determine_peaks(spectrum, peak='both', amp_threshold=None):
+def determine_peaks(spectrum : np.ndarray, peak : str = 'both', amp_threshold : float = None) -> Tuple[np.ndarray, List]:
     """Find peaks in a spectrum.
 
     Parameters
     ----------
     spectrum : numpy.ndarray
         Array of the data values of the spectrum.
-    peak : 'both' (default), 'positive', 'negative'
+    peak : str
+        'both' (default), 'positive', 'negative'
         Description of parameter `peak`.
     amp_threshold : float
         Required minimum threshold that at least one data point in a peak feature has to exceed.
@@ -156,7 +159,7 @@ def determine_peaks(spectrum, peak='both', amp_threshold=None):
         return consecutive_channels, ranges
 
 
-def mask_channels(n_channels, ranges, pad_channels=None, remove_intervals=None):
+def mask_channels(n_channels : int, ranges : List, pad_channels : int = None, remove_intervals : List = None) -> np.ndarray:
     """Determine the 1D boolean mask for a given list of spectral ranges.
 
     Parameters
@@ -167,7 +170,7 @@ def mask_channels(n_channels, ranges, pad_channels=None, remove_intervals=None):
         List of intervals [(low, upp), ...].
     pad_channels : int
         Number of channels by which an interval (low, upp) gets extended on both sides, resulting in (low - pad_channels, upp + pad_channels).
-    remove_intervals : type
+    remove_intervals : list
         Nested list containing info about ranges of the spectrum that should be masked out.
 
     Returns

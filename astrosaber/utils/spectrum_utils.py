@@ -1,18 +1,37 @@
 ''' spectrum utils '''
 
 import numpy as np
+from pathlib import Path
+from typing import Union, Tuple, List
+
 from astropy import units as u
 from astropy.io import fits
 from astropy.wcs import WCS
 
 
-def pixel_circle_calculation(fitsfile,glon,glat,r):
-    '''
-    This function returns array of pixels corresponding to circle region with central coordinates Glon, Glat, and radius r
-    glon: Galactic longitude of central pixel
-    glat: Galactic latitude of central pixel
-    r: radius of region in arcseconds
-    '''
+def pixel_circle_calculation(fitsfile : Union[Path, str],
+                             glon : float,
+                             glat : float,
+                             r : float) -> List:
+    """Extract a list of pixels [(y0,x0),(y1,x1),...] corresponding to the circle region
+    with central coordinates glon, glat, and radius r.
+
+    Parameters
+    ----------
+    fitsfile : Path | str
+        Path to FITS file.
+    glon : float
+        x-coordinate of central pixel in units given in the header.
+    glat : float
+        y-coordinate of central pixel in units given in the header.
+    r : float
+        Radius of region in units of arcseconds.
+
+    Returns
+    -------
+    pixel_array : List
+        List of pixel coordinates [(y0,x0),(y1,x1),...].
+    """
     header = fits.getheader(fitsfile)
     w = WCS(fitsfile)
     delta = abs(header['CDELT1']) #in degree
@@ -41,13 +60,29 @@ def pixel_circle_calculation(fitsfile,glon,glat,r):
 
 
 
-def pixel_circle_calculation_px(fitsfile,x,y,r):
-    '''
-    This function returns array of pixels corresponding to circle region with central coordinates Glon, Glat, and radius r
-    x: central pixel x
-    y: central pixel y
-    r: radius of region in arcseconds
-    '''
+def pixel_circle_calculation_px(fitsfile : Union[Path, str],
+                                x : float,
+                                y : float,
+                                r : float) -> List:
+    """Extract a list of pixels [(y0,x0),(y1,x1),...] corresponding to the circle region
+    with central pixels x, y, and radius r.
+
+    Parameters
+    ----------
+    fitsfile : Path | str
+        Path to FITS file.
+    x : float
+        Central x-pixel.
+    y : float
+        Central y-pixel.
+    r : float
+        Radius of region in units of arcseconds.
+
+    Returns
+    -------
+    pixel_array : List
+        List of pixel coordinates [(y0,x0),(y1,x1),...].
+    """
     header = fits.getheader(fitsfile)
     w = WCS(fitsfile)
     delta = abs(header['CDELT1']) #in degree
@@ -70,11 +105,23 @@ def pixel_circle_calculation_px(fitsfile,x,y,r):
 
 
 
-def calculate_spectrum(fitsfile,pixel_array):
-    '''
-    This function returns an average spectrum
-    pixel_array: pixel indices to average
-    '''
+def calculate_spectrum(fitsfile : Union[Path, str], pixel_array : List) -> np.ndarray:
+    """Calculate an average spectrum given a p-p-v FITS cube and pixel coordinates.
+    If NaN values are present at specific coordinates, these coordinates will be ignored.
+
+    Parameters
+    ----------
+    fitsfile : Path | str
+        Path to FITS file to get average spectrum from.
+    pixel_array : List
+        List of tuples containing pixel coordinates [(y0,x0),(y1,x1),...]
+	    over which to average.
+
+    Returns
+    -------
+    spectrum_average : numpy.ndarray
+        Averaged spectrum.
+    """
     header = fits.getheader(fitsfile)
     image = fits.getdata(fitsfile)
     number_of_channels = header['NAXIS3']
@@ -91,4 +138,3 @@ def calculate_spectrum(fitsfile,pixel_array):
             spectrum_add = spectrum_add + spectrum_i
     spectrum_average = spectrum_add / (len(pixel_array)-n)
     return spectrum_average
-

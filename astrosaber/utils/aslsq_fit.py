@@ -2,6 +2,7 @@
 
 import os
 import numpy as np
+from typing import Tuple
 
 from astropy.io import fits
 from scipy import sparse
@@ -17,7 +18,7 @@ warnings.showwarning = format_warning
 
 
 #Asymmetric least squares baseline fit from Eilers et al. 2005
-def baseline_als(y, lam, p, niter):
+def baseline_als(y : np.ndarray, lam : float, p : float, niter : int) -> np.ndarray:
     """Baseline smoothing using asymmetric least squares.
 
     Parameters
@@ -48,7 +49,7 @@ def baseline_als(y, lam, p, niter):
 
 
 #optimized version; this should be faster by a factor ~1.5
-def baseline_als_optimized(y, lam, p, niter, mask=None):
+def baseline_als_optimized(y : np.ndarray, lam : float, p : float, niter : int, mask : np.ndarray = None) -> np.ndarray:
     """Baseline smoothing using asymmetric least squares.
 
     Parameters
@@ -61,7 +62,7 @@ def baseline_als_optimized(y, lam, p, niter, mask=None):
         Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.
     niter : int
         Number of iterations.
-    mask : bool
+    mask : numpy.ndarray
         Boolean mask indicating signal ranges, with `True` indicating signal, `False` indicating noise.
         Will be used to set asymmetry weights to 0.5 where there is noise.
 
@@ -85,7 +86,10 @@ def baseline_als_optimized(y, lam, p, niter, mask=None):
     return z
 
 
-def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=20, iterations_for_convergence=3, add_residual=False, thresh=None, p_limit=0.02):
+def one_step_extraction(lam1 : float, p1 : float, spectrum : np.ndarray = None, header : fits.Header = None,
+                        check_signal_sigma : float = 6., noise : float = None, velo_range : float = 15.0,
+                        niters : int = 20, iterations_for_convergence : int = 3, add_residual : bool = False,
+                        thresh : float = None, p_limit : float = 0.02) -> Tuple[np.ndarray, np.ndarray, int, int]:
     """Baseline smoothing routine using one lambda smoothing value for all major iterations.
 
     Parameters
@@ -197,7 +201,10 @@ def one_step_extraction(lam1, p1, spectrum=None, header=None, check_signal_sigma
     return bg, hisa, iterations, flag_map
 
 
-def two_step_extraction(lam1, p1, lam2, p2, spectrum=None, header=None, check_signal_sigma=6., noise=None, velo_range=15.0, niters=20, iterations_for_convergence=3, add_residual=True, thresh=None, p_limit=0.02):
+def two_step_extraction(lam1 : float, p1 : float, lam2 : float, p2 : float, spectrum : np.ndarray = None, header : fits.Header = None,
+                        check_signal_sigma : float = 6., noise : float = None, velo_range : float = 15.0,
+                        niters : int = 20, iterations_for_convergence : int = 3, add_residual : bool = False,
+                        thresh : float = None, p_limit : float = 0.02) -> Tuple[np.ndarray, np.ndarray, int, int]:
     """Baseline smoothing routine using one lambda smoothing value for all major iterations.
 
     Parameters

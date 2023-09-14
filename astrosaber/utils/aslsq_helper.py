@@ -2,6 +2,8 @@
 
 import os
 import numpy as np
+from pathlib import Path
+from typing import Union, Optional
 
 from astropy.io import fits
 from astropy.wcs import WCS
@@ -13,12 +15,38 @@ import warnings
 import sys
 
 
-def find_nearest(array,value):
+def find_nearest(array: np.ndarray, value: float) -> int:
+    """Find the index of an element in an array nearest to a given value.
+
+    Parameters
+    ----------
+    array : numpy.ndarray
+        Input array to index.
+    value : float
+        Value of the element to find the closest index for.
+
+    Returns
+    -------
+    idx : int
+        Index of the element with value closest to `value`.
+    """
     idx = (np.abs(array-value)).argmin()
     return idx
 
 
-def velocity_axes(name):
+def velocity_axes(name: Path) -> np.ndarray:
+    """Get velocity axis from FITS file.
+
+    Parameters
+    ----------
+    name : Path
+        Path to FITS file to get velocity axis from.
+
+    Returns
+    -------
+    velocity : numpy.ndarray
+        Array of velocity axis.
+    """
 	header = fits.getheader(name)
 	n = header['NAXIS3']
 	velocity = (header['CRVAL3'] - header['CRPIX3'] * header['CDELT3']) + (np.arange(n)+1) * header['CDELT3']
@@ -26,7 +54,19 @@ def velocity_axes(name):
 	return velocity
 
 
-def merge_ranges(ranges):
+def merge_ranges(ranges : np.ndarray) -> np.ndarray:
+    """Merge intervals where they overlap.
+
+    Parameters
+    ----------
+    ranges : numpy.ndarray
+        Array of signal intervals indicating the start and end index.
+
+    Returns
+    -------
+    merged_ranges : numpy.ndarray
+        Array of merged ranges.
+    """
     list(ranges).sort(key=lambda interval: interval[0])
     merged_ranges = [ranges[0]]
     for current in ranges:
@@ -38,7 +78,27 @@ def merge_ranges(ranges):
     return np.array(merged_ranges)
 
 
-def pixel_to_world(fitsfile,x,y,ch=0):
+def pixel_to_world(fitsfile: Path, x: float,
+                   y: float, ch: Optional[float] = 0.):
+    """Convert pixel coordinates to world coordinates from a FITS file.
+
+    Parameters
+    ----------
+    fitsfile : str
+        Path to FITS file to get coordinates from.
+    x : float
+        Pixel coordinate on the x-axis of the FITS file.
+    y : float
+        Pixel coordinate on the y-axis of the FITS file.
+    ch : float, optional
+        Velocity channel to convert (default is 0.).
+
+    Returns
+    -------
+    result : numpy.ndarray
+        Returns the world coordinates. If the input was a single array and origin,
+	    a single array is returned, otherwise a tuple of arrays is returned.
+    """
     try:
         w = WCS(fitsfile)
         if w.wcs.naxis == 3:
@@ -52,9 +112,18 @@ def pixel_to_world(fitsfile,x,y,ch=0):
 
 
 #taken from Lindner (2014) & Riener (2019); GaussPy(+)
-def count_ones_in_row(data):
-    """ Counts number of continuous trailing '1's
-         Used in the convergence criteria
+def count_ones_in_row(data : np.ndarray) -> np.ndarray:
+    """Counts number of continuous trailing '1's.
+
+    Parameters
+    ----------
+    data : numpy.ndarray
+        Data containing 0's and 1's.
+
+    Returns
+    -------
+    output : numpy.ndarray
+        Array containing the number of continuous 1's to the point of each index.
     """
     output = np.zeros(len(data))
     for i in range(len(output)):
@@ -75,12 +144,49 @@ def count_ones_in_row(data):
 
 
 #simple check
-def check_signal(spectrum, sigma, noise):
-    return np.any(spectrum > sigma * noise)
-            
+def check_signal(spectrum : np.ndarray, sigma : float, noise : float) -> bool:
+    """Check for signal in an array given a significance threshold.
+
+    Parameters
+    ----------
+    spectrum : numpy.ndarray
+        Data to check for signal.
+    sigma : float
+        Significance of the signal to be checked for.
+    noise : float
+        Noise level. Signal threshold will be `sigma` * `noise`.
+
+    Returns
+    -------
+    check : bool
+        `True` if there any data point is significant, `False` if everything below threshold.
+    """
+    check = np.any(spectrum > sigma * noise)
+    return check
+
 
 #check if there is signal in at least xy neighboring channels corresponding to velo_range [km/s]: default 10 channels
 def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=None):
+    """Check for continuous signal range in an array given a significance threshold.
+
+    Parameters
+    ----------
+    spectrum : numpy.ndarray
+        Data to check for signal.
+    header :
+        Header of the file containing the spectrum. This is required to read out the velocity resolution.
+    sigma : float
+        Significance of the signal to be checked for.
+    noise : float
+        Noise level. Signal threshold will be `sigma` * `noise`.
+    velo_range : float
+        Velocity range [in km/s] of the spectrum that has to contain continuous significant signal.
+
+    Returns
+    -------
+    check : bool
+        `True` if there is continuous signal, `False` if no signal.
+    """
     if header is None: # fallback to fit all spectra if no header is given
         return True
     vdelt = header['CDELT3'] / 1000.
@@ -97,7 +203,7 @@ def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=Non
             min_channels = 10
         channel_logic = np.array([])
         for i in range(len(spectrum)):
-            channel_test = np.all(spectrum[i] > sigma*noise) 
+            channel_test = np.all(spectrum[i] > sigma*noise)
             channel_logic = np.append(channel_logic,channel_test)
         c = count_ones_in_row(channel_logic)
         return np.any(c > min_channels)
@@ -105,7 +211,18 @@ def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=Non
         return False
 
 
-def md_header_2d(fitsfile):
+def md_header_2d(fitsfile : Union[Path, str]) -> fits.Header:
+    """Get 2D header from FITS file.
+
+    Parameters
+    ----------
+    fitsfile : path-like object or file-like object
+        Path to FITS file to get header from.
+    Returns
+    -------
+    header_2d : :class:`~astropy.io.fits.Header`
+        Header object without third axis.
+    """
     header_2d = fits.getheader(fitsfile)
     if 'NAXIS3' in header_2d.keys():
         del header_2d['NAXIS3']
@@ -126,14 +243,19 @@ def md_header_2d(fitsfile):
 
 
 class IterationWarning(UserWarning):
+    """Passing on diagnostic messages.
+    """
     pass
 
 
 def say(message, verbose=True, end=None):
-    """Diagnostic messages."""
+    """Diagnostic messages.
+    """
     if verbose:
         print(message, end=end)
 
 
 def format_warning(message, category, filename, lineno, file=None, line=None):
+    """Print warning message.
+    """
     sys.stderr.write("\n\033[93mWARNING:\033[0m {}: {}\n".format(category.__name__, message))
