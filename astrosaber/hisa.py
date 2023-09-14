@@ -77,7 +77,7 @@ class HisaExtraction(object):
         for it to be considered in the baseline extraction. Default is 15.0.
     check_signal_sigma : float, optional
         Defines the significance of the signal that has to be present in the spectra
-        for at least the range defined by 'velo_range'. Default is 6.0.
+        for at least the range defined by `velo_range`. Default is 6.0.
     output_flags : bool, optional
         Whether to save a mask containing the flags.
         Default is True.
