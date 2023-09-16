@@ -4,8 +4,6 @@ import datetime
 from importlib import import_module
 
 sys.path.insert(0, os.path.abspath('../'))
-sys.path.insert(0, os.path.abspath('../astrosaber'))
-sys.path.insert(0, os.path.abspath('../astrosaber/utils'))
 
 # Get configuration information from setup.cfg
 from configparser import ConfigParser
