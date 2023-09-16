@@ -313,11 +313,327 @@ document.write(`
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="astrosaber-utils-aslsq-fit-module">
-<h2>astrosaber.utils.aslsq_fit module<a class="headerlink" href="#astrosaber-utils-aslsq-fit-module" title="Permalink to this heading">#</a></h2>
+<section id="module-astrosaber.utils.aslsq_fit">
+<span id="astrosaber-utils-aslsq-fit-module"></span><h2>astrosaber.utils.aslsq_fit module<a class="headerlink" href="#module-astrosaber.utils.aslsq_fit" title="Permalink to this heading">#</a></h2>
+<p>asymmetric least squares fit</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.baseline_als">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">baseline_als</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#baseline_als"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.baseline_als" title="Permalink to this definition">#</a></dt>
+<dd><p>Baseline smoothing using asymmetric least squares.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – Spectrum to be smoothed.</p></li>
+<li><p><strong>lam</strong> (<em>float</em>) – Smoothing weight. Adjusts the amount of smoothing.</p></li>
+<li><p><strong>p</strong> (<em>float</em>) – Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</p></li>
+<li><p><strong>niter</strong> (<em>int</em>) – Number of iterations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>z</strong> – Smoothed baseline.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.baseline_als_optimized">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">baseline_als_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#baseline_als_optimized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.baseline_als_optimized" title="Permalink to this definition">#</a></dt>
+<dd><p>Baseline smoothing using asymmetric least squares.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – Spectrum to be smoothed.</p></li>
+<li><p><strong>lam</strong> (<em>float</em>) – Smoothing weight. Adjusts the amount of smoothing.</p></li>
+<li><p><strong>p</strong> (<em>float</em>) – Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</p></li>
+<li><p><strong>niter</strong> (<em>int</em>) – Number of iterations.</p></li>
+<li><p><strong>mask</strong> (<em>numpy.ndarray</em>) – Boolean mask indicating signal ranges, with <cite>True</cite> indicating signal, <cite>False</cite> indicating noise.
+Will be used to set asymmetry weights to 0.5 where there is noise.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>z</strong> – Smoothed baseline.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.one_step_extraction">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">one_step_extraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Header</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_signal_sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velo_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations_for_convergence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_residual</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.02</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#one_step_extraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.one_step_extraction" title="Permalink to this definition">#</a></dt>
+<dd><p>Baseline smoothing routine using one lambda smoothing value for all major iterations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lam1</strong> (<em>float</em>) – Smoothing weight. Adjusts the amount of smoothing.</p></li>
+<li><p><strong>p1</strong> (<em>float</em>) – Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</p></li>
+<li><p><strong>spectrum</strong> (<em>numpy.ndarray</em>) – Spectrum to be smoothed.</p></li>
+<li><p><strong>header</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Header</span></code>) – Header of the file containing the <cite>spectrum</cite>.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code>.</p></li>
+<li><p><strong>check_signal_sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Defines the significance of the signal that has to be present in the spectra
+for at least the range defined by <cite>velo_range</cite>. Default is 6.0.</p></li>
+<li><p><strong>noise</strong> (<em>float</em>) – Noise level of the data.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code></p></li>
+<li><p><strong>velo_range</strong> (<em>float</em><em>, </em><em>optional</em>) – Velocity range [in km/s] of the spectra that has to contain significant signal
+for it to be considered in the baseline extraction. Default is 15.0.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code>.</p></li>
+<li><p><strong>niters</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of iterations of the smoothing.
+Default is 20.</p></li>
+<li><p><strong>iterations_for_convergence</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of iterations of the major cycle for the baseline to be considered converged.
+Default is 3.</p></li>
+<li><p><strong>add_residual</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
+Default is False.</p></li>
+<li><p><strong>thresh</strong> (<em>float</em>) – Convergence threshold.
+If residual falls below this threshold for <cite>iterations_for_convergence</cite> iterations, the algorithm terminates the smoothing.</p></li>
+<li><p><strong>p_limit</strong> (<em>float</em><em>, </em><em>optional</em>) – The p-limit of the Markov chain to estimate signal ranges in the spectra.
+Default is 0.02.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bg</strong> (<em>numpy.ndarray</em>) – Background spectrum w/o self-absorption.</p></li>
+<li><p><strong>hisa</strong> (<em>numpy.ndarray</em>) – Inverted self-absorption spectrum (i.e. expressed as equivalent emission).</p></li>
+<li><p><strong>iterations</strong> (<em>int</em>) – Number of iterations until algorithm converged.</p></li>
+<li><p><strong>flag_map</strong> (<em>int</em>) – Flag whether background did/did not converge or whether spectrum does/does not contain signal.
+If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_fit.two_step_extraction">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_fit.</span></span><span class="sig-name descname"><span class="pre">two_step_extraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Header</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_signal_sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velo_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations_for_convergence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_residual</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.02</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_fit.html#two_step_extraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_fit.two_step_extraction" title="Permalink to this definition">#</a></dt>
+<dd><p>Baseline smoothing routine using one lambda smoothing value for all major iterations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lam1</strong> (<em>float</em>) – Smoothing weight of the very first smoothing iteration. Adjusts the amount of smoothing.</p></li>
+<li><p><strong>p1</strong> (<em>float</em>) – Asymmetry weight of the very first smoothing iteration. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</p></li>
+<li><p><strong>lam2</strong> (<em>float</em>) – Smoothing weight of all remaining smoothing iterations. Adjusts the amount of smoothing.</p></li>
+<li><p><strong>p2</strong> (<em>float</em>) – Asymmetry weight of all remaining smoothing iterations. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</p></li>
+<li><p><strong>spectrum</strong> (<em>numpy.ndarray</em>) – Spectrum to be smoothed.</p></li>
+<li><p><strong>header</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Header</span></code>) – Header of the file containing the <cite>spectrum</cite>.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code>.</p></li>
+<li><p><strong>check_signal_sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Defines the significance of the signal that has to be present in the spectra
+for at least the range defined by <cite>velo_range</cite>. Default is 6.0.</p></li>
+<li><p><strong>noise</strong> (<em>float</em>) – Noise level of the data.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code></p></li>
+<li><p><strong>velo_range</strong> (<em>float</em><em>, </em><em>optional</em>) – Velocity range [in km/s] of the spectra that has to contain significant signal
+for it to be considered in the baseline extraction. Default is 15.0.
+Will be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code>.</p></li>
+<li><p><strong>niters</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of iterations of the smoothing.
+Default is 20.</p></li>
+<li><p><strong>iterations_for_convergence</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of iterations of the major cycle for the baseline to be considered converged.
+Default is 3.</p></li>
+<li><p><strong>add_residual</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
+Default is False.</p></li>
+<li><p><strong>thresh</strong> (<em>float</em>) – Convergence threshold.
+If residual falls below this threshold for <cite>iterations_for_convergence</cite> iterations, the algorithm terminates the smoothing.</p></li>
+<li><p><strong>p_limit</strong> (<em>float</em><em>, </em><em>optional</em>) – The p-limit of the Markov chain to estimate signal ranges in the spectra.
+Default is 0.02.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bg</strong> (<em>numpy.ndarray</em>) – Background spectrum w/o self-absorption.</p></li>
+<li><p><strong>hisa</strong> (<em>numpy.ndarray</em>) – Inverted self-absorption spectrum (i.e. expressed as equivalent emission).</p></li>
+<li><p><strong>iterations</strong> (<em>int</em>) – Number of iterations until algorithm converged.</p></li>
+<li><p><strong>flag_map</strong> (<em>int</em>) – Flag whether background did/did not converge or whether spectrum does/does not contain signal.
+If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="astrosaber-utils-aslsq-helper-module">
-<h2>astrosaber.utils.aslsq_helper module<a class="headerlink" href="#astrosaber-utils-aslsq-helper-module" title="Permalink to this heading">#</a></h2>
+<section id="module-astrosaber.utils.aslsq_helper">
+<span id="astrosaber-utils-aslsq-helper-module"></span><h2>astrosaber.utils.aslsq_helper module<a class="headerlink" href="#module-astrosaber.utils.aslsq_helper" title="Permalink to this heading">#</a></h2>
+<p>helper functions</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.IterationWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">IterationWarning</span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#IterationWarning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.IterationWarning" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">UserWarning</span></code></p>
+<p>Passing on diagnostic messages.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.check_signal">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">check_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#check_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.check_signal" title="Permalink to this definition">#</a></dt>
+<dd><p>Check for signal in an array given a significance threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spectrum</strong> (<em>numpy.ndarray</em>) – Data to check for signal.</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – Significance of the signal to be checked for.</p></li>
+<li><p><strong>noise</strong> (<em>float</em>) – Noise level. Signal threshold will be <cite>sigma</cite> * <cite>noise</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>check</strong> – <cite>True</cite> if there any data point is significant, <cite>False</cite> if everything below threshold.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.check_signal_ranges">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">check_signal_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velo_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#check_signal_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.check_signal_ranges" title="Permalink to this definition">#</a></dt>
+<dd><p>Check for continuous signal range in an array given a significance threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spectrum</strong> (<em>numpy.ndarray</em>) – Data to check for signal.</p></li>
+<li><p><strong>header</strong> – Header of the file containing the spectrum. This is required to read out the velocity resolution.</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – Significance of the signal to be checked for.</p></li>
+<li><p><strong>noise</strong> (<em>float</em>) – Noise level. Signal threshold will be <cite>sigma</cite> * <cite>noise</cite>.</p></li>
+<li><p><strong>velo_range</strong> (<em>float</em>) – Velocity range [in km/s] of the spectrum that has to contain continuous significant signal.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>check</strong> – <cite>True</cite> if there is continuous signal, <cite>False</cite> if no signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.count_ones_in_row">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">count_ones_in_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#count_ones_in_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.count_ones_in_row" title="Permalink to this definition">#</a></dt>
+<dd><p>Counts number of continuous trailing ‘1’s.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray</em>) – Data containing 0’s and 1’s.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>output</strong> – Array containing the number of continuous 1’s to the point of each index.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.find_nearest">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">find_nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#find_nearest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.find_nearest" title="Permalink to this definition">#</a></dt>
+<dd><p>Find the index of an element in an array nearest to a given value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>numpy.ndarray</em>) – Input array to index.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – Value of the element to find the closest index for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>idx</strong> – Index of the element with value closest to <cite>value</cite>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.format_warning">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">format_warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineno</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#format_warning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.format_warning" title="Permalink to this definition">#</a></dt>
+<dd><p>Print warning message.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.md_header_2d">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">md_header_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitsfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Header</span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#md_header_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.md_header_2d" title="Permalink to this definition">#</a></dt>
+<dd><p>Get 2D header from FITS file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fitsfile</strong> (<em>path-like object</em><em> or </em><em>file-like object</em>) – Path to FITS file to get header from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>header_2d</strong> – Header object without third axis.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Header</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.merge_ranges">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">merge_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ranges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#merge_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.merge_ranges" title="Permalink to this definition">#</a></dt>
+<dd><p>Merge intervals where they overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ranges</strong> (<em>numpy.ndarray</em>) – Array of signal intervals indicating the start and end index.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>merged_ranges</strong> – Array of merged ranges.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.pixel_to_world">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">pixel_to_world</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitsfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#pixel_to_world"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.pixel_to_world" title="Permalink to this definition">#</a></dt>
+<dd><p>Convert pixel coordinates to world coordinates from a FITS file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fitsfile</strong> (<em>str</em>) – Path to FITS file to get coordinates from.</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – Pixel coordinate on the x-axis of the FITS file.</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – Pixel coordinate on the y-axis of the FITS file.</p></li>
+<li><p><strong>ch</strong> (<em>float</em><em>, </em><em>optional</em>) – Velocity channel to convert (default is 0.).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><strong>result</strong> –</p>
+<dl class="simple">
+<dt>Returns the world coordinates. If the input was a single array and origin,</dt><dd><p>a single array is returned, otherwise a tuple of arrays is returned.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.say">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">say</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#say"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.say" title="Permalink to this definition">#</a></dt>
+<dd><p>Diagnostic messages.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.velocity_axes">
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">velocity_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#velocity_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.velocity_axes" title="Permalink to this definition">#</a></dt>
+<dd><p>Get velocity axis from FITS file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>Path</em>) – Path to FITS file to get velocity axis from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>velocity</strong> – Array of velocity axis.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-astrosaber.utils.grogu">
 <span id="astrosaber-utils-grogu-module"></span><h2>astrosaber.utils.grogu module<a class="headerlink" href="#module-astrosaber.utils.grogu" title="Permalink to this heading">#</a></h2>
@@ -671,8 +987,27 @@ with central pixels x, y, and radius r.</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber-utils-aslsq-fit-module">astrosaber.utils.aslsq_fit module</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber-utils-aslsq-helper-module">astrosaber.utils.aslsq_helper module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-astrosaber.utils.aslsq_fit">astrosaber.utils.aslsq_fit module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_fit.baseline_als"><code class="docutils literal notranslate"><span class="pre">baseline_als()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_fit.baseline_als_optimized"><code class="docutils literal notranslate"><span class="pre">baseline_als_optimized()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_fit.one_step_extraction"><code class="docutils literal notranslate"><span class="pre">one_step_extraction()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_fit.two_step_extraction"><code class="docutils literal notranslate"><span class="pre">two_step_extraction()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-astrosaber.utils.aslsq_helper">astrosaber.utils.aslsq_helper module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_helper.IterationWarning"><code class="docutils literal notranslate"><span class="pre">IterationWarning</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_helper.check_signal"><code class="docutils literal notranslate"><span class="pre">check_signal()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_helper.check_signal_ranges"><code class="docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_helper.count_ones_in_row"><code class="docutils literal notranslate"><span class="pre">count_ones_in_row()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_helper.find_nearest"><code class="docutils literal notranslate"><span class="pre">find_nearest()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_helper.format_warning"><code class="docutils literal notranslate"><span class="pre">format_warning()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_helper.md_header_2d"><code class="docutils literal notranslate"><span class="pre">md_header_2d()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_helper.merge_ranges"><code class="docutils literal notranslate"><span class="pre">merge_ranges()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_helper.pixel_to_world"><code class="docutils literal notranslate"><span class="pre">pixel_to_world()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_helper.say"><code class="docutils literal notranslate"><span class="pre">say()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.aslsq_helper.velocity_axes"><code class="docutils literal notranslate"><span class="pre">velocity_axes()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-astrosaber.utils.grogu">astrosaber.utils.grogu module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.grogu.TqdmDefaultWriteLock"><code class="docutils literal notranslate"><span class="pre">TqdmDefaultWriteLock</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.utils.grogu.TqdmDefaultWriteLock.acquire"><code class="docutils literal notranslate"><span class="pre">TqdmDefaultWriteLock.acquire()</span></code></a></li>
