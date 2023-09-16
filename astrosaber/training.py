@@ -6,9 +6,7 @@ import os
 from pathlib import Path
 from typing import Optional, List, Tuple, Callable
 
-from astropy.io import fits
 from astropy import units as u
-from scipy import sparse
 
 from tqdm import trange
 from tqdm.utils import _supports_unicode

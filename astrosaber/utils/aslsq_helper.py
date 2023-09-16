@@ -16,7 +16,8 @@ import sys
 
 
 def find_nearest(array: np.ndarray, value: float) -> int:
-    """Find the index of an element in an array nearest to a given value.
+    """
+    Find the index of an element in an array nearest to a given value.
 
     Parameters
     ----------
@@ -35,7 +36,8 @@ def find_nearest(array: np.ndarray, value: float) -> int:
 
 
 def velocity_axes(name: Path) -> np.ndarray:
-    """Get velocity axis from FITS file.
+    """
+    Get velocity axis from FITS file.
 
     Parameters
     ----------
@@ -47,15 +49,16 @@ def velocity_axes(name: Path) -> np.ndarray:
     velocity : numpy.ndarray
         Array of velocity axis.
     """
-	header = fits.getheader(name)
-	n = header['NAXIS3']
-	velocity = (header['CRVAL3'] - header['CRPIX3'] * header['CDELT3']) + (np.arange(n)+1) * header['CDELT3']
-	velocity = velocity / 1000
-	return velocity
+    header = fits.getheader(name)
+    n = header['NAXIS3']
+    velocity = (header['CRVAL3'] - header['CRPIX3'] * header['CDELT3']) + (np.arange(n)+1) * header['CDELT3']
+    velocity = velocity / 1000
+    return velocity
 
 
 def merge_ranges(ranges : np.ndarray) -> np.ndarray:
-    """Merge intervals where they overlap.
+    """
+    Merge intervals where they overlap.
 
     Parameters
     ----------
@@ -80,7 +83,8 @@ def merge_ranges(ranges : np.ndarray) -> np.ndarray:
 
 def pixel_to_world(fitsfile: Path, x: float,
                    y: float, ch: Optional[float] = 0.):
-    """Convert pixel coordinates to world coordinates from a FITS file.
+    """
+    Convert pixel coordinates to world coordinates from a FITS file.
 
     Parameters
     ----------
@@ -113,7 +117,8 @@ def pixel_to_world(fitsfile: Path, x: float,
 
 #taken from Lindner (2014) & Riener (2019); GaussPy(+)
 def count_ones_in_row(data : np.ndarray) -> np.ndarray:
-    """Counts number of continuous trailing '1's.
+    """
+    Counts number of continuous trailing '1's.
 
     Parameters
     ----------
@@ -145,7 +150,8 @@ def count_ones_in_row(data : np.ndarray) -> np.ndarray:
 
 #simple check
 def check_signal(spectrum : np.ndarray, sigma : float, noise : float) -> bool:
-    """Check for signal in an array given a significance threshold.
+    """
+    Check for signal in an array given a significance threshold.
 
     Parameters
     ----------
@@ -167,7 +173,8 @@ def check_signal(spectrum : np.ndarray, sigma : float, noise : float) -> bool:
 
 #check if there is signal in at least xy neighboring channels corresponding to velo_range [km/s]: default 10 channels
 def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=None):
-    """Check for continuous signal range in an array given a significance threshold.
+    """
+    Check for continuous signal range in an array given a significance threshold.
 
     Parameters
     ----------
@@ -212,7 +219,8 @@ def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=Non
 
 
 def md_header_2d(fitsfile : Union[Path, str]) -> fits.Header:
-    """Get 2D header from FITS file.
+    """
+    Get 2D header from FITS file.
 
     Parameters
     ----------
@@ -243,19 +251,22 @@ def md_header_2d(fitsfile : Union[Path, str]) -> fits.Header:
 
 
 class IterationWarning(UserWarning):
-    """Passing on diagnostic messages.
+    """
+    Passing on diagnostic messages.
     """
     pass
 
 
 def say(message, verbose=True, end=None):
-    """Diagnostic messages.
+    """
+    Diagnostic messages.
     """
     if verbose:
         print(message, end=end)
 
 
 def format_warning(message, category, filename, lineno, file=None, line=None):
-    """Print warning message.
+    """
+    Print warning message.
     """
     sys.stderr.write("\n\033[93mWARNING:\033[0m {}: {}\n".format(category.__name__, message))

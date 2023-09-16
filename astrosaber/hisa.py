@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Optional, Tuple
 
 from astropy.io import fits
-from astropy import units as u
 
 from tqdm import tqdm
 from tqdm.utils import _supports_unicode

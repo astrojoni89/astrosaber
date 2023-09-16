@@ -11,7 +11,7 @@ from scipy.sparse.linalg import spsolve
 from tqdm import trange
 import warnings
 
-from .quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
+from .quality_checks import get_max_consecutive_channels, determine_peaks, mask_channels
 from .aslsq_helper import check_signal_ranges, count_ones_in_row, IterationWarning, say, format_warning
 
 warnings.showwarning = format_warning
@@ -19,7 +19,8 @@ warnings.showwarning = format_warning
 
 #Asymmetric least squares baseline fit from Eilers et al. 2005
 def baseline_als(y : np.ndarray, lam : float, p : float, niter : int) -> np.ndarray:
-    """Baseline smoothing using asymmetric least squares.
+    """
+    Baseline smoothing using asymmetric least squares.
 
     Parameters
     ----------
@@ -50,7 +51,8 @@ def baseline_als(y : np.ndarray, lam : float, p : float, niter : int) -> np.ndar
 
 #optimized version; this should be faster by a factor ~1.5
 def baseline_als_optimized(y : np.ndarray, lam : float, p : float, niter : int, mask : np.ndarray = None) -> np.ndarray:
-    """Baseline smoothing using asymmetric least squares.
+    """
+    Baseline smoothing using asymmetric least squares.
 
     Parameters
     ----------
@@ -90,7 +92,8 @@ def one_step_extraction(lam1 : float, p1 : float, spectrum : np.ndarray = None, 
                         check_signal_sigma : float = 6., noise : float = None, velo_range : float = 15.0,
                         niters : int = 20, iterations_for_convergence : int = 3, add_residual : bool = False,
                         thresh : float = None, p_limit : float = 0.02) -> Tuple[np.ndarray, np.ndarray, int, int]:
-    """Baseline smoothing routine using one lambda smoothing value for all major iterations.
+    """
+    Baseline smoothing routine using one lambda smoothing value for all major iterations.
 
     Parameters
     ----------
@@ -205,7 +208,8 @@ def two_step_extraction(lam1 : float, p1 : float, lam2 : float, p2 : float, spec
                         check_signal_sigma : float = 6., noise : float = None, velo_range : float = 15.0,
                         niters : int = 20, iterations_for_convergence : int = 3, add_residual : bool = False,
                         thresh : float = None, p_limit : float = 0.02) -> Tuple[np.ndarray, np.ndarray, int, int]:
-    """Baseline smoothing routine using one lambda smoothing value for all major iterations.
+    """
+    Baseline smoothing routine using one lambda smoothing value for all major iterations.
 
     Parameters
     ----------

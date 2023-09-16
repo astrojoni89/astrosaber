@@ -2,7 +2,7 @@
 
 import numpy as np
 from pathlib import Path
-from typing import Union, Tuple, List
+from typing import Union, List
 
 from astropy import units as u
 from astropy.io import fits
@@ -13,7 +13,8 @@ def pixel_circle_calculation(fitsfile : Union[Path, str],
                              glon : float,
                              glat : float,
                              r : float) -> List:
-    """Extract a list of pixels [(y0,x0),(y1,x1),...] corresponding to the circle region
+    """
+    Extract a list of pixels [(y0,x0),(y1,x1),...] corresponding to the circle region
     with central coordinates glon, glat, and radius r.
 
     Parameters
@@ -64,7 +65,8 @@ def pixel_circle_calculation_px(fitsfile : Union[Path, str],
                                 x : float,
                                 y : float,
                                 r : float) -> List:
-    """Extract a list of pixels [(y0,x0),(y1,x1),...] corresponding to the circle region
+    """
+    Extract a list of pixels [(y0,x0),(y1,x1),...] corresponding to the circle region
     with central pixels x, y, and radius r.
 
     Parameters
@@ -106,7 +108,8 @@ def pixel_circle_calculation_px(fitsfile : Union[Path, str],
 
 
 def calculate_spectrum(fitsfile : Union[Path, str], pixel_array : List) -> np.ndarray:
-    """Calculate an average spectrum given a p-p-v FITS cube and pixel coordinates.
+    """
+    Calculate an average spectrum given a p-p-v FITS cube and pixel coordinates.
     If NaN values are present at specific coordinates, these coordinates will be ignored.
 
     Parameters

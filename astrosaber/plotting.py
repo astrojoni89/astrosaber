@@ -19,13 +19,12 @@ from tqdm import trange
 
 from .utils.spectrum_utils import pixel_circle_calculation, pixel_circle_calculation_px, calculate_spectrum
 from .utils.aslsq_helper import find_nearest, velocity_axes, pixel_to_world, merge_ranges
-from .utils.aslsq_fit import two_step_extraction, one_step_extraction
 
 
 def pickle_load_file(pathToFile):
-    '''
+    """
     Load a pickle file.
-    '''
+    """
     with open(os.path.join(pathToFile), "rb") as pickle_file:
         if (sys.version_info > (3, 0)):
             data = pickle.load(pickle_file, encoding='latin1')
@@ -34,9 +33,9 @@ def pickle_load_file(pathToFile):
     return data
 
 def styles():
-    '''
+    """
     Set default plotting styles.
-    '''
+    """
     color_list = ['k', 'r', 'r', 'b', 'g']
     draw_list = ['steps-mid', 'default', 'steps-mid', 'steps-mid', 'steps-mid']
     line_list = ['-', '-', '-', '-', '-']
@@ -121,11 +120,11 @@ def get_title_string(idx, rchi2):
     return title
 
 def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
-    '''
+    """
     fitsfiles: list of fitsfiles to plot spectra from
     coordinates: array of central coordinates [[Glon, Glat]] to plot spectra from
     radius: radius of area to be averaged for each spectrum [arcseconds]
-    '''
+    """
     
     print("\nPlotting...")
     
@@ -233,9 +232,9 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
     print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
       
 def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
-    '''
+    """
     pickle_file: pickled file to plot spectra from
-    '''
+    """
     
     print("\nPlotting...")
     

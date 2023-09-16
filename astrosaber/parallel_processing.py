@@ -13,43 +13,43 @@ from tqdm import tqdm
 
     
 def init(mp_info : List):
-    '''
+    """
     Initializes global params for parallel process.
     
-    '''
+    """
     global mp_ilist, mp_data, mp_params
     mp_data, mp_params = mp_info
     mp_ilist = np.arange(len(mp_data))
       
 def single_cost_i(i : int) -> Tuple[float, float, float]:
-    '''
+    """
     Compute the cost of a single baseline spectrum.
 
-    '''
+    """
     result = saberTraining.single_cost(mp_params[0], i)
     return result
 
 def lambda_extraction_i(i : int) -> Tuple[np.ndarray, np.ndarray, np.ndarray, float, float]:
-    '''
+    """
     Generate the test data for a single spectrum.
 
-    '''
+    """
     result = saberPrepare.two_step_extraction_prepare(mp_params[0], i)
     return result
 
 def two_step_i(i : int) -> Tuple[int, np.ndarray, np.ndarray, int, int]:
-    '''
+    """
     Compute the baseline etc. for a single spectrum using the two-phase extraction.
 
-    '''
+    """
     result = HisaExtraction.two_step_extraction_single(mp_params[0], i)
     return result
 
 def one_step_i(i : int) -> Tuple[int, np.ndarray, np.ndarray, int, int]:
-    '''
+    """
     Compute the baseline etc. for a single spectrum using the one-phase extraction.
 
-    '''
+    """
     result = HisaExtraction.one_step_extraction_single(mp_params[0], i)
     return result
 
@@ -158,12 +158,25 @@ def parallel_process_wo_bar(array : np.ndarray, function : Callable[[int], Tuple
     return front + out
 
 
-def func(use_ncpus : int = None, function : Callable[..., Tuple] = None, bar=tqdm):
+def func(use_ncpus : int = None, function : Callable[..., Tuple] = None, bar : Callable[[Iterable], None] = tqdm) -> Tuple:
+    """
+    Function to execute in a parallel process.
+
+    use_ncpus : int
+       Number of CPUs to use.
+    function : func
+        A python function to apply to the elements of array.
+    bar : func
+        Progress bar to use.
+    
+    Returns:
+        [function(array[0]), function(array[1]), ...]
+    """
     # Multiprocessing code
     ncpus = multiprocessing.cpu_count()
     # p = multiprocessing.Pool(ncpus, init_worker)
     if use_ncpus is None:
-        use_ncpus = int(ncpus*0.75)
+        use_ncpus = int(ncpus*0.50)
     print('\nUsing {} of {} cpus'.format(use_ncpus, ncpus))
     if mp_ilist is None:
         raise ValueError("Must specify 'mp_ilist'.")
@@ -185,12 +198,23 @@ def func(use_ncpus : int = None, function : Callable[..., Tuple] = None, bar=tqd
     return results_list
 
 
-def func_wo_bar(use_ncpus : int = None, function : Callable[..., Tuple] = None):
+def func_wo_bar(use_ncpus : int = None, function : Callable[..., Tuple] = None) -> Tuple:
+    """
+    Function to execute in a parallel process.
+
+    use_ncpus : int
+       Number of CPUs to use.
+    function : func
+        A python function to apply to the elements of array.
+    
+    Returns:
+        [function(array[0]), function(array[1]), ...]
+    """
     # Multiprocessing code
     ncpus = multiprocessing.cpu_count()
     # p = multiprocessing.Pool(ncpus, init_worker)
     if use_ncpus is None:
-        use_ncpus = int(ncpus*0.75)
+        use_ncpus = int(ncpus*0.50)
     #print('Using {} of {} cpus'.format(use_ncpus, ncpus))
     if mp_ilist is None:
         raise ValueError("Must specify 'mp_ilist'.")

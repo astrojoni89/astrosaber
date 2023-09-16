@@ -5,7 +5,8 @@ from typing import Union, Tuple, List
 
 def goodness_of_fit(data : np.ndarray, fit : np.ndarray, errors : Union[np.ndarray, float],
                     dof : int, mask : np.ndarray = None, get_aicc : bool = False) -> float:
-    """Determine the goodness of fit (reduced chi-square, AICc).
+    """
+    Determine the goodness of fit (reduced chi-square, AICc).
 
     Parameters
     ----------
@@ -60,7 +61,8 @@ def goodness_of_fit(data : np.ndarray, fit : np.ndarray, errors : Union[np.ndarr
 
 
 def get_max_consecutive_channels(n_channels : int, p_limit : float) -> int:
-    """Determine the maximum number of random consecutive positive/negative channels.
+    """
+    Determine the maximum number of random consecutive positive/negative channels.
     Calculate the number of consecutive positive or negative channels,
     whose probability of occurring due to random chance in a spectrum
     is less than p_limit.
@@ -89,7 +91,8 @@ def get_max_consecutive_channels(n_channels : int, p_limit : float) -> int:
 
 
 def determine_peaks(spectrum : np.ndarray, peak : str = 'both', amp_threshold : float = None) -> Tuple[np.ndarray, List]:
-    """Find peaks in a spectrum.
+    """
+    Find peaks in a spectrum.
 
     Parameters
     ----------
@@ -160,7 +163,8 @@ def determine_peaks(spectrum : np.ndarray, peak : str = 'both', amp_threshold : 
 
 
 def mask_channels(n_channels : int, ranges : List, pad_channels : int = None, remove_intervals : List = None) -> np.ndarray:
-    """Determine the 1D boolean mask for a given list of spectral ranges.
+    """
+    Determine the 1D boolean mask for a given list of spectral ranges.
 
     Parameters
     ----------
