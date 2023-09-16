@@ -124,6 +124,12 @@
   </p>
   <ul class="bd-navbar-elements navbar-nav">
     
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../modules.html">
+                        astrosaber
+                      </a>
+                    </li>
+                
   </ul>
 </nav></div>
       
@@ -197,6 +203,12 @@ document.write(`
   </p>
   <ul class="bd-navbar-elements navbar-nav">
     
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../modules.html">
+                        astrosaber
+                      </a>
+                    </li>
+                
   </ul>
 </nav></div>
         
@@ -301,17 +313,17 @@ document.write(`
     <span class="n">th_lock</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="TqdmDefaultWriteLock"><a class="viewcode-back" href="../../../source/astrosaber.utils.html#astrosaber.utils.grogu.TqdmDefaultWriteLock">[docs]</a><span class="k">class</span> <span class="nc">TqdmDefaultWriteLock</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TqdmDefaultWriteLock"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.grogu.TqdmDefaultWriteLock">[docs]</a><span class="k">class</span> <span class="nc">TqdmDefaultWriteLock</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">global</span> <span class="n">mp_lock</span><span class="p">,</span> <span class="n">th_lock</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">locks</span> <span class="o">=</span> <span class="p">[</span><span class="n">lk</span> <span class="k">for</span> <span class="n">lk</span> <span class="ow">in</span> <span class="p">[</span><span class="n">mp_lock</span><span class="p">,</span> <span class="n">th_lock</span><span class="p">]</span> <span class="k">if</span> <span class="n">lk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-<div class="viewcode-block" id="TqdmDefaultWriteLock.acquire"><a class="viewcode-back" href="../../../source/astrosaber.utils.html#astrosaber.utils.grogu.TqdmDefaultWriteLock.acquire">[docs]</a>    <span class="k">def</span> <span class="nf">acquire</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TqdmDefaultWriteLock.acquire"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.grogu.TqdmDefaultWriteLock.acquire">[docs]</a>    <span class="k">def</span> <span class="nf">acquire</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">lock</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locks</span><span class="p">:</span>
             <span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TqdmDefaultWriteLock.release"><a class="viewcode-back" href="../../../source/astrosaber.utils.html#astrosaber.utils.grogu.TqdmDefaultWriteLock.release">[docs]</a>    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TqdmDefaultWriteLock.release"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.grogu.TqdmDefaultWriteLock.release">[docs]</a>    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">lock</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">locks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
             <span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
@@ -322,7 +334,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="yoda"><a class="viewcode-back" href="../../../source/astrosaber.utils.html#astrosaber.utils.grogu.yoda">[docs]</a><span class="k">class</span> <span class="nc">yoda</span><span class="p">(</span><span class="n">tqdm</span><span class="p">):</span>
+<div class="viewcode-block" id="yoda"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.grogu.yoda">[docs]</a><span class="k">class</span> <span class="nc">yoda</span><span class="p">(</span><span class="n">tqdm</span><span class="p">):</span>
     <span class="n">monitor_interval</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># set to 0 to disable the thread</span>
     <span class="n">monitor</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_lock</span> <span class="o">=</span> <span class="n">TqdmDefaultWriteLock</span><span class="p">()</span>
