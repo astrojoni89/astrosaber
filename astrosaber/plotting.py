@@ -23,6 +23,9 @@ from .utils.aslsq_fit import two_step_extraction, one_step_extraction
 
 
 def pickle_load_file(pathToFile):
+    '''
+    Load a pickle file.
+    '''
     with open(os.path.join(pathToFile), "rb") as pickle_file:
         if (sys.version_info > (3, 0)):
             data = pickle.load(pickle_file, encoding='latin1')
@@ -31,6 +34,9 @@ def pickle_load_file(pathToFile):
     return data
 
 def styles():
+    '''
+    Set default plotting styles.
+    '''
     color_list = ['k', 'r', 'r', 'b', 'g']
     draw_list = ['steps-mid', 'default', 'steps-mid', 'steps-mid', 'steps-mid']
     line_list = ['-', '-', '-', '-', '-']
