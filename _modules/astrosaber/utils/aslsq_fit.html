@@ -303,7 +303,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">.quality_checks</span> <span class="kn">import</span> <span class="n">get_max_consecutive_channels</span><span class="p">,</span> <span class="n">determine_peaks</span><span class="p">,</span> <span class="n">mask_channels</span>
-<span class="kn">from</span> <span class="nn">.aslsq_helper</span> <span class="kn">import</span> <span class="n">check_signal_ranges</span><span class="p">,</span> <span class="n">count_ones_in_row</span><span class="p">,</span> <span class="n">IterationWarning</span><span class="p">,</span> <span class="n">say</span><span class="p">,</span> <span class="n">format_warning</span>
+<span class="kn">from</span> <span class="nn">.aslsq_helper</span> <span class="kn">import</span> <span class="n">check_signal_ranges</span><span class="p">,</span> <span class="n">count_ones_in_row</span><span class="p">,</span> <span class="n">IterationWarning</span><span class="p">,</span> <span class="n">format_warning</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">showwarning</span> <span class="o">=</span> <span class="n">format_warning</span>
 
@@ -394,7 +394,7 @@ document.write(`
 <span class="sd">        Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</span>
 <span class="sd">    spectrum : numpy.ndarray</span>
 <span class="sd">        Spectrum to be smoothed.</span>
-<span class="sd">    header : `~astropy.io.fits.Header`</span>
+<span class="sd">    header : `~astropy.io.fits.Header &lt;https://docs.astropy.org/en/stable/io/fits/api/headers.html#astropy.io.fits.Header&gt;`__</span>
 <span class="sd">        Header of the file containing the `spectrum`.</span>
 <span class="sd">        Will be passed to :func:`~.aslsq_helper.check_signal_ranges`.</span>
 <span class="sd">    check_signal_sigma : float, optional</span>
