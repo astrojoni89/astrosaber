@@ -418,7 +418,7 @@ If flag is 1, the were no issues in the fit. If 0, fit did not converge or did n
 <li><p><strong>lam2</strong> (<em>float</em>) – Smoothing weight of all remaining smoothing iterations. Adjusts the amount of smoothing.</p></li>
 <li><p><strong>p2</strong> (<em>float</em>) – Asymmetry weight of all remaining smoothing iterations. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.</p></li>
 <li><p><strong>spectrum</strong> (<em>numpy.ndarray</em>) – Spectrum to be smoothed.</p></li>
-<li><p><strong>header</strong> (<cite>~astropy.io.fits.Header &lt;https://docs.astropy.org/en/stable/io/fits/api/headers.html#astropy.io.fits.Header&gt;</cite>) – Header of the file containing the <cite>spectrum</cite>.
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.astropy.org/en/stable/io/fits/api/headers.html#astropy.io.fits.Header">~astropy.io.fits.Header</a>) – Header of the file containing the <cite>spectrum</cite>.
 Will be passed to <a class="reference internal" href="#astrosaber.utils.aslsq_helper.check_signal_ranges" title="astrosaber.utils.aslsq_helper.check_signal_ranges"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_signal_ranges()</span></code></a>.</p></li>
 <li><p><strong>check_signal_sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Defines the significance of the signal that has to be present in the spectra
 for at least the range defined by <cite>velo_range</cite>. Default is 6.0.</p></li>
