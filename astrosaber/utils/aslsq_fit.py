@@ -105,7 +105,7 @@ def one_step_extraction(lam1 : float, p1 : float, spectrum : np.ndarray = None, 
         Spectrum to be smoothed.
     header : :class:`~astropy.io.fits.Header`
         Header of the file containing the `spectrum`.
-        Will be passed to :func:`~astrosaber.aslsq_helper.check_signal_ranges`.
+        Will be passed to :func:`~.aslsq_helper.check_signal_ranges`.
     check_signal_sigma : float, optional
         Defines the significance of the signal that has to be present in the spectra
         for at least the range defined by `velo_range`. Default is 6.0.
