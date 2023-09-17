@@ -228,7 +228,7 @@ def md_header_2d(fitsfile : Union[Path, str]) -> fits.Header:
         Path to FITS file to get header from.
     Returns
     -------
-    header_2d : :class:`~astropy.io.fits.Header`
+    header_2d : `~astropy.io.fits.Header`
         Header object without third axis.
     """
     header_2d = fits.getheader(fitsfile)
