@@ -288,10 +288,10 @@ class saberTraining(object):
 
     def training(self):
         """
-        Prepares the data using :meth:`~astrosaber.saberTraining.prepare_data`
-        and calls the methods :meth:`~astrosaber.saberTraining.train`,
-        :meth:`~astrosaber.saberTraining.save_data`; and
-        :meth:`~astrosaber.saberTraining.update_pickle_file` and :func:`astrosaber.plotting.plot_pickle_spectra`
+        Prepares the data using :meth:`~.saberTraining.prepare_data`
+        and calls the methods :meth:`~.saberTraining.train`,
+        :meth:`~.saberTraining.save_data`; and
+        :meth:`~.saberTraining.update_pickle_file` and :func:`~.plotting.plot_pickle_spectra`
         if get_trace is set to False.
         """
         self.prepare_data()
