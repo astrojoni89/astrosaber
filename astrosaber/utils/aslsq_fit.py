@@ -103,7 +103,7 @@ def one_step_extraction(lam1 : float, p1 : float, spectrum : np.ndarray = None, 
         Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.
     spectrum : numpy.ndarray
         Spectrum to be smoothed.
-    header : :doc:`Header: https://docs.astropy.org/en/stable/io/fits/api/headers.html#astropy.io.fits.Header`
+    header : :ref:`Header <https://docs.astropy.org/en/stable/io/fits/api/headers.html#astropy.io.fits.Header>`
         Header of the file containing the `spectrum`.
         Will be passed to :func:`~.aslsq_helper.check_signal_ranges`.
     check_signal_sigma : float, optional
@@ -223,7 +223,7 @@ def two_step_extraction(lam1 : float, p1 : float, lam2 : float, p2 : float, spec
         Asymmetry weight of all remaining smoothing iterations. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.
     spectrum : numpy.ndarray
         Spectrum to be smoothed.
-    header : :doc:`Header: https://docs.astropy.org/en/stable/io/fits/api/headers.html#astropy.io.fits.Header`
+    header : :ref:`Header <https://docs.astropy.org/en/stable/io/fits/api/headers.html#astropy.io.fits.Header>`
         Header of the file containing the `spectrum`.
         Will be passed to :func:`~.aslsq_helper.check_signal_ranges`.
     check_signal_sigma : float, optional
@@ -247,7 +247,7 @@ def two_step_extraction(lam1 : float, p1 : float, lam2 : float, p2 : float, spec
         Default is False.
     thresh : float
         Convergence threshold.
-        If residual falls below this threshold for :param iterations_for_convergence: iterations, the algorithm terminates the smoothing.
+        If residual falls below this threshold for `iterations_for_convergence` iterations, the algorithm terminates the smoothing.
     p_limit : float, optional
         The p-limit of the Markov chain to estimate signal ranges in the spectra.
         Default is 0.02.
