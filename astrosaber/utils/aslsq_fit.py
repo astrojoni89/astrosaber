@@ -12,7 +12,7 @@ from tqdm import trange
 import warnings
 
 from .quality_checks import get_max_consecutive_channels, determine_peaks, mask_channels
-from .aslsq_helper import check_signal_ranges, count_ones_in_row, IterationWarning, say, format_warning
+from .aslsq_helper import check_signal_ranges, count_ones_in_row, IterationWarning, format_warning
 
 warnings.showwarning = format_warning
 
@@ -103,7 +103,7 @@ def one_step_extraction(lam1 : float, p1 : float, spectrum : np.ndarray = None, 
         Asymmetry weight. Adjusts how much weight positive or negative signals (wrt the smoothed baseline) will be given.
     spectrum : numpy.ndarray
         Spectrum to be smoothed.
-    header : `~astropy.io.fits.Header`
+    header : `~astropy.io.fits.Header <https://docs.astropy.org/en/stable/io/fits/api/headers.html#astropy.io.fits.Header>`__
         Header of the file containing the `spectrum`.
         Will be passed to :func:`~.aslsq_helper.check_signal_ranges`.
     check_signal_sigma : float, optional
