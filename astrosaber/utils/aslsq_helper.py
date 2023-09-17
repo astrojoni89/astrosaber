@@ -1,17 +1,12 @@
 '''helper functions'''
 
-import os
 import numpy as np
 from pathlib import Path
 from typing import Union, Optional
 
 from astropy.io import fits
 from astropy.wcs import WCS
-from scipy import sparse
-from scipy.sparse.linalg import spsolve
 
-from tqdm import trange
-import warnings
 import sys
 
 
@@ -226,9 +221,10 @@ def md_header_2d(fitsfile : Union[Path, str]) -> fits.Header:
     ----------
     fitsfile : path-like object or file-like object
         Path to FITS file to get header from.
+
     Returns
     -------
-    header_2d : `~astropy.io.fits.Header`
+    header_2d : `~astropy.io.fits.Header <https://docs.astropy.org/en/stable/io/fits/api/headers.html#astropy.io.fits.Header>`__
         Header object without third axis.
     """
     header_2d = fits.getheader(fitsfile)
