@@ -331,14 +331,14 @@ document.write(`
 <span class="sd">    lam1_initial : float</span>
 <span class="sd">        Initial value of the Lambda_1 smoothing parameter that is to be optimized.</span>
 <span class="sd">    p1 : float, optional</span>
-<span class="sd">        Asymmetry weight of the minor (and major if phase=`&#39;one&#39;`) cycle smoothing.</span>
+<span class="sd">        Asymmetry weight of the first iteration (or all iterations if `phase=&#39;one&#39;`) of the major cycle smoothing.</span>
 <span class="sd">        Default is 0.90.</span>
 <span class="sd">    lam1_initial : float</span>
 <span class="sd">        Initial value of the Lambda_2 smoothing parameter that is to be optimized.</span>
 <span class="sd">        Has to be specified if phase is set to `&#39;two&#39;`.</span>
 <span class="sd">    p2 : float, optional</span>
-<span class="sd">        Asymmetry weight of the major cycle smoothing to generate test data.</span>
-<span class="sd">        Default is 0.90.</span>
+<span class="sd">        Asymmetry weight of the remaining iterations of the major cycle smoothing.</span>
+<span class="sd">        Has to be specified if phase is set to `&#39;two&#39;`. Default is 0.90.</span>
 <span class="sd">    weight_1 : float, optional</span>
 <span class="sd">        (DEPRECATED) Additional penalty that can be imposed on the Lambda_1 smoothing weight.</span>
 <span class="sd">        This is deprecated and will be ignored.</span>
@@ -352,7 +352,7 @@ document.write(`
 <span class="sd">        List of two constraints on Lambda_2 smoothing parameter to limit the parameter space.</span>
 <span class="sd">        Default is [0.1, 100.].</span>
 <span class="sd">    MAD : float, optional</span>
-<span class="sd">        Median absolute difference that is used together with `window_size` as a convergence threshold for optimization.</span>
+<span class="sd">        Median absolute difference that is used together with :attr:`.saberTraining.window_size` as a convergence threshold for optimization.</span>
 <span class="sd">        Default is 0.03.</span>
 <span class="sd">    window_size : float, optional</span>
 <span class="sd">        Trailing window size to determine convergence.</span>
@@ -386,14 +386,14 @@ document.write(`
 <span class="sd">        Only used to generate test data. Default is `True`.</span>
 <span class="sd">    sig : float, optional</span>
 <span class="sd">        Defines how many sigma of the noise is used as a convergence criterion.</span>
-<span class="sd">        If the change in baseline between major cycle iterations is smaller than `sig` * noise for `iterations_for_convergence`,</span>
+<span class="sd">        If the change in baseline between major cycle iterations is smaller than :attr:`~.saberTraining.sig` * :attr:`~.saberTraining.noise` for :attr:`~.saberTraining.iterations_for_convergence`,</span>
 <span class="sd">        then the baseline is considered converged. Only used to generate test data. Default is 1.0.</span>
 <span class="sd">    velo_range : float, optional</span>
 <span class="sd">        Velocity range [km/s] of the spectra that has to contain significant signal</span>
 <span class="sd">        for it to be considered in the baseline extraction. Default is 15.0.</span>
 <span class="sd">    check_signal_sigma : float, optional</span>
 <span class="sd">        Defines the significance of the signal that has to be present in the spectra</span>
-<span class="sd">        for at least the range defined by &#39;velo_range&#39;. Default is 6.0.</span>
+<span class="sd">        for at least the range defined by :attr:`.saberTraining.velo_range`. Default is 6.0.</span>
 <span class="sd">    p_limit : float, optional</span>
 <span class="sd">        The p-limit of the Markov chain to estimate signal ranges in the spectra.</span>
 <span class="sd">        Default is 0.01.</span>

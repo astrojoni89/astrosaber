@@ -359,14 +359,14 @@ document.write(`
 <span class="sd">        Default is `True`.</span>
 <span class="sd">    sig : float, optional</span>
 <span class="sd">        Defines how many sigma of the noise is used as a convergence criterion.</span>
-<span class="sd">        If the change in baseline between major cycle iterations is smaller than `sig` * `noise` for `iterations_for_convergence`,</span>
+<span class="sd">        If the change in baseline between major cycle iterations is smaller than :attr:`~.HisaExtraction.sig` * :attr:`~.HisaExtraction.noise` for :attr:`~.HisaExtraction.iterations_for_convergence`,</span>
 <span class="sd">        then the baseline is considered converged. Default is 1.0.</span>
 <span class="sd">    velo_range : float, optional</span>
 <span class="sd">        Velocity range [in km/s] of the spectra that has to contain significant signal</span>
 <span class="sd">        for it to be considered in the baseline extraction. Default is 15.0.</span>
 <span class="sd">    check_signal_sigma : float, optional</span>
 <span class="sd">        Defines the significance of the signal that has to be present in the spectra</span>
-<span class="sd">        for at least the range defined by `velo_range`. Default is 6.0.</span>
+<span class="sd">        for at least the range defined by :attr:`.HisaExtraction.velo_range`. Default is 6.0.</span>
 <span class="sd">    output_flags : bool, optional</span>
 <span class="sd">        Whether to save a mask containing the flags.</span>
 <span class="sd">        Default is `True`.</span>
