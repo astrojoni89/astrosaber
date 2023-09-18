@@ -72,7 +72,7 @@ class saberPrepare(object):
         in units of the third axis of the fits file. The default is one spectral channel.
     smooth_testdata: bool, optional
         Option to apply prior smoothing to data when generating test data.
-        If `True`, prior smoothing will be applied using the :attribute:`astrosaber.saberPrepare.lam1` and :attribute:`astrosaber.saberPrepare.lam2` attributes.
+        If `True`, prior smoothing will be applied using the :param:`astrosaber.saberPrepare.lam1` and :param:`astrosaber.saberPrepare.lam2` attributes.
         If `False`, original data will be used as test data. Default is `True`.
     lam1 : float, optional
         Lambda_1 smoothing parameter to generate test data.
@@ -120,7 +120,7 @@ class saberPrepare(object):
         The default is the fits filename base with the number of training spectra.
     path_to_file : str, optional
         Optional path to where the pickled training data should be stored.
-        The training data are stored by default in the subfolder 'astrosaber_training'
+        The training data are stored by default in the subfolder `astrosaber_training`
         of the working directory.
     seed : int, optional
         Seed to initialize the random generator.
