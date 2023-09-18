@@ -68,14 +68,14 @@ class HisaExtraction(object):
         Default is `True`.
     sig : float, optional
         Defines how many sigma of the noise is used as a convergence criterion.
-        If the change in baseline between major cycle iterations is smaller than `sig` * `noise` for `iterations_for_convergence`,
+        If the change in baseline between major cycle iterations is smaller than :attr:`~.HisaExtraction.sig` * :attr:`~.HisaExtraction.noise` for :attr:`~.HisaExtraction.iterations_for_convergence`,
         then the baseline is considered converged. Default is 1.0.
     velo_range : float, optional
         Velocity range [in km/s] of the spectra that has to contain significant signal
         for it to be considered in the baseline extraction. Default is 15.0.
     check_signal_sigma : float, optional
         Defines the significance of the signal that has to be present in the spectra
-        for at least the range defined by `velo_range`. Default is 6.0.
+        for at least the range defined by :attr:`.HisaExtraction.velo_range`. Default is 6.0.
     output_flags : bool, optional
         Whether to save a mask containing the flags.
         Default is `True`.

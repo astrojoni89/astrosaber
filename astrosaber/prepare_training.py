@@ -99,7 +99,7 @@ class saberPrepare(object):
         Only used to generate test data. Default is `True`.
     sig : float, optional
         Defines how many sigma of the noise is used as a convergence criterion.
-        If the change in baseline between major cycle iterations is smaller than :attr:`.saberPrepare.sig` * :attr:`.saberPrepare.noise` for :attr:`.saberPrepare.iterations_for_convergence`,
+        If the change in baseline between major cycle iterations is smaller than :attr:`~.saberPrepare.sig` * :attr:`~.saberPrepare.noise` for :attr:`~.saberPrepare.iterations_for_convergence`,
         then the baseline is considered converged. Only used to generate test data. Default is 1.0.
     velo_range : float, optional
         Velocity range [in km/s] of the spectra that has to contain significant signal

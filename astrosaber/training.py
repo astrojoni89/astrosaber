@@ -40,14 +40,14 @@ class saberTraining(object):
     lam1_initial : float
         Initial value of the Lambda_1 smoothing parameter that is to be optimized.
     p1 : float, optional
-        Asymmetry weight of the minor (and major if phase=`'one'`) cycle smoothing.
+        Asymmetry weight of the first iteration (or all iterations if `phase='one'`) of the major cycle smoothing.
         Default is 0.90.
     lam1_initial : float
         Initial value of the Lambda_2 smoothing parameter that is to be optimized.
         Has to be specified if phase is set to `'two'`.
     p2 : float, optional
-        Asymmetry weight of the major cycle smoothing to generate test data.
-        Default is 0.90.
+        Asymmetry weight of the remaining iterations of the major cycle smoothing.
+        Has to be specified if phase is set to `'two'`. Default is 0.90.
     weight_1 : float, optional
         (DEPRECATED) Additional penalty that can be imposed on the Lambda_1 smoothing weight.
         This is deprecated and will be ignored.
@@ -61,7 +61,7 @@ class saberTraining(object):
         List of two constraints on Lambda_2 smoothing parameter to limit the parameter space.
         Default is [0.1, 100.].
     MAD : float, optional
-        Median absolute difference that is used together with `window_size` as a convergence threshold for optimization.
+        Median absolute difference that is used together with :attr:`.saberTraining.window_size` as a convergence threshold for optimization.
         Default is 0.03.
     window_size : float, optional
         Trailing window size to determine convergence.
@@ -95,14 +95,14 @@ class saberTraining(object):
         Only used to generate test data. Default is `True`.
     sig : float, optional
         Defines how many sigma of the noise is used as a convergence criterion.
-        If the change in baseline between major cycle iterations is smaller than `sig` * noise for `iterations_for_convergence`,
+        If the change in baseline between major cycle iterations is smaller than :attr:`~.saberTraining.sig` * :attr:`~.saberTraining.noise` for :attr:`~.saberTraining.iterations_for_convergence`,
         then the baseline is considered converged. Only used to generate test data. Default is 1.0.
     velo_range : float, optional
         Velocity range [km/s] of the spectra that has to contain significant signal
         for it to be considered in the baseline extraction. Default is 15.0.
     check_signal_sigma : float, optional
         Defines the significance of the signal that has to be present in the spectra
-        for at least the range defined by 'velo_range'. Default is 6.0.
+        for at least the range defined by :attr:`.saberTraining.velo_range`. Default is 6.0.
     p_limit : float, optional
         The p-limit of the Markov chain to estimate signal ranges in the spectra.
         Default is 0.01.
