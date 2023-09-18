@@ -143,6 +143,7 @@ class saberPrepare(object):
                  mean_linewidth : Union[int, float] = None, std_linewidth : Union[int, float] = None,
                  mean_ncomponent : Union[int, float] = 2., std_ncomponent : Union[int, float] = .5,
                  fix_velocities : Optional[List] = None, fix_velocities_sigma : Optional[float] = None,
+                 smooth_testdata : bool = True,
                  lam1 : Optional[float] = None, p1 : Optional[float] = None,
                  lam2 : Optional[float] = None, p2 : Optional[float] = None,
                  niters : Optional[int] = 20, iterations_for_convergence : Optional[int] = 3,
@@ -167,6 +168,7 @@ class saberPrepare(object):
         self.fix_velocities = fix_velocities
         self.fix_velocities_sigma = fix_velocities_sigma
         
+        self.smooth_testdata = smooth_testdata
         self.lam1 = lam1
         self.p1 = p1
         self.lam2 = lam2
@@ -206,6 +208,7 @@ class saberPrepare(object):
                 std_ncomponent: {self.std_ncomponent}
                 fix_velocities: {self.fix_velocities}
                 fix_velocities_sigma: {self.fix_velocities_sigma}
+                smooth_testdata: {self.smooth_testdata}
                 lam1: {self.lam1}
                 p1: {self.p1}
                 lam2: {self.lam2}
@@ -458,7 +461,10 @@ class saberPrepare(object):
         mask = mask_channels(self.v, mask_ranges, pad_channels=-1*pad_ch, remove_intervals=None)
         
         obs_noise = self.rng.normal(0,self.noise_list[i],size=(self.v,))
-        mock_emission = bg + obs_noise
+        if self.smooth_testdata is True:
+            mock_emission = bg + obs_noise
+        elif self.smooth_testdata is False:
+            mock_emission = self.spectrum_list[i]
 
         mu_amps_HISA, sigma_amps_HISA = self.mean_amp_snr*self.noise_list[i], self.std_amp_snr*self.noise_list[i]
 
