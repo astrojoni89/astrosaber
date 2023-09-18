@@ -71,6 +71,10 @@ class saberPrepare(object):
         If a list of fixed velocities is given, some 'wiggle room' defined by this attribute can be added.
         This is the standard deviation of a Gaussian distribution around the fixed velocities
         in units of the third axis of the fits file. The default is one spectral channel.
+    smooth_testdata: bool, optional
+        Option to apply prior smoothing to data when generating test data.
+        If `True`, prior smoothing will be applied using the `saberPrepare.lam1` and `saberPrepare.lam2` attributes.
+        If `False`, original data will be used as test data. Default is `True`.
     lam1 : float, optional
         Lambda_1 smoothing parameter to generate test data.
         Default is 2.0.
@@ -93,7 +97,7 @@ class saberPrepare(object):
         Noise level of the data. Has to be specified if no path to noise map is given.
     add_residual : bool, optional
         Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
-        Only used to generate test data. Default is True.
+        Only used to generate test data. Default is `True`.
     sig : float, optional
         Defines how many sigma of the noise is used as a convergence criterion.
         If the change in baseline between major cycle iterations is smaller than `sig` * `noise` for `iterations_for_convergence`,

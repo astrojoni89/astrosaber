@@ -40,7 +40,7 @@ class HisaExtraction(object):
         Path to the fitsfile.
     smoothing : bool, optional
         Whether to execute the asymmetric least squares smoothing routine.
-        Default is True.
+        Default is `True`.
     phase : str, optional
         Mode of saber smoothing.
         Either `'one'` or `'two'` (default) phase smoothing.
@@ -66,7 +66,7 @@ class HisaExtraction(object):
         Noise level of the data. Has to be specified if no path to noise map is given.
     add_residual : bool, optional
         Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
-        Default is True.
+        Default is `True`.
     sig : float, optional
         Defines how many sigma of the noise is used as a convergence criterion.
         If the change in baseline between major cycle iterations is smaller than `sig` * `noise` for `iterations_for_convergence`,
@@ -79,10 +79,10 @@ class HisaExtraction(object):
         for at least the range defined by `velo_range`. Default is 6.0.
     output_flags : bool, optional
         Whether to save a mask containing the flags.
-        Default is True.
+        Default is `True`.
     baby_yoda : bool, optional
         Whether to show a star wars-themed progress bar.
-        Default is False.
+        Default is `False`.
     p_limit : float, optional
         The p-limit of the Markov chain to estimate signal ranges in the spectra.
         Default is 0.02.

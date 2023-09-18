@@ -82,8 +82,8 @@ class saberTraining(object):
         Momentum that influences the following step in the gradient descent run.
         Default is 0.3.
     get_trace : bool, optional
-        If get_trace is set to True, the tracks of (lam1,lam2) will be returned and saved,
-        instead of the final optimized smoothing parameters. Default is False.
+        If get_trace is set to `True`, the tracks of (lam1,lam2) will be returned and saved,
+        instead of the final optimized smoothing parameters. Default is `False`.
     niters : int, optional
         Maximum number of iterations of the smoothing.
         Only used to generate test data. Default is 20.
@@ -92,7 +92,7 @@ class saberTraining(object):
         Only used to generate test data. Default is 3.
     add_residual : bool, optional
         Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
-        Only used to generate test data. Default is True.
+        Only used to generate test data. Default is `True`.
     sig : float, optional
         Defines how many sigma of the noise is used as a convergence criterion.
         If the change in baseline between major cycle iterations is smaller than `sig` * noise for `iterations_for_convergence`,
@@ -143,8 +143,8 @@ class saberTraining(object):
         Performs the gradient descent using an objective function
         (which is in this case the cost function evaluated for asymmetric smoothing with lambda_1, lambda_2 parameters).
     save_data()
-        If get_trace is set to False, this will save the optimized Lambda smoothing parameters in a .txt file.
-        If get_trace is set to True, this will save the tracks of Lambda positions in the parameter space in a .txt file.
+        If get_trace is set to `False`, this will save the optimized Lambda smoothing parameters in a .txt file.
+        If get_trace is set to `True`, this will save the tracks of Lambda positions in the parameter space in a .txt file.
     update_pickle_file()
         Updates the input pickle file with final background fit
         and reduced chi square value for each training spectrum and saves the data.
@@ -292,7 +292,7 @@ class saberTraining(object):
         and calls the methods :meth:`~.saberTraining.train`,
         :meth:`~.saberTraining.save_data`; and
         :meth:`~.saberTraining.update_pickle_file` and :func:`~.plotting.plot_pickle_spectra`
-        if get_trace is set to False.
+        if get_trace is set to `False`.
         """
         self.prepare_data()
         string = 'Optimizing smoothing parameters'
@@ -313,7 +313,7 @@ class saberTraining(object):
         -------
         popt_lam : List
             Optimized Lambda parameters.
-            Returns an array of lambda positions from the gradient descent run if `get_trace` is set to True.
+            Returns an array of lambda positions from the gradient descent run if `get_trace` is set to `True`.
         """
         popt_lam = self.train_lambda_set(self.objective_function_lambda_set, training_data=self.training_data, test_data=self.test_data, noise=self.noise, lam1_initial=self.lam1_initial, p1=self.p1, lam2_initial=self.lam2_initial, p2=self.p2, lam1_bounds=self.lam1_bounds, lam2_bounds=self.lam2_bounds, iterations=self.iterations, MAD=self.MAD, eps_l1=self.eps_l1, eps_l2=self.eps_l2, learning_rate_l1=self.learning_rate_l1, learning_rate_l2=self.learning_rate_l2, mom=self.mom, window_size=self.window_size, iterations_for_convergence_training=10, get_trace=False, ncpus=self.ncpus)
         return popt_lam
@@ -333,8 +333,8 @@ class saberTraining(object):
         p2 : float
             Asymmetry weight parameter
         get_all : bool, optional
-            If get_all is set to True, it will return the median results of the cost function, the reduced chi square, and the median absolute deviation (MAD).
-            If set to False, it will return just the median result of the costs.
+            If get_all is set to `True`, it will return the median results of the cost function, the reduced chi square, and the median absolute deviation (MAD).
+            If set to `False`, it will return just the median result of the costs.
         ncpus : int, optional
             Number of CPUs to use.
             Defaults to 50% of the available CPUs.
@@ -344,9 +344,9 @@ class saberTraining(object):
         cost : float
             Median of costs.
         rchi2 : float
-            Median of reduced chi square values. Only returned if get_all=True.
+            Median of reduced chi square values. Only returned if `get_all=True`.
         MAD : float
-            Median of MAD values. Only returned if get_all=True.
+            Median of MAD values. Only returned if `get_all=True`.
         """
         self.lam1_updt, self.lam2_updt = lam1, lam2
         import astrosaber.parallel_processing
@@ -371,8 +371,8 @@ class saberTraining(object):
         i : int
             Index of spectrum.
         get_all : bool, optional
-            If set to True (default), returns cost, reduced chi square, and MAD.
-            If False, returns only cost.
+            If set to `True` (default), returns cost, reduced chi square, and MAD.
+            If `False`, returns only cost.
 
         Returns
         -------
@@ -380,9 +380,9 @@ class saberTraining(object):
             Cost.
             In this case, it is the reduced chi square.
         rchi2 : float
-            Reduced chi square value. Only returned if get_all=True.
+            Reduced chi square value. Only returned if `get_all=True`.
         MAD : float
-            MAD value. Only returned if get_all=True.
+            MAD value. Only returned if `get_all=True`.
         """
         ###TODO
         try:
@@ -484,8 +484,8 @@ class saberTraining(object):
         lam2_final : float
             Final lambda_2 smoothing parameter.
         get_all : bool, optional
-            If set to True (default), returns cost, reduced chi square, and MAD.
-            If False, returns only cost.
+            If set to `True` (default), returns cost, reduced chi square, and MAD.
+            If `False`, returns only cost.
 
         Returns
         -------
@@ -493,9 +493,9 @@ class saberTraining(object):
             Cost.
             In this case, it is the reduced chi square.
         rchi2 : float
-            Reduced chi square value. Only returned if get_all=True.
+            Reduced chi square value. Only returned if `get_all=True`.
         MAD : float
-            MAD value. Only returned if get_all=True.
+            MAD value. Only returned if `get_all=True`.
         """
         ###TODO
         try:
@@ -659,19 +659,19 @@ class saberTraining(object):
             Defaults to 0.3.
         window_size : int, optional
             Trailing window size to determine convergence.
-            Default=10.
+            Default is 10.
         iterations_for_convergence_training : int, optional
             Number of continuous iterations within threshold tolerence required to achieve convergence.
             Default=10.
         get_trace : bool, optional
             Option to save the lambda traces instead of final values.
-            Default is False.
+            Default is `False`.
         ncpus : int, optional
             Number of CPUs to use. Defaults to 0.5 of the available CPUs.
             
         Returns
         -------
-            Returns the lam1, lam2 traces if get_trace is True. Else it returns the lam1, lam2 value after the gradient descent terminates.
+            Returns the lam1, lam2 traces if `get_trace` is `True`. Else it returns the lam1, lam2 value after the gradient descent terminates.
         """
 
         # Default settings for hyper parameters; these seem to be the most robust hyperparams
@@ -808,8 +808,9 @@ class saberTraining(object):
     
     def save_data(self):
         """
-        If get_trace is set to False, this will save the optimized Lambda smoothing parameters in a .txt file.
-        If get_trace is set to True, this will save the tracks of Lambda positions in the parameter space in a .txt file.
+        If get_trace is set to `False`, this will save the optimized Lambda smoothing parameters in a .txt file.
+        If get_trace is set to `True`, this will save the tracks of Lambda positions in the parameter space in a .txt file.
+
         """
         if self.filename_out is None:
             filename_wext = os.path.basename(self.pickle_file)
