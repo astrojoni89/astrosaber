@@ -415,7 +415,7 @@ If no noise map is given, a single value must be provided instead using the <cit
 <dt class="sig sig-object py" id="astrosaber.hisa.HisaExtraction.smoothing">
 <span class="sig-name descname"><span class="pre">smoothing</span></span><a class="headerlink" href="#astrosaber.hisa.HisaExtraction.smoothing" title="Permalink to this definition">#</a></dt>
 <dd><p>Whether to execute the asymmetric least squares smoothing routine.
-Default is True.</p>
+Default is <cite>True</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool, optional</p>
@@ -522,7 +522,7 @@ Default is 3.</p>
 <dt class="sig sig-object py" id="astrosaber.hisa.HisaExtraction.add_residual">
 <span class="sig-name descname"><span class="pre">add_residual</span></span><a class="headerlink" href="#astrosaber.hisa.HisaExtraction.add_residual" title="Permalink to this definition">#</a></dt>
 <dd><p>Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
-Default is True.</p>
+Default is <cite>True</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool, optional</p>
@@ -571,7 +571,7 @@ for at least the range defined by <cite>velo_range</cite>. Default is 6.0.</p>
 <dt class="sig sig-object py" id="astrosaber.hisa.HisaExtraction.output_flags">
 <span class="sig-name descname"><span class="pre">output_flags</span></span><a class="headerlink" href="#astrosaber.hisa.HisaExtraction.output_flags" title="Permalink to this definition">#</a></dt>
 <dd><p>Whether to save a mask containing the flags.
-Default is True.</p>
+Default is <cite>True</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool, optional</p>
@@ -583,7 +583,7 @@ Default is True.</p>
 <dt class="sig sig-object py" id="astrosaber.hisa.HisaExtraction.baby_yoda">
 <span class="sig-name descname"><span class="pre">baby_yoda</span></span><a class="headerlink" href="#astrosaber.hisa.HisaExtraction.baby_yoda" title="Permalink to this definition">#</a></dt>
 <dd><p>Whether to show a star wars-themed progress bar.
-Default is False.</p>
+Default is <cite>False</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool, optional</p>
@@ -1097,6 +1097,19 @@ in units of the third axis of the fits file. The default is one spectral channel
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="astrosaber.prepare_training.saberPrepare.smooth_testdata">
+<span class="sig-name descname"><span class="pre">smooth_testdata</span></span><a class="headerlink" href="#astrosaber.prepare_training.saberPrepare.smooth_testdata" title="Permalink to this definition">#</a></dt>
+<dd><p>Option to apply prior smoothing to data when generating test data.
+If <cite>True</cite>, prior smoothing will be applied using the <cite>saberPrepare.lam1</cite> and <cite>saberPrepare.lam2</cite> attributes.
+If <cite>False</cite>, original data will be used as test data. Default is <cite>True</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="astrosaber.prepare_training.saberPrepare.lam1">
 <span class="sig-name descname"><span class="pre">lam1</span></span><a class="headerlink" href="#astrosaber.prepare_training.saberPrepare.lam1" title="Permalink to this definition">#</a></dt>
 <dd><p>Lambda_1 smoothing parameter to generate test data.
@@ -1183,7 +1196,7 @@ Only used to generate test data. Default is 3.</p>
 <dt class="sig sig-object py" id="astrosaber.prepare_training.saberPrepare.add_residual">
 <span class="sig-name descname"><span class="pre">add_residual</span></span><a class="headerlink" href="#astrosaber.prepare_training.saberPrepare.add_residual" title="Permalink to this definition">#</a></dt>
 <dd><p>Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
-Only used to generate test data. Default is True.</p>
+Only used to generate test data. Default is <cite>True</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool, optional</p>
@@ -1632,8 +1645,8 @@ Default is 0.3.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="astrosaber.training.saberTraining.get_trace">
 <span class="sig-name descname"><span class="pre">get_trace</span></span><a class="headerlink" href="#astrosaber.training.saberTraining.get_trace" title="Permalink to this definition">#</a></dt>
-<dd><p>If get_trace is set to True, the tracks of (lam1,lam2) will be returned and saved,
-instead of the final optimized smoothing parameters. Default is False.</p>
+<dd><p>If get_trace is set to <cite>True</cite>, the tracks of (lam1,lam2) will be returned and saved,
+instead of the final optimized smoothing parameters. Default is <cite>False</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool, optional</p>
@@ -1669,7 +1682,7 @@ Only used to generate test data. Default is 3.</p>
 <dt class="sig sig-object py" id="astrosaber.training.saberTraining.add_residual">
 <span class="sig-name descname"><span class="pre">add_residual</span></span><a class="headerlink" href="#astrosaber.training.saberTraining.add_residual" title="Permalink to this definition">#</a></dt>
 <dd><p>Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.
-Only used to generate test data. Default is True.</p>
+Only used to generate test data. Default is <cite>True</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool, optional</p>
@@ -1834,8 +1847,8 @@ of a single spectrum fit using fixed lambda values.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="astrosaber.training.saberTraining.save_data">
 <span class="sig-name descname"><span class="pre">save_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/training.html#saberTraining.save_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.training.saberTraining.save_data" title="Permalink to this definition">#</a></dt>
-<dd><p>If get_trace is set to False, this will save the optimized Lambda smoothing parameters in a .txt file.
-If get_trace is set to True, this will save the tracks of Lambda positions in the parameter space in a .txt file.</p>
+<dd><p>If get_trace is set to <cite>False</cite>, this will save the optimized Lambda smoothing parameters in a .txt file.
+If get_trace is set to <cite>True</cite>, this will save the tracks of Lambda positions in the parameter space in a .txt file.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1867,7 +1880,7 @@ and reduced chi square value for each training spectrum and saves the data.</p>
 <td><p>Prepares the optimization by reading in data and setting parameters.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#id18" title="astrosaber.training.saberTraining.save_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_data</span></code></a>()</p></td>
-<td><p>If get_trace is set to False, this will save the optimized Lambda smoothing parameters in a .txt file.</p></td>
+<td><p>If get_trace is set to <cite>False</cite>, this will save the optimized Lambda smoothing parameters in a .txt file.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#id19" title="astrosaber.training.saberTraining.save_pickle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_pickle</span></code></a>()</p></td>
 <td><p>Saves the updated pickle file.</p></td>
@@ -1885,7 +1898,7 @@ and reduced chi square value for each training spectrum and saves the data.</p>
 <td><p>Performs the gradient descent using an objective function (which is in this case the cost function evaluated for asymmetric smoothing with lambda_1, lambda_2 parameters).</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#id24" title="astrosaber.training.saberTraining.training"><code class="xref py py-obj docutils literal notranslate"><span class="pre">training</span></code></a>()</p></td>
-<td><p>Prepares the data using <a class="reference internal" href="#id17" title="astrosaber.training.saberTraining.prepare_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">prepare_data()</span></code></a> and calls the methods <a class="reference internal" href="#id22" title="astrosaber.training.saberTraining.train"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code></a>, <a class="reference internal" href="#id18" title="astrosaber.training.saberTraining.save_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_data()</span></code></a>; and <a class="reference internal" href="#id25" title="astrosaber.training.saberTraining.update_pickle_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_pickle_file()</span></code></a> and <a class="reference internal" href="#astrosaber.plotting.plot_pickle_spectra" title="astrosaber.plotting.plot_pickle_spectra"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_pickle_spectra()</span></code></a> if get_trace is set to False.</p></td>
+<td><p>Prepares the data using <a class="reference internal" href="#id17" title="astrosaber.training.saberTraining.prepare_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">prepare_data()</span></code></a> and calls the methods <a class="reference internal" href="#id22" title="astrosaber.training.saberTraining.train"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code></a>, <a class="reference internal" href="#id18" title="astrosaber.training.saberTraining.save_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_data()</span></code></a>; and <a class="reference internal" href="#id25" title="astrosaber.training.saberTraining.update_pickle_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_pickle_file()</span></code></a> and <a class="reference internal" href="#astrosaber.plotting.plot_pickle_spectra" title="astrosaber.plotting.plot_pickle_spectra"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_pickle_spectra()</span></code></a> if get_trace is set to <cite>False</cite>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#id25" title="astrosaber.training.saberTraining.update_pickle_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_pickle_file</span></code></a>(training_data, lam1, lam2)</p></td>
 <td><p>Updates the input pickle file with final background fit and reduced chi square value for each training spectrum and saves the data.</p></td>
@@ -1916,8 +1929,8 @@ and reduced chi square value for each training spectrum and saves the data.</p>
 <li><p><strong>p1</strong> (<em>float</em>) – Asymmetry weight parameter.</p></li>
 <li><p><strong>lam2</strong> (<em>float</em>) – Lambda_2 smoothing parameter.</p></li>
 <li><p><strong>p2</strong> (<em>float</em>) – Asymmetry weight parameter</p></li>
-<li><p><strong>get_all</strong> (<em>bool</em><em>, </em><em>optional</em>) – If get_all is set to True, it will return the median results of the cost function, the reduced chi square, and the median absolute deviation (MAD).
-If set to False, it will return just the median result of the costs.</p></li>
+<li><p><strong>get_all</strong> (<em>bool</em><em>, </em><em>optional</em>) – If get_all is set to <cite>True</cite>, it will return the median results of the cost function, the reduced chi square, and the median absolute deviation (MAD).
+If set to <cite>False</cite>, it will return just the median result of the costs.</p></li>
 <li><p><strong>ncpus</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of CPUs to use.
 Defaults to 50% of the available CPUs.</p></li>
 </ul>
@@ -1925,8 +1938,8 @@ Defaults to 50% of the available CPUs.</p></li>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>cost</strong> (<em>float</em>) – Median of costs.</p></li>
-<li><p><strong>rchi2</strong> (<em>float</em>) – Median of reduced chi square values. Only returned if get_all=True.</p></li>
-<li><p><strong>MAD</strong> (<em>float</em>) – Median of MAD values. Only returned if get_all=True.</p></li>
+<li><p><strong>rchi2</strong> (<em>float</em>) – Median of reduced chi square values. Only returned if <cite>get_all=True</cite>.</p></li>
+<li><p><strong>MAD</strong> (<em>float</em>) – Median of MAD values. Only returned if <cite>get_all=True</cite>.</p></li>
 </ul>
 </p>
 </dd>
@@ -1943,8 +1956,8 @@ setting parameters.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="id18">
 <span class="sig-name descname"><span class="pre">save_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/astrosaber/training.html#saberTraining.save_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id18" title="Permalink to this definition">#</a></dt>
-<dd><p>If get_trace is set to False, this will save the optimized Lambda smoothing parameters in a .txt file.
-If get_trace is set to True, this will save the tracks of Lambda positions in the parameter space in a .txt file.</p>
+<dd><p>If get_trace is set to <cite>False</cite>, this will save the optimized Lambda smoothing parameters in a .txt file.
+If get_trace is set to <cite>True</cite>, this will save the tracks of Lambda positions in the parameter space in a .txt file.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1962,16 +1975,16 @@ of a single spectrum fit.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>i</strong> (<em>int</em>) – Index of spectrum.</p></li>
-<li><p><strong>get_all</strong> (<em>bool</em><em>, </em><em>optional</em>) – If set to True (default), returns cost, reduced chi square, and MAD.
-If False, returns only cost.</p></li>
+<li><p><strong>get_all</strong> (<em>bool</em><em>, </em><em>optional</em>) – If set to <cite>True</cite> (default), returns cost, reduced chi square, and MAD.
+If <cite>False</cite>, returns only cost.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>cost</strong> (<em>float</em>) – Cost.
 In this case, it is the reduced chi square.</p></li>
-<li><p><strong>rchi2</strong> (<em>float</em>) – Reduced chi square value. Only returned if get_all=True.</p></li>
-<li><p><strong>MAD</strong> (<em>float</em>) – MAD value. Only returned if get_all=True.</p></li>
+<li><p><strong>rchi2</strong> (<em>float</em>) – Reduced chi square value. Only returned if <cite>get_all=True</cite>.</p></li>
+<li><p><strong>MAD</strong> (<em>float</em>) – MAD value. Only returned if <cite>get_all=True</cite>.</p></li>
 </ul>
 </p>
 </dd>
@@ -1989,16 +2002,16 @@ of a single spectrum fit using fixed lambda values.</p>
 <li><p><strong>i</strong> (<em>int</em>) – Index of spectrum.</p></li>
 <li><p><strong>lam1_final</strong> (<em>float</em>) – Final lambda_1 smoothing parameter.</p></li>
 <li><p><strong>lam2_final</strong> (<em>float</em>) – Final lambda_2 smoothing parameter.</p></li>
-<li><p><strong>get_all</strong> (<em>bool</em><em>, </em><em>optional</em>) – If set to True (default), returns cost, reduced chi square, and MAD.
-If False, returns only cost.</p></li>
+<li><p><strong>get_all</strong> (<em>bool</em><em>, </em><em>optional</em>) – If set to <cite>True</cite> (default), returns cost, reduced chi square, and MAD.
+If <cite>False</cite>, returns only cost.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>cost</strong> (<em>float</em>) – Cost.
 In this case, it is the reduced chi square.</p></li>
-<li><p><strong>rchi2</strong> (<em>float</em>) – Reduced chi square value. Only returned if get_all=True.</p></li>
-<li><p><strong>MAD</strong> (<em>float</em>) – MAD value. Only returned if get_all=True.</p></li>
+<li><p><strong>rchi2</strong> (<em>float</em>) – Reduced chi square value. Only returned if <cite>get_all=True</cite>.</p></li>
+<li><p><strong>MAD</strong> (<em>float</em>) – MAD value. Only returned if <cite>get_all=True</cite>.</p></li>
 </ul>
 </p>
 </dd>
@@ -2012,7 +2025,7 @@ In this case, it is the reduced chi square.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>popt_lam</strong> – Optimized Lambda parameters.
-Returns an array of lambda positions from the gradient descent run if <cite>get_trace</cite> is set to True.</p>
+Returns an array of lambda positions from the gradient descent run if <cite>get_trace</cite> is set to <cite>True</cite>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List</p>
@@ -2061,16 +2074,16 @@ Defaults to 0.5.</p></li>
 <li><p><strong>mom</strong> (<em>float</em><em>, </em><em>optional</em>) – Momentum value.
 Defaults to 0.3.</p></li>
 <li><p><strong>window_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Trailing window size to determine convergence.
-Default=10.</p></li>
+Default is 10.</p></li>
 <li><p><strong>iterations_for_convergence_training</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of continuous iterations within threshold tolerence required to achieve convergence.
 Default=10.</p></li>
 <li><p><strong>get_trace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Option to save the lambda traces instead of final values.
-Default is False.</p></li>
+Default is <cite>False</cite>.</p></li>
 <li><p><strong>ncpus</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of CPUs to use. Defaults to 0.5 of the available CPUs.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the lam1, lam2 traces if get_trace is True. Else it returns the lam1, lam2 value after the gradient descent terminates.</p>
+<dd class="field-even"><p>Returns the lam1, lam2 traces if <cite>get_trace</cite> is <cite>True</cite>. Else it returns the lam1, lam2 value after the gradient descent terminates.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2082,7 +2095,7 @@ Default is False.</p></li>
 and calls the methods <a class="reference internal" href="#id22" title="astrosaber.training.saberTraining.train"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code></a>,
 <a class="reference internal" href="#id18" title="astrosaber.training.saberTraining.save_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_data()</span></code></a>; and
 <a class="reference internal" href="#id25" title="astrosaber.training.saberTraining.update_pickle_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_pickle_file()</span></code></a> and <a class="reference internal" href="#astrosaber.plotting.plot_pickle_spectra" title="astrosaber.plotting.plot_pickle_spectra"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_pickle_spectra()</span></code></a>
-if get_trace is set to False.</p>
+if get_trace is set to <cite>False</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2235,6 +2248,7 @@ and reduced chi square value for each training spectrum and saves the data.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.prepare_training.saberPrepare.std_ncomponent"><code class="docutils literal notranslate"><span class="pre">saberPrepare.std_ncomponent</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.prepare_training.saberPrepare.fix_velocities"><code class="docutils literal notranslate"><span class="pre">saberPrepare.fix_velocities</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.prepare_training.saberPrepare.fix_velocities_sigma"><code class="docutils literal notranslate"><span class="pre">saberPrepare.fix_velocities_sigma</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.prepare_training.saberPrepare.smooth_testdata"><code class="docutils literal notranslate"><span class="pre">saberPrepare.smooth_testdata</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.prepare_training.saberPrepare.lam1"><code class="docutils literal notranslate"><span class="pre">saberPrepare.lam1</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.prepare_training.saberPrepare.p1"><code class="docutils literal notranslate"><span class="pre">saberPrepare.p1</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#astrosaber.prepare_training.saberPrepare.lam2"><code class="docutils literal notranslate"><span class="pre">saberPrepare.lam2</span></code></a></li>

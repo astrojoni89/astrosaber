@@ -331,7 +331,7 @@ document.write(`
 <span class="sd">        Path to the fitsfile.</span>
 <span class="sd">    smoothing : bool, optional</span>
 <span class="sd">        Whether to execute the asymmetric least squares smoothing routine.</span>
-<span class="sd">        Default is True.</span>
+<span class="sd">        Default is `True`.</span>
 <span class="sd">    phase : str, optional</span>
 <span class="sd">        Mode of saber smoothing.</span>
 <span class="sd">        Either `&#39;one&#39;` or `&#39;two&#39;` (default) phase smoothing.</span>
@@ -357,7 +357,7 @@ document.write(`
 <span class="sd">        Noise level of the data. Has to be specified if no path to noise map is given.</span>
 <span class="sd">    add_residual : bool, optional</span>
 <span class="sd">        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.</span>
-<span class="sd">        Default is True.</span>
+<span class="sd">        Default is `True`.</span>
 <span class="sd">    sig : float, optional</span>
 <span class="sd">        Defines how many sigma of the noise is used as a convergence criterion.</span>
 <span class="sd">        If the change in baseline between major cycle iterations is smaller than `sig` * `noise` for `iterations_for_convergence`,</span>
@@ -370,10 +370,10 @@ document.write(`
 <span class="sd">        for at least the range defined by `velo_range`. Default is 6.0.</span>
 <span class="sd">    output_flags : bool, optional</span>
 <span class="sd">        Whether to save a mask containing the flags.</span>
-<span class="sd">        Default is True.</span>
+<span class="sd">        Default is `True`.</span>
 <span class="sd">    baby_yoda : bool, optional</span>
 <span class="sd">        Whether to show a star wars-themed progress bar.</span>
-<span class="sd">        Default is False.</span>
+<span class="sd">        Default is `False`.</span>
 <span class="sd">    p_limit : float, optional</span>
 <span class="sd">        The p-limit of the Markov chain to estimate signal ranges in the spectra.</span>
 <span class="sd">        Default is 0.02.</span>

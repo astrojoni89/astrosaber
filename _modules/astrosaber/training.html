@@ -373,8 +373,8 @@ document.write(`
 <span class="sd">        Momentum that influences the following step in the gradient descent run.</span>
 <span class="sd">        Default is 0.3.</span>
 <span class="sd">    get_trace : bool, optional</span>
-<span class="sd">        If get_trace is set to True, the tracks of (lam1,lam2) will be returned and saved,</span>
-<span class="sd">        instead of the final optimized smoothing parameters. Default is False.</span>
+<span class="sd">        If get_trace is set to `True`, the tracks of (lam1,lam2) will be returned and saved,</span>
+<span class="sd">        instead of the final optimized smoothing parameters. Default is `False`.</span>
 <span class="sd">    niters : int, optional</span>
 <span class="sd">        Maximum number of iterations of the smoothing.</span>
 <span class="sd">        Only used to generate test data. Default is 20.</span>
@@ -383,7 +383,7 @@ document.write(`
 <span class="sd">        Only used to generate test data. Default is 3.</span>
 <span class="sd">    add_residual : bool, optional</span>
 <span class="sd">        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.</span>
-<span class="sd">        Only used to generate test data. Default is True.</span>
+<span class="sd">        Only used to generate test data. Default is `True`.</span>
 <span class="sd">    sig : float, optional</span>
 <span class="sd">        Defines how many sigma of the noise is used as a convergence criterion.</span>
 <span class="sd">        If the change in baseline between major cycle iterations is smaller than `sig` * noise for `iterations_for_convergence`,</span>
@@ -434,8 +434,8 @@ document.write(`
 <span class="sd">        Performs the gradient descent using an objective function</span>
 <span class="sd">        (which is in this case the cost function evaluated for asymmetric smoothing with lambda_1, lambda_2 parameters).</span>
 <span class="sd">    save_data()</span>
-<span class="sd">        If get_trace is set to False, this will save the optimized Lambda smoothing parameters in a .txt file.</span>
-<span class="sd">        If get_trace is set to True, this will save the tracks of Lambda positions in the parameter space in a .txt file.</span>
+<span class="sd">        If get_trace is set to `False`, this will save the optimized Lambda smoothing parameters in a .txt file.</span>
+<span class="sd">        If get_trace is set to `True`, this will save the tracks of Lambda positions in the parameter space in a .txt file.</span>
 <span class="sd">    update_pickle_file()</span>
 <span class="sd">        Updates the input pickle file with final background fit</span>
 <span class="sd">        and reduced chi square value for each training spectrum and saves the data.</span>
@@ -583,7 +583,7 @@ document.write(`
 <span class="sd">        and calls the methods :meth:`~.saberTraining.train`,</span>
 <span class="sd">        :meth:`~.saberTraining.save_data`; and</span>
 <span class="sd">        :meth:`~.saberTraining.update_pickle_file` and :func:`~.plotting.plot_pickle_spectra`</span>
-<span class="sd">        if get_trace is set to False.</span>
+<span class="sd">        if get_trace is set to `False`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prepare_data</span><span class="p">()</span>
         <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;Optimizing smoothing parameters&#39;</span>
@@ -604,7 +604,7 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        popt_lam : List</span>
 <span class="sd">            Optimized Lambda parameters.</span>
-<span class="sd">            Returns an array of lambda positions from the gradient descent run if `get_trace` is set to True.</span>
+<span class="sd">            Returns an array of lambda positions from the gradient descent run if `get_trace` is set to `True`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">popt_lam</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_lambda_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function_lambda_set</span><span class="p">,</span> <span class="n">training_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training_data</span><span class="p">,</span> <span class="n">test_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">test_data</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">,</span> <span class="n">lam1_initial</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lam1_initial</span><span class="p">,</span> <span class="n">p1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p1</span><span class="p">,</span> <span class="n">lam2_initial</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lam2_initial</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p2</span><span class="p">,</span> <span class="n">lam1_bounds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lam1_bounds</span><span class="p">,</span> <span class="n">lam2_bounds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lam2_bounds</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span> <span class="n">MAD</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MAD</span><span class="p">,</span> <span class="n">eps_l1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eps_l1</span><span class="p">,</span> <span class="n">eps_l2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eps_l2</span><span class="p">,</span> <span class="n">learning_rate_l1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_rate_l1</span><span class="p">,</span> <span class="n">learning_rate_l2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_rate_l2</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mom</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">,</span> <span class="n">iterations_for_convergence_training</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">get_trace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ncpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ncpus</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">popt_lam</span></div>
@@ -624,8 +624,8 @@ document.write(`
 <span class="sd">        p2 : float</span>
 <span class="sd">            Asymmetry weight parameter</span>
 <span class="sd">        get_all : bool, optional</span>
-<span class="sd">            If get_all is set to True, it will return the median results of the cost function, the reduced chi square, and the median absolute deviation (MAD).</span>
-<span class="sd">            If set to False, it will return just the median result of the costs.</span>
+<span class="sd">            If get_all is set to `True`, it will return the median results of the cost function, the reduced chi square, and the median absolute deviation (MAD).</span>
+<span class="sd">            If set to `False`, it will return just the median result of the costs.</span>
 <span class="sd">        ncpus : int, optional</span>
 <span class="sd">            Number of CPUs to use.</span>
 <span class="sd">            Defaults to 50% of the available CPUs.</span>
@@ -635,9 +635,9 @@ document.write(`
 <span class="sd">        cost : float</span>
 <span class="sd">            Median of costs.</span>
 <span class="sd">        rchi2 : float</span>
-<span class="sd">            Median of reduced chi square values. Only returned if get_all=True.</span>
+<span class="sd">            Median of reduced chi square values. Only returned if `get_all=True`.</span>
 <span class="sd">        MAD : float</span>
-<span class="sd">            Median of MAD values. Only returned if get_all=True.</span>
+<span class="sd">            Median of MAD values. Only returned if `get_all=True`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lam1_updt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lam2_updt</span> <span class="o">=</span> <span class="n">lam1</span><span class="p">,</span> <span class="n">lam2</span>
         <span class="kn">import</span> <span class="nn">astrosaber.parallel_processing</span>
@@ -662,8 +662,8 @@ document.write(`
 <span class="sd">        i : int</span>
 <span class="sd">            Index of spectrum.</span>
 <span class="sd">        get_all : bool, optional</span>
-<span class="sd">            If set to True (default), returns cost, reduced chi square, and MAD.</span>
-<span class="sd">            If False, returns only cost.</span>
+<span class="sd">            If set to `True` (default), returns cost, reduced chi square, and MAD.</span>
+<span class="sd">            If `False`, returns only cost.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -671,9 +671,9 @@ document.write(`
 <span class="sd">            Cost.</span>
 <span class="sd">            In this case, it is the reduced chi square.</span>
 <span class="sd">        rchi2 : float</span>
-<span class="sd">            Reduced chi square value. Only returned if get_all=True.</span>
+<span class="sd">            Reduced chi square value. Only returned if `get_all=True`.</span>
 <span class="sd">        MAD : float</span>
-<span class="sd">            MAD value. Only returned if get_all=True.</span>
+<span class="sd">            MAD value. Only returned if `get_all=True`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">###TODO</span>
         <span class="k">try</span><span class="p">:</span>
@@ -775,8 +775,8 @@ document.write(`
 <span class="sd">        lam2_final : float</span>
 <span class="sd">            Final lambda_2 smoothing parameter.</span>
 <span class="sd">        get_all : bool, optional</span>
-<span class="sd">            If set to True (default), returns cost, reduced chi square, and MAD.</span>
-<span class="sd">            If False, returns only cost.</span>
+<span class="sd">            If set to `True` (default), returns cost, reduced chi square, and MAD.</span>
+<span class="sd">            If `False`, returns only cost.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -784,9 +784,9 @@ document.write(`
 <span class="sd">            Cost.</span>
 <span class="sd">            In this case, it is the reduced chi square.</span>
 <span class="sd">        rchi2 : float</span>
-<span class="sd">            Reduced chi square value. Only returned if get_all=True.</span>
+<span class="sd">            Reduced chi square value. Only returned if `get_all=True`.</span>
 <span class="sd">        MAD : float</span>
-<span class="sd">            MAD value. Only returned if get_all=True.</span>
+<span class="sd">            MAD value. Only returned if `get_all=True`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">###TODO</span>
         <span class="k">try</span><span class="p">:</span>
@@ -950,19 +950,19 @@ document.write(`
 <span class="sd">            Defaults to 0.3.</span>
 <span class="sd">        window_size : int, optional</span>
 <span class="sd">            Trailing window size to determine convergence.</span>
-<span class="sd">            Default=10.</span>
+<span class="sd">            Default is 10.</span>
 <span class="sd">        iterations_for_convergence_training : int, optional</span>
 <span class="sd">            Number of continuous iterations within threshold tolerence required to achieve convergence.</span>
 <span class="sd">            Default=10.</span>
 <span class="sd">        get_trace : bool, optional</span>
 <span class="sd">            Option to save the lambda traces instead of final values.</span>
-<span class="sd">            Default is False.</span>
+<span class="sd">            Default is `False`.</span>
 <span class="sd">        ncpus : int, optional</span>
 <span class="sd">            Number of CPUs to use. Defaults to 0.5 of the available CPUs.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            Returns the lam1, lam2 traces if get_trace is True. Else it returns the lam1, lam2 value after the gradient descent terminates.</span>
+<span class="sd">            Returns the lam1, lam2 traces if `get_trace` is `True`. Else it returns the lam1, lam2 value after the gradient descent terminates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Default settings for hyper parameters; these seem to be the most robust hyperparams</span>
@@ -1099,8 +1099,9 @@ document.write(`
     
 <div class="viewcode-block" id="saberTraining.save_data"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.training.saberTraining.save_data">[docs]</a>    <span class="k">def</span> <span class="nf">save_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        If get_trace is set to False, this will save the optimized Lambda smoothing parameters in a .txt file.</span>
-<span class="sd">        If get_trace is set to True, this will save the tracks of Lambda positions in the parameter space in a .txt file.</span>
+<span class="sd">        If get_trace is set to `False`, this will save the optimized Lambda smoothing parameters in a .txt file.</span>
+<span class="sd">        If get_trace is set to `True`, this will save the tracks of Lambda positions in the parameter space in a .txt file.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename_out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filename_wext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pickle_file</span><span class="p">)</span>

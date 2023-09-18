@@ -362,6 +362,10 @@ document.write(`
 <span class="sd">        If a list of fixed velocities is given, some &#39;wiggle room&#39; defined by this attribute can be added.</span>
 <span class="sd">        This is the standard deviation of a Gaussian distribution around the fixed velocities</span>
 <span class="sd">        in units of the third axis of the fits file. The default is one spectral channel.</span>
+<span class="sd">    smooth_testdata: bool, optional</span>
+<span class="sd">        Option to apply prior smoothing to data when generating test data.</span>
+<span class="sd">        If `True`, prior smoothing will be applied using the `saberPrepare.lam1` and `saberPrepare.lam2` attributes.</span>
+<span class="sd">        If `False`, original data will be used as test data. Default is `True`.</span>
 <span class="sd">    lam1 : float, optional</span>
 <span class="sd">        Lambda_1 smoothing parameter to generate test data.</span>
 <span class="sd">        Default is 2.0.</span>
@@ -384,7 +388,7 @@ document.write(`
 <span class="sd">        Noise level of the data. Has to be specified if no path to noise map is given.</span>
 <span class="sd">    add_residual : bool, optional</span>
 <span class="sd">        Whether to add the residual (=difference between first and last major cycle iteration) to the baseline.</span>
-<span class="sd">        Only used to generate test data. Default is True.</span>
+<span class="sd">        Only used to generate test data. Default is `True`.</span>
 <span class="sd">    sig : float, optional</span>
 <span class="sd">        Defines how many sigma of the noise is used as a convergence criterion.</span>
 <span class="sd">        If the change in baseline between major cycle iterations is smaller than `sig` * `noise` for `iterations_for_convergence`,</span>
