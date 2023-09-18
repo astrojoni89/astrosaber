@@ -34,7 +34,7 @@ class HisaExtraction(object):
         Name of the fitsfile.
     path_to_noise_map : Path
         Path to the noise map.
-        If no noise map is given, a single value must be provided instead using the `noise` attribute.
+        If no noise map is given, a single value must be provided instead using the :attr:`.HisaExtraction.noise` attribute.
     path_to_data : Path
         Path to the fitsfile.
     smoothing : bool, optional
