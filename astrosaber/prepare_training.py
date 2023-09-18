@@ -23,7 +23,6 @@ np.seterr('raise')
 class saberPrepare(object):
     """
     A class used to obtain and prepare training data for the optimization.
-
     
     Attributes
     ----------

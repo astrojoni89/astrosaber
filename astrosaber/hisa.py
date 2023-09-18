@@ -27,7 +27,6 @@ warnings.showwarning = format_warning
 class HisaExtraction(object):
     """
     A class used to execute the self-absorption extraction.
-
     
     Attributes
     ----------
@@ -345,7 +344,6 @@ class HisaExtraction(object):
         flag_map : int
             Flag whether background did/did not converge or whether spectrum does/does not contain signal.
             If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
-        
         """
         bg, hisa, iterations, flag_map = one_step_extraction(self.lam1, self.p1, spectrum=self.list_data[i][1], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.list_data_thresh[i][1], p_limit=self.p_limit)
         return self.list_data[i][0], bg, hisa, iterations, flag_map

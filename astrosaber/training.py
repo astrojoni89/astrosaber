@@ -293,6 +293,7 @@ class saberTraining(object):
         :meth:`~.saberTraining.save_data`; and
         :meth:`~.saberTraining.update_pickle_file` and :func:`~.plotting.plot_pickle_spectra`
         if get_trace is set to `False`.
+        
         """
         self.prepare_data()
         string = 'Optimizing smoothing parameters'
