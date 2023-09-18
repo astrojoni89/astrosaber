@@ -72,7 +72,7 @@ class saberPrepare(object):
         in units of the third axis of the fits file. The default is one spectral channel.
     smooth_testdata: bool, optional
         Option to apply prior smoothing to data when generating test data.
-        If `True`, prior smoothing will be applied using the :param:`astrosaber.saberPrepare.lam1` and :param:`astrosaber.saberPrepare.lam2` attributes.
+        If `True`, prior smoothing will be applied using the :attr:`astrosaber.saberPrepare.lam1` and :attr:`astrosaber.saberPrepare.lam2` attributes.
         If `False`, original data will be used as test data. Default is `True`.
     lam1 : float, optional
         Lambda_1 smoothing parameter to generate test data.
