@@ -72,7 +72,7 @@ class saberPrepare(object):
         in units of the third axis of the fits file. The default is one spectral channel.
     smooth_testdata: bool, optional
         Option to apply prior smoothing to data when generating test data.
-        If `True`, prior smoothing will be applied using the :attr:`astrosaber.saberPrepare.lam1` and :attr:`astrosaber.saberPrepare.lam2` attributes.
+        If `True`, prior smoothing will be applied using the :attr:`.saberPrepare.lam1` and :attr:`.saberPrepare.lam2` attributes.
         If `False`, original data will be used as test data. Default is `True`.
     lam1 : float, optional
         Lambda_1 smoothing parameter to generate test data.
@@ -99,14 +99,14 @@ class saberPrepare(object):
         Only used to generate test data. Default is `True`.
     sig : float, optional
         Defines how many sigma of the noise is used as a convergence criterion.
-        If the change in baseline between major cycle iterations is smaller than `sig` * `noise` for `iterations_for_convergence`,
+        If the change in baseline between major cycle iterations is smaller than :attr:`.saberPrepare.sig` * :attr:`.saberPrepare.noise` for :attr:`.saberPrepare.iterations_for_convergence`,
         then the baseline is considered converged. Only used to generate test data. Default is 1.0.
     velo_range : float, optional
         Velocity range [in km/s] of the spectra that has to contain significant signal
         for it to be considered in the baseline extraction. Default is 15.0.
     check_signal_sigma : float, optional
         Defines the significance of the signal that has to be present in the spectra
-        for at least the range defined by `velo_range`. Default is 6.0.
+        for at least the range defined by :attr:`.saberPrepare.velo_range`. Default is 6.0.
     p_limit : float, optional
         The p-limit of the Markov chain to estimate signal ranges in the spectra.
         Default is 0.01.
