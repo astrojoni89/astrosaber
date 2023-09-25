@@ -80,7 +80,7 @@ class HisaExtraction(object):
         Whether to save a mask containing the flags.
         Default is `True`.
     baby_yoda : bool, optional
-        Whether to show a star wars-themed progress bar.
+        ???
         Default is `False`.
     p_limit : float, optional
         The p-limit of the Markov chain to estimate signal ranges in the spectra.
