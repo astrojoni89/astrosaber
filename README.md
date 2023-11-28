@@ -64,3 +64,33 @@ from within the `astrosaber` directory.
 
 ## Getting started
 You can find example scripts and a jupyter notebook for an HI self-absorption (HISA) baseline extraction run in the `example` directory. The data used in this example are taken from The HI/OH Recombination line survey of the inner Milky Way (THOR; [Beuther et al. 2016](https://ui.adsabs.harvard.edu/abs/2016A%26A...595A..32B/abstract), [Wang et al. 2020](https://ui.adsabs.harvard.edu/abs/2020A%26A...634A..83W/abstract)).
+
+## Citing astroSABER
+If you make use of this package in a publication, please consider the following citation:
+
+```
+@ARTICLE{2023arXiv231002077S,
+       author = {{Syed}, J. and {Beuther}, H. and {Goldsmith}, P.~F. and {Henning}, Th. and {Heyer}, M. and {Klessen}, R.~S. and {Stil}, J.~M. and {Soler}, J.~D. and {Anderson}, L.~D. and {Urquhart}, J.~S. and {Rugel}, M.~R. and {Johnston}, K.~G. and {Brunthaler}, A.},
+        title = "{Cold atomic gas identified by HI self-absorption. Cold atomic clouds toward giant molecular filaments}",
+      journal = {arXiv e-prints},
+     keywords = {Astrophysics - Astrophysics of Galaxies},
+         year = 2023,
+        month = oct,
+          eid = {arXiv:2310.02077},
+        pages = {arXiv:2310.02077},
+          doi = {10.48550/arXiv.2310.02077},
+archivePrefix = {arXiv},
+       eprint = {2310.02077},
+ primaryClass = {astro-ph.GA},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2023arXiv231002077S},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+```
+Citation courtesy of [ADS](https://ui.adsabs.harvard.edu/#).
+
+Please also consider acknowledgements to the required packages in your work.
+
+## Feedback
+We would love to get your feedback on `astrosaber`. If you should find that `astrosaber` does not perform as intended for your dataset or if you should come across bugs or have suggestions for improvement, please get into contact with us or open a new Issue or Pull request.
+
