@@ -70,20 +70,21 @@ You can find example scripts and a jupyter notebook for an HI self-absorption (H
 If you make use of this package in a publication, please consider the following citation:
 
 ```
-@ARTICLE{2023arXiv231002077S,
+@ARTICLE{2023A&A...679A.130S,
        author = {{Syed}, J. and {Beuther}, H. and {Goldsmith}, P.~F. and {Henning}, Th. and {Heyer}, M. and {Klessen}, R.~S. and {Stil}, J.~M. and {Soler}, J.~D. and {Anderson}, L.~D. and {Urquhart}, J.~S. and {Rugel}, M.~R. and {Johnston}, K.~G. and {Brunthaler}, A.},
-        title = "{Cold atomic gas identified by HI self-absorption. Cold atomic clouds toward giant molecular filaments}",
-      journal = {arXiv e-prints},
-     keywords = {Astrophysics - Astrophysics of Galaxies},
+        title = "{Cold atomic gas identified by H I self-absorption. Cold atomic clouds toward giant molecular filaments}",
+      journal = {\aap},
+     keywords = {ISM: clouds, ISM: atoms, ISM: molecules, radio lines: ISM, stars: formation, Astrophysics - Astrophysics of Galaxies},
          year = 2023,
-        month = oct,
-          eid = {arXiv:2310.02077},
-        pages = {arXiv:2310.02077},
-          doi = {10.48550/arXiv.2310.02077},
+        month = nov,
+       volume = {679},
+          eid = {A130},
+        pages = {A130},
+          doi = {10.1051/0004-6361/202346562},
 archivePrefix = {arXiv},
        eprint = {2310.02077},
  primaryClass = {astro-ph.GA},
-       adsurl = {https://ui.adsabs.harvard.edu/abs/2023arXiv231002077S},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2023A&A...679A.130S},
       adsnote = {Provided by the SAO/NASA Astrophysics Data System}
 }
 
