@@ -17,7 +17,7 @@ def main():
     prep = saberPrepare(fitsfile=filename)
 
     ###set the size of the training set
-    prep.training_set_size = 50
+    prep.training_set_size = 1000
 
     ###path to noise map (or universal noise value)
     #prep.path_to_noise_map = os.path.join('.', 'dir', 'sub', '*.fits')
