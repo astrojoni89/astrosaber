@@ -481,7 +481,7 @@ class saberPrepare(object):
         if self.filename_out is None:
             filename_wext = os.path.basename(self.fitsfile)
             filename_base, file_extension = os.path.splitext(filename_wext)
-            filename_out = '{}-training_set-{}_spectra{}.pickle'.format(filename_base, self.training_set_size, self.suffix)
+            filename_out = f'{filename_base}-training_set-{self.training_set_size:04}_spectra{self.suffix}.pickle'
         elif not self.filename_out.endswith('.pickle'):
             filename_out = self.filename_out + '.pickle'
         else:
