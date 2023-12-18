@@ -2,13 +2,11 @@ import numpy as np
 import multiprocessing
 from typing import List, Tuple, Callable, Iterable
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from tqdm import tqdm
 
 from .training import saberTraining
 from .prepare_training import saberPrepare
 from .hisa import HisaExtraction
-#from .utils.aslsq_fit import baseline_als_optimized
-#from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels
-from tqdm import tqdm
 
 
     
@@ -76,7 +74,7 @@ def parallel_process(array : np.ndarray, function : Callable[[int], Tuple], n_jo
     """
     # We run the first few iterations serially to catch bugs
     if front_num > 0:
-        front = [function(**a) if use_kwargs else function(a) for a in array[:front_num]] #, lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt
+        front = [function(**a) if use_kwargs else function(a) for a in array[:front_num]]
     # If we set n_jobs to 1, just run a list comprehension. This is useful for benchmarking and debugging.
     if n_jobs == 1:
         return front + [function(**a) if use_kwargs else function(a) for a in tqdm(array[front_num:])]
@@ -86,7 +84,7 @@ def parallel_process(array : np.ndarray, function : Callable[[int], Tuple], n_jo
         if use_kwargs:
             futures = [pool.submit(function, **a) for a in array[front_num:]]
         else:
-            futures = [pool.submit(function, a) for a in array[front_num:]] # , lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt
+            futures = [pool.submit(function, a) for a in array[front_num:]]
         kwargs = {
             'total': len(futures),
             'unit': 'spec',
@@ -98,7 +96,7 @@ def parallel_process(array : np.ndarray, function : Callable[[int], Tuple], n_jo
             pass
     out = []
     # Get the results from the futures.
-    for i, future in enumerate(futures): #tqdm(enumerate(futures)):
+    for i, future in enumerate(futures):
         try:
             out.append(future.result())
         except Exception as e:
@@ -128,7 +126,7 @@ def parallel_process_wo_bar(array : np.ndarray, function : Callable[[int], Tuple
     """
     # We run the first few iterations serially to catch bugs
     if front_num > 0:
-        front = [function(**a) if use_kwargs else function(a) for a in array[:front_num]] #, lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt
+        front = [function(**a) if use_kwargs else function(a) for a in array[:front_num]]
     # If we set n_jobs to 1, just run a list comprehension. This is useful for benchmarking and debugging.
     if n_jobs == 1:
         return front + [function(**a) if use_kwargs else function(a) for a in tqdm(array[front_num:])]
@@ -138,7 +136,7 @@ def parallel_process_wo_bar(array : np.ndarray, function : Callable[[int], Tuple
         if use_kwargs:
             futures = [pool.submit(function, **a) for a in array[front_num:]]
         else:
-            futures = [pool.submit(function, a) for a in array[front_num:]] # , lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt
+            futures = [pool.submit(function, a) for a in array[front_num:]]
         kwargs = {
             'total': len(futures),
             'unit': 'it',
@@ -150,7 +148,7 @@ def parallel_process_wo_bar(array : np.ndarray, function : Callable[[int], Tuple
         #    pass
     out = []
     # Get the results from the futures.
-    for i, future in enumerate(futures): #tqdm(enumerate(futures)):
+    for i, future in enumerate(futures):
         try:
             out.append(future.result())
         except Exception as e:
