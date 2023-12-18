@@ -356,10 +356,10 @@ class saberTraining(object):
         results_list_array = np.array(results_list)
     
         if get_all:
-            assert results_list_array.shape == (len(self.training_data),3), 'Shape is {}'.format(results_list_array.shape)
+            assert results_list_array.shape == (len(self.training_data),3), f'Shape is {results_list_array.shape}'
             return np.nanmedian(results_list_array[:,0]), np.nanmedian(results_list_array[:,1]), np.nanmedian(results_list_array[:,2])
         else:
-            assert results_list_array.shape == (len(self.training_data),1), 'Shape is {}'.format(results_list_array.shape)
+            assert results_list_array.shape == (len(self.training_data),1), f'Shape is {results_list_array.shape}'
             return np.nanmedian(results_list_array[:,0])
 
     def single_cost(self, i : int, get_all : Optional[bool] = True) -> Tuple[float, float, float]:
@@ -759,11 +759,11 @@ class saberTraining(object):
             if gd.lam2_trace[i+1] < 0.:
                 gd.lam2_trace[i+1] = 0.
 
-            say('\niter {0}: red.chi2={1:4.2f}, [lam1, lam2]=[{2:.3f}, {3:.3f}], [p1, p2]=[{4:.3f}, {5:.3f}], mom=[{6:.3f}, {7:4.3f}]'.format(i, gd.accuracy_trace[i], np.round(gd.lam1_trace[i], 3), np.round(gd.lam2_trace[i], 3), np.round(p1, 3), np.round(p2, 3), np.round(momentum_lam1, 2), np.round(momentum_lam2, 2)), end=' ')
+            say(f'\niter {i}: red.chi2={gd.accuracy_trace[i]:4.2f}, [lam1, lam2]=[{np.round(gd.lam1_trace[i], 3):.3f}, {np.round(gd.lam2_trace[i], 3):.3f}], [p1, p2]=[{np.round(p1, 3):.3f}, {np.round(p2, 3):.3f}], mom=[{np.round(momentum_lam1, 2):.3f}, {np.round(momentum_lam2, 2):4.3f}]', end=' ')
 
             # if False: (use this to avoid convergence testing)
             if i <= 2 * self.window_size:
-                say(' (Convergence testing begins in {} iterations)'.format(int(2 * self.window_size - i)))
+                say(f' (Convergence testing begins in {int(2 * self.window_size - i)} iterations)')
             else:
                 gd.lam1means1[i] = np.mean(gd.lam1_trace[i - self.window_size:i])
                 gd.lam1means2[i] = np.mean(gd.lam1_trace[i - 2 * self.window_size:i - self.window_size])
@@ -780,7 +780,7 @@ class saberTraining(object):
                     converge_logic = (gd.fracdiff_lam1 < tolerance)
 
                 c = count_ones_in_row(converge_logic)
-                say('  ({0:4.3F},{1:4.3F} < {2:4.3F} for {3} iters [{4} required])'.format(gd.fracdiff_lam1[i], gd.fracdiff_lam2[i], tolerance, int(c[i]), iterations_for_convergence_training))
+                say(f'  ({gd.fracdiff_lam1[i]:4.3F},{gd.fracdiff_lam2[i]:4.3F} < {tolerance:4.3F} for {int(c[i])} iters [{iterations_for_convergence_training} required])')
 
                 if i in range(2 * self.window_size, self.iterations, 10):
                     if _supports_unicode(sys.stderr):
@@ -793,7 +793,7 @@ class saberTraining(object):
                 if np.any(c > iterations_for_convergence_training):
                     i_converge_training = np.min(np.argwhere(c > iterations_for_convergence_training))
                     gd.iter_of_convergence = i_converge_training
-                    say('\nStable convergence achieved at iteration: {}'.format(i_converge_training))
+                    say(f'\nStable convergence achieved at iteration: {i_converge_training}')
                     break
                 
                 # If gradient descent does not converge, decrease step size toward the end of the loop
@@ -817,16 +817,16 @@ class saberTraining(object):
             filename_wext = os.path.basename(self.pickle_file)
             filename_base, file_extension = os.path.splitext(filename_wext)
             if not self.get_trace:
-                filename_lam = filename_base+'_lam_opt{}.txt'.format(self.suffix)
+                filename_lam = filename_base+f'_lam_opt{self.suffix}.txt'
             else:
-                filename_lam = filename_base+'_lam_traces{}.txt'.format(self.suffix)
+                filename_lam = filename_base+f'_lam_traces{self.suffix}.txt'
         elif not self.filename_out.endswith('.txt'):
             filename_lam = str(self.filename_out) + '.txt'
         else:
             filename_lam = str(self.filename_out)
         pathname_lam = os.path.join(self.path_to_data, filename_lam)
         np.savetxt(pathname_lam, self.popt_lam)
-        print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename_lam, self.path_to_data))
+        print(f"\n\033[92mSAVED FILE:\033[0m '{filename_lam}' in '{self.path_to_data}'")
     
     def update_pickle_file(self, training_data, lam1, lam2):
         """
@@ -850,7 +850,7 @@ class saberTraining(object):
         """
         filename_wext = os.path.basename(self.pickle_file)
         filename_base, file_extension = os.path.splitext(filename_wext)
-        updated_picklename = filename_base + '_astrosaber_fit{}.pickle'.format(self.suffix)
+        updated_picklename = filename_base + f'_astrosaber_fit{self.suffix}.pickle'
         self.path_to_updated_pickle = os.path.join(self.path_to_data, updated_picklename)
         pickle.dump(self.p, open(self.path_to_updated_pickle, 'wb'), protocol=2)
-        say("\n\033[92mSAVED UPDATED PICKLE FILE:\033[0m '{}' in '{}'".format(updated_picklename, self.path_to_data))
+        say(f"\n\033[92mSAVED UPDATED PICKLE FILE:\033[0m '{updated_picklename}' in '{self.path_to_data}'")
