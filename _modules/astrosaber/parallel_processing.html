@@ -293,13 +293,11 @@ document.write(`
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ProcessPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">.training</span> <span class="kn">import</span> <span class="n">saberTraining</span>
 <span class="kn">from</span> <span class="nn">.prepare_training</span> <span class="kn">import</span> <span class="n">saberPrepare</span>
 <span class="kn">from</span> <span class="nn">.hisa</span> <span class="kn">import</span> <span class="n">HisaExtraction</span>
-<span class="c1">#from .utils.aslsq_fit import baseline_als_optimized</span>
-<span class="c1">#from .utils.quality_checks import goodness_of_fit, get_max_consecutive_channels, determine_peaks, mask_channels</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 
     
@@ -367,7 +365,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># We run the first few iterations serially to catch bugs</span>
     <span class="k">if</span> <span class="n">front_num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">front</span> <span class="o">=</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[:</span><span class="n">front_num</span><span class="p">]]</span> <span class="c1">#, lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt</span>
+        <span class="n">front</span> <span class="o">=</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[:</span><span class="n">front_num</span><span class="p">]]</span>
     <span class="c1"># If we set n_jobs to 1, just run a list comprehension. This is useful for benchmarking and debugging.</span>
     <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">front</span> <span class="o">+</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:])]</span>
@@ -377,7 +375,7 @@ document.write(`
         <span class="k">if</span> <span class="n">use_kwargs</span><span class="p">:</span>
             <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:]]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:]]</span> <span class="c1"># , lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt</span>
+            <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:]]</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">futures</span><span class="p">),</span>
             <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;spec&#39;</span><span class="p">,</span>
@@ -389,7 +387,7 @@ document.write(`
             <span class="k">pass</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># Get the results from the futures.</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">future</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span> <span class="c1">#tqdm(enumerate(futures)):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">future</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -419,7 +417,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># We run the first few iterations serially to catch bugs</span>
     <span class="k">if</span> <span class="n">front_num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">front</span> <span class="o">=</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[:</span><span class="n">front_num</span><span class="p">]]</span> <span class="c1">#, lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt</span>
+        <span class="n">front</span> <span class="o">=</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[:</span><span class="n">front_num</span><span class="p">]]</span>
     <span class="c1"># If we set n_jobs to 1, just run a list comprehension. This is useful for benchmarking and debugging.</span>
     <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">front</span> <span class="o">+</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:])]</span>
@@ -429,7 +427,7 @@ document.write(`
         <span class="k">if</span> <span class="n">use_kwargs</span><span class="p">:</span>
             <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:]]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:]]</span> <span class="c1"># , lam1_updt=lam1_updt, p1_updt=p1_updt, lam2_updt=lam2_updt, p2_updt=p2_updt</span>
+            <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:]]</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">futures</span><span class="p">),</span>
             <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;it&#39;</span><span class="p">,</span>
@@ -441,7 +439,7 @@ document.write(`
         <span class="c1">#    pass</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># Get the results from the futures.</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">future</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span> <span class="c1">#tqdm(enumerate(futures)):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">future</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
