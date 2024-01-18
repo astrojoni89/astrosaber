@@ -77,7 +77,7 @@ def parallel_process(array : np.ndarray, function : Callable[[int], Tuple], n_jo
         front = [function(**a) if use_kwargs else function(a) for a in array[:front_num]]
     # If we set n_jobs to 1, just run a list comprehension. This is useful for benchmarking and debugging.
     if n_jobs == 1:
-        return front + [function(**a) if use_kwargs else function(a) for a in tqdm(array[front_num:])]
+        return front + [function(**a) if use_kwargs else function(a) for a in bar(array[front_num:])]
     # Assemble the workers
     with ProcessPoolExecutor(max_workers=n_jobs) as pool:
         # Pass the elements of array into function
