@@ -368,7 +368,7 @@ document.write(`
         <span class="n">front</span> <span class="o">=</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">array</span><span class="p">[:</span><span class="n">front_num</span><span class="p">]]</span>
     <span class="c1"># If we set n_jobs to 1, just run a list comprehension. This is useful for benchmarking and debugging.</span>
     <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">front</span> <span class="o">+</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:])]</span>
+        <span class="k">return</span> <span class="n">front</span> <span class="o">+</span> <span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_kwargs</span> <span class="k">else</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">bar</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">front_num</span><span class="p">:])]</span>
     <span class="c1"># Assemble the workers</span>
     <span class="k">with</span> <span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
         <span class="c1"># Pass the elements of array into function</span>
@@ -566,7 +566,7 @@ document.write(`
         <div class="footer-item">
   <p class="copyright">
     
-      © Copyright 2023, Jonas Syed.
+      © Copyright 2024, Jonas Syed.
       <br/>
     
   </p>
