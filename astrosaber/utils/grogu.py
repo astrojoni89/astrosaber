@@ -5,6 +5,7 @@ import sys
 import multiprocessing as mp
 import threading as th
 from tqdm import tqdm
+from tqdm import TqdmDeprecationWarning
 from tqdm.utils import _term_move_up
 
 up = _term_move_up()

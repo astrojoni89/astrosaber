@@ -94,6 +94,7 @@ def parallel_process(array : np.ndarray, function : Callable[[int], Tuple], n_jo
         # Print out the progress as tasks complete
         for f in bar(as_completed(futures), **kwargs):
             pass
+
     out = []
     # Get the results from the futures.
     for i, future in enumerate(futures):
