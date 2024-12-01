@@ -30,7 +30,8 @@ def main():
 
     ###this runs the hisa extraction routine
 
-    hisa.ncpus = 8
+    hisa.ncpus = 4
+    hisa.baby_yoda = False
     hisa.saber()
 
     '''
