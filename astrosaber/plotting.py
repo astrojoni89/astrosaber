@@ -246,6 +246,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     training_data = data['training_data']
     test_data = data['test_data']
     velocity = data['velocity']
+    rms = data['rms_noise']
     if 'bg_fit' in data.keys():
         bg_fit = data['bg_fit']
     else:
@@ -279,11 +280,10 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
             ax2 = fig.add_subplot(gs00[1,0])
             ax2.plot(velocity[velo_min:velo_max], bg_fit[idx][velo_min:velo_max] - test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[1], linestyle=line_list[0])
             ax2.set_title("Residual", fontsize=fontsize)
-            plot_signal_ranges(ax, data, idx, velocity)
-            add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
-            #TODO add sigma lines
-            #ax2.axhline(color='black', ls='solid', lw=1.0)
-            #ax2.axhline(y=rms, color='red', ls='dotted', lw=1.0)
+            plot_signal_ranges(ax2, data, idx, velocity)
+            add_figure_properties(ax2, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
+            ax2.axhline(color='black', ls='solid', lw=1.0)
+            ax2.axhline(y=rms, color='red', ls='dotted', lw=1.0)
         else:
             ax = fig.add_subplot(rows,cols,i+1)
             ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
