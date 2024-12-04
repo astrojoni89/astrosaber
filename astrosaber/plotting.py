@@ -264,7 +264,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
     figsize = (cols*colsize, rowbreak*rowsize)
     fig = plt.figure(figsize=figsize)
-    gs0 = gridspec.GridSpec(3*rows, cols, figure=fig)
+    gs0 = gridspec.GridSpec(rows, 3*cols, figure=fig)
     xValue = rng.choice(xsize,size=n_spectra,replace=False)
     for i in trange(n_spectra):
         idx = xValue[i]
