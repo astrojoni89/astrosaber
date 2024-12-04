@@ -264,7 +264,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
     figsize = (cols*colsize, rowbreak*rowsize)
     fig = plt.figure(figsize=figsize)
-    gs0 = gridspec.GridSpec(rows, 3*cols, figure=fig)
+    gs0 = gridspec.GridSpec(rows, cols, figure=fig)
     xValue = rng.choice(xsize,size=n_spectra,replace=False)
     for i in trange(n_spectra):
         idx = xValue[i]
@@ -277,7 +277,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
             ax.plot(velocity[velo_min:velo_max], bg_fit[idx][velo_min:velo_max], drawstyle=draw_list[2], color=color_list[2], linestyle=line_list[2], label="bg fit")
             #add residual plot
             ax2 = fig.add_subplot(gs00[1,0])
-            ax2.plot(velocity[velo_min:velo_max], bg_fit[idx][velo_min:velo_max] - test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0])
+            ax2.plot(velocity[velo_min:velo_max], bg_fit[idx][velo_min:velo_max] - test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[1], linestyle=line_list[0])
             ax2.set_title("Residual", fontsize=fontsize)
             plot_signal_ranges(ax, data, idx, velocity)
             add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
