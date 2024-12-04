@@ -265,14 +265,14 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     xsize = len(data['training_data'])
     cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
     figsize = (cols*colsize, rowbreak*rowsize)
-    fig = plt.figure(figsize=figsize, layout='constrained')
+    fig = plt.figure(figsize=figsize)
     gs0 = gridspec.GridSpec(rows, cols, figure=fig)
     xValue = rng.choice(xsize,size=n_spectra,replace=False)
     for i in trange(n_spectra):
         idx = xValue[i]
         velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
         if bg_fit is not None:
-            gs00 = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=gs0[i], height_ratios=[4,1])
+            gs00 = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=gs0[i], height_ratios=[3,1])
             ax = fig.add_subplot(gs00[0,0])
             ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
             ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1], label="observed HI+HISA")
