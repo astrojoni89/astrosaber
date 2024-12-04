@@ -288,7 +288,6 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
             ax = fig.add_subplot(rows,cols,i+1)
             ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
             ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1], label="observed HI+HISA")
-            ax.plot(velocity[velo_min:velo_max], bg_fit[idx][velo_min:velo_max], drawstyle=draw_list[2], color=color_list[2], linestyle=line_list[2], label="bg fit")
         title = get_title_string(idx, rchi2)
         ax.set_title(title, fontsize=fontsize)
         plot_signal_ranges(ax, data, idx, velocity)
