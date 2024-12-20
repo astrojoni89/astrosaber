@@ -638,11 +638,15 @@ If flag is 1, the were no issues in the fit. If 0, fit did not converge or did n
 
 <dl class="py function">
 <dt class="sig sig-object py" id="astrosaber.utils.aslsq_helper.velocity_axes">
-<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">velocity_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#velocity_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.velocity_axes" title="Permalink to this definition">#</a></dt>
-<dd><p>Get velocity axis from FITS file.</p>
+<span class="sig-prename descclassname"><span class="pre">astrosaber.utils.aslsq_helper.</span></span><span class="sig-name descname"><span class="pre">velocity_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cunit3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'m/s'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/astrosaber/utils/aslsq_helper.html#velocity_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#astrosaber.utils.aslsq_helper.velocity_axes" title="Permalink to this definition">#</a></dt>
+<dd><p>Get velocity axis from FITS file in units of km/s.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>Path</em>) – Path to FITS file to get velocity axis from.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>Path</em>) – Path to FITS file to get velocity axis from.</p></li>
+<li><p><strong>cunit3</strong> (<em>str</em><em>, </em><em>optional</em>) – Type of velocity unit specified in the fits file header keyword ‘CUNIT3’.
+Default is ‘m/s’.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>velocity</strong> – Array of velocity axis.</p>
