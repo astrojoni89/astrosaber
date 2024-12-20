@@ -4,7 +4,7 @@
 # @Date:   2021-03-01
 # @Filename: plotting.py
 # @Last modified by:   syed
-# @Last modified time: 24-01-2022
+# @Last modified time: 01-12-2024
 
 import os
 import sys
@@ -12,6 +12,7 @@ import numpy as np
 import pickle
 
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 
 from astropy.io import fits
 from astropy import units as u
@@ -88,14 +89,28 @@ def ylabel_from_header(header):
 
     return btype + bunit
 
-def add_figure_properties(ax, header=None, fontsize=10, velocity_range=None, vel_unit=u.km/u.s):
+def add_figure_properties(ax, header=None, fontsize=10, velocity_range=None, vel_unit=u.km/u.s, set_xlabel = True, set_ylabel=True):
     ax.set_xlim(np.amin(velocity_range), np.amax(velocity_range))
     #ax.set_ylim()
-    ax.set_xlabel(xlabel_from_header(header, vel_unit), fontsize=fontsize)
-    ax.set_ylabel(ylabel_from_header(header), fontsize=fontsize)
-
+    if set_xlabel:
+        ax.set_xlabel(xlabel_from_header(header, vel_unit), fontsize=fontsize)
+    if set_ylabel:
+        ax.set_ylabel(ylabel_from_header(header), fontsize=fontsize)
     ax.tick_params(labelsize=fontsize - 2)
+
+#def autoscale_y(fig):
+#    axes = fig.get_axes()
+#    #determine axes and their limits 
+#    ax_selec = [(ax, ax.get_ylim()) for ax in axes]
+#
+#    #find maximum y-limit spread
+#    max_delta = max([lmax-lmin for _, (lmin, lmax) in ax_selec])
+#
+#    #expand limits of all subplots according to maximum spread
+#    for ax, (lmin, lmax) in ax_selec:
+#        ax.set_ylim(lmin-(max_delta-(lmax-lmin))/2, lmax+(max_delta-(lmax-lmin))/2)
     
+
 def scale_fontsize(rowsize):
     rowsize_scale = 4
     if rowsize >= rowsize_scale:
@@ -245,6 +260,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     training_data = data['training_data']
     test_data = data['test_data']
     velocity = data['velocity']
+    rms = data['rms_noise']
     if 'bg_fit' in data.keys():
         bg_fit = data['bg_fit']
     else:
@@ -262,25 +278,47 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     xsize = len(data['training_data'])
     cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
     figsize = (cols*colsize, rowbreak*rowsize)
-    fig = plt.figure(figsize=figsize)
+    if bg_fit is not None:
+        figsize = (cols*colsize, 1.5*rowbreak*rowsize)
+    else:
+        figsize = (cols*colsize, 1.2*rowbreak*rowsize)
+    fig = plt.figure(figsize=figsize) #, constrained_layout=True
+    gs0 = gridspec.GridSpec(rows, cols, figure=fig)
     xValue = rng.choice(xsize,size=n_spectra,replace=False)
     for i in trange(n_spectra):
         idx = xValue[i]
-        ax = fig.add_subplot(rows,cols,i+1)
         velo_min, velo_max = find_nearest(velocity,np.amin(velocity_range)), find_nearest(velocity,np.amax(velocity_range))
-        ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
-        ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1], label="observed HI+HISA")
         if bg_fit is not None:
+            gs00 = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=gs0[i]) #, height_ratios=[3,1]
+            ax = fig.add_subplot(gs00[0,0])
+            ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
+            ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1], label="observed HI+HISA")
             ax.plot(velocity[velo_min:velo_max], bg_fit[idx][velo_min:velo_max], drawstyle=draw_list[2], color=color_list[2], linestyle=line_list[2], label="bg fit")
+            add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit, set_xlabel=False)
+            #add residual plot
+            ax2 = fig.add_subplot(gs00[1,0])
+            ax2.plot(velocity[velo_min:velo_max], bg_fit[idx][velo_min:velo_max] - test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[1], linestyle=line_list[0])
+            ax2.set_title("Residual", fontsize=fontsize)
+            ax2.axhline(color='black', ls='solid', lw=1.0)
+            ax2.axhline(y=rms[idx], color='red', ls='dotted', lw=1.0)
+            ax2.axhline(y=-rms[idx], color='red', ls='dotted', lw=1.0)
+            plot_signal_ranges(ax2, data, idx, velocity)
+            add_figure_properties(ax2, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit, set_ylabel=False)
+            #autoscale_y(fig)
+            gs00.set_height_ratios([np.diff(ax.get_ylim())[0], np.diff(ax2.get_ylim())[0]])
+        else:
+            #ax = fig.add_subplot(rows,cols,i+1)
+            ax = fig.add_subplot(gs0[i])
+            ax.plot(velocity[velo_min:velo_max], test_data[idx][velo_min:velo_max], drawstyle=draw_list[0], color=color_list[0], linestyle=line_list[0], label="'pure' HI")
+            ax.plot(velocity[velo_min:velo_max], training_data[idx][velo_min:velo_max], drawstyle=draw_list[1], color=color_list[1], linestyle=line_list[1], label="observed HI+HISA")
+            add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
         title = get_title_string(idx, rchi2)
         ax.set_title(title, fontsize=fontsize)
         plot_signal_ranges(ax, data, idx, velocity)
-        add_figure_properties(ax, header=header, fontsize=fontsize, velocity_range=velocity_range, vel_unit=vel_unit)
         ax.legend(loc=2, fontsize=fontsize-2)
 
-    #for axs in fig.axes:
-        #axs.label_outer()
-    fig.tight_layout()
+    gs0.tight_layout(fig)
+   # fig.tight_layout()
 
     if not os.path.exists(path_to_plots):
         os.makedirs(path_to_plots)
