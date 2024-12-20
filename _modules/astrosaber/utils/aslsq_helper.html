@@ -484,7 +484,7 @@ document.write(`
 
 
 <span class="c1">#check if there is signal in at least xy neighboring channels corresponding to velo_range [km/s]: default 10 channels</span>
-<div class="viewcode-block" id="check_signal_ranges"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.check_signal_ranges">[docs]</a><span class="k">def</span> <span class="nf">check_signal_ranges</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">velo_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="check_signal_ranges"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.check_signal_ranges">[docs]</a><span class="k">def</span> <span class="nf">check_signal_ranges</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">velo_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cunit3</span><span class="o">=</span><span class="s1">&#39;m/s&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check for continuous signal range in an array given a significance threshold.</span>
 
@@ -500,6 +500,9 @@ document.write(`
 <span class="sd">        Noise level. Signal threshold will be `sigma` * `noise`.</span>
 <span class="sd">    velo_range : float</span>
 <span class="sd">        Velocity range [in km/s] of the spectrum that has to contain continuous significant signal.</span>
+<span class="sd">    cunit3 : str, optional</span>
+<span class="sd">        Type of velocity unit specified in the fits file header keyword &#39;CUNIT3&#39;.</span>
+<span class="sd">        Default is &#39;m/s&#39;.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -508,7 +511,12 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># fallback to fit all spectra if no header is given</span>
         <span class="k">return</span> <span class="kc">True</span>
-    <span class="n">vdelt</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;CDELT3&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">1000.</span>
+    <span class="k">if</span> <span class="n">cunit3</span> <span class="o">==</span> <span class="s1">&#39;m/s&#39;</span><span class="p">:</span>
+        <span class="n">vdelt</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;CDELT3&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">1000.</span>
+    <span class="k">elif</span> <span class="n">cunit3</span> <span class="o">==</span> <span class="s1">&#39;km/s&#39;</span><span class="p">:</span>
+        <span class="n">vdelt</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;CDELT3&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown velocity unit (cunit3)&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sigma</span> <span class="o">=</span> <span class="mi">5</span>
     <span class="k">if</span> <span class="n">noise</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
