@@ -30,14 +30,17 @@ def find_nearest(array: np.ndarray, value: float) -> int:
     return idx
 
 
-def velocity_axes(name: Path) -> np.ndarray:
+def velocity_axes(name: Path, cunit3: str = 'm/s') -> np.ndarray:
     """
-    Get velocity axis from FITS file.
+    Get velocity axis from FITS file in units of km/s.
 
     Parameters
     ----------
     name : Path
         Path to FITS file to get velocity axis from.
+    cunit3 : str, optional
+        Type of velocity unit specified in the fits file header keyword 'CUNIT3'.
+        Default is 'm/s'.
 
     Returns
     -------
@@ -47,7 +50,12 @@ def velocity_axes(name: Path) -> np.ndarray:
     header = fits.getheader(name)
     n = header['NAXIS3']
     velocity = (header['CRVAL3'] - header['CRPIX3'] * header['CDELT3']) + (np.arange(n)+1) * header['CDELT3']
-    velocity = velocity / 1000
+    if cunit3 == 'm/s':
+        velocity = velocity / 1000
+    elif cunit3 == 'km/s':
+        return velocity
+    else:
+        raise ValueError('Unknown velocity unit (cunit3)')
     return velocity
 
 

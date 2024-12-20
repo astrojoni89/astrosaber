@@ -70,7 +70,7 @@ class saberPrepare(object):
         If a list of fixed velocities is given, some 'wiggle room' defined by this attribute can be added.
         This is the standard deviation of a Gaussian distribution around the fixed velocities
         in units of the third axis of the fits file. The default is one spectral channel.
-    cunit3 : string, optional
+    cunit3 : str, optional
         Type of velocity unit specified in the fits file header keyword 'CUNIT3'.
         Default is 'm/s'.
     smooth_testdata: bool, optional
@@ -260,7 +260,7 @@ class saberPrepare(object):
         self.header = fits.getheader(self.fitsfile)
         #self.header_2d = md_header_2d(self.fitsfile)
         self.v = self.header['NAXIS3']
-        self.velocity = velocity_axes(self.fitsfile)
+        self.velocity = velocity_axes(self.fitsfile, cunit3=self.cunit3)
         self.mock_data = {'training_data' : None, 'test_data' : None, 'hisa_spectra' : None, 'location' : None, 'amplitudes' : None, 'fwhms' : None, 'means' : None, 'hisa_mask' : None, 'signal_ranges' : None, 'rms_noise' : None, 'velocity' : None, 'header' : None}
         self.hisa_spectra = []
         self.training_data = []
