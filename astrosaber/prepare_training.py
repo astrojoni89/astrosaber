@@ -70,6 +70,9 @@ class saberPrepare(object):
         If a list of fixed velocities is given, some 'wiggle room' defined by this attribute can be added.
         This is the standard deviation of a Gaussian distribution around the fixed velocities
         in units of the third axis of the fits file. The default is one spectral channel.
+    cunit3 : string, optional
+        Type of velocity unit specified in the fits file header keyword 'CUNIT3'.
+        Default is 'm/s'.
     smooth_testdata: bool, optional
         Option to apply prior smoothing to data when generating test data.
         If `True`, prior smoothing will be applied using the :attr:`.saberPrepare.lam1` and :attr:`.saberPrepare.lam2` attributes.
@@ -146,6 +149,7 @@ class saberPrepare(object):
                  mean_linewidth : Union[int, float] = None, std_linewidth : Union[int, float] = None,
                  mean_ncomponent : Union[int, float] = 2., std_ncomponent : Union[int, float] = .5,
                  fix_velocities : Optional[List] = None, fix_velocities_sigma : Optional[float] = None,
+                 cunit3 = 'm/s',
                  smooth_testdata : bool = True,
                  lam1 : Optional[float] = None, p1 : Optional[float] = None,
                  lam2 : Optional[float] = None, p2 : Optional[float] = None,
@@ -170,6 +174,8 @@ class saberPrepare(object):
         
         self.fix_velocities = fix_velocities
         self.fix_velocities_sigma = fix_velocities_sigma
+
+        self.cunit3 = cunit3
         
         self.smooth_testdata = smooth_testdata
         self.lam1 = lam1
@@ -211,6 +217,7 @@ class saberPrepare(object):
                 std_ncomponent: {self.std_ncomponent}
                 fix_velocities: {self.fix_velocities}
                 fix_velocities_sigma: {self.fix_velocities_sigma}
+                cunit3: {self.cunit3}
                 smooth_testdata: {self.smooth_testdata}
                 lam1: {self.lam1}
                 p1: {self.p1}
@@ -309,7 +316,12 @@ class saberPrepare(object):
         say(heading)
 
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
-        channel_width = abs(self.header['CDELT3']) / 1000.
+        if self.cunit3 == 'm/s':
+            channel_width = abs(self.header['CDELT3']) / 1000.
+        elif self.cunit3 == 'km/s':
+            channel_width = abs(self.header['CDELT3'])
+        else:
+            raise ValueError('Unknown velocity unit (cunit3)')
         spectral_resolution = 1 / np.sqrt(8*np.log(2)) # unit channel
         edges = int(0.2 * min(self.header['NAXIS1'],self.header['NAXIS2']))
         indices = np.column_stack((self.rng.integers(edges,self.header['NAXIS2']-edges+1,self.training_set_size), self.rng.integers(edges,self.header['NAXIS1']-edges+1,self.training_set_size)))
@@ -397,7 +409,10 @@ class saberPrepare(object):
                 ranges_hisa_list.append(ranges_hisa_i)
                 amp_list.append(amp)
                 fwhm_list.append(lw * channel_width * np.sqrt(8*np.log(2)))
-                mean_list.append(((self.header['CRVAL3'] - self.header['CRPIX3'] * self.header['CDELT3']) + (v+1) * self.header['CDELT3']) / 1000.)
+                if self.cunit3 == 'm/s':
+                    mean_list.append(((self.header['CRVAL3'] - self.header['CRPIX3'] * self.header['CDELT3']) + (v+1) * self.header['CDELT3']) / 1000.)
+                elif self.cunit3 == 'km/s':
+                    mean_list.append(((self.header['CRVAL3'] - self.header['CRPIX3'] * self.header['CDELT3']) + (v+1) * self.header['CDELT3']))
             gauss_HISA[np.where(gauss_HISA<1e-5)] = 0.
                 
             ranges_hisa = np.array(ranges_hisa_list).astype(int).reshape(-1,2)
