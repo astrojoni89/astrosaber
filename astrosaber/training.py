@@ -100,6 +100,9 @@ class saberTraining(object):
     velo_range : float, optional
         Velocity range [km/s] of the spectra that has to contain significant signal
         for it to be considered in the baseline extraction. Default is 15.0.
+    cunit3 : str, optional
+        Type of velocity unit specified in the fits file header keyword 'CUNIT3'.
+        Default is 'm/s'.
     check_signal_sigma : float, optional
         Defines the significance of the signal that has to be present in the spectra
         for at least the range defined by :attr:`.saberTraining.velo_range`. Default is 6.0.
@@ -159,7 +162,7 @@ class saberTraining(object):
                  eps_l1 : Optional[float] = None, eps_l2 : Optional[float] = None,
                  learning_rate_l1 : Optional[float] = None, learning_rate_l2 : Optional[float] = None, mom : Optional[float] = None,
                  get_trace : bool = False, niters : Optional[int] = 20, iterations_for_convergence : Optional[int] = 3,
-                 add_residual : bool = True, sig : Optional[float] = 1.0, velo_range : Optional[float] = 15.0,
+                 add_residual : bool = True, sig : Optional[float] = 1.0, velo_range : Optional[float] = 15.0, cunit3 : str = 'm/s',
                  check_signal_sigma : Optional[float] = 6., p_limit : Optional[float] = 0.01,
                  ncpus : Optional[int] = None, suffix : Optional[str] = '', filename_out : Optional[str] = None, seed : Optional[int] = 111):
         
@@ -194,6 +197,7 @@ class saberTraining(object):
         self.sig = sig
         
         self.velo_range = velo_range
+        self.cunit3 = cunit3
         self.check_signal_sigma = check_signal_sigma
 
         self.p_limit = p_limit
@@ -234,6 +238,7 @@ class saberTraining(object):
                    add_residual: {self.add_residual}
                    sig: {self.sig}
                    velo_range: {self.velo_range}
+                   cunit3: {self.cunit3}
                    check_signal_sigma: {self.check_signal_sigma}
                    p_limit: {self.p_limit}
                    ncpus: {self.ncpus}
@@ -393,9 +398,9 @@ class saberTraining(object):
             mask = mask_channels(self.v, mask_ranges, pad_channels=3, remove_intervals=None)
             ###
             if self.phase == 'two':
-                bg_fit, _, _, _ = two_step_extraction(self.lam1_updt, self.p1, self.lam2_updt, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
+                bg_fit, _, _, _ = two_step_extraction(self.lam1_updt, self.p1, self.lam2_updt, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i], cunit3=self.cunit3)
             elif self.phase == 'one':
-                bg_fit, _, _, _ = one_step_extraction(self.lam1_updt, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
+                bg_fit, _, _, _ = one_step_extraction(self.lam1_updt, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i], cunit3=self.cunit3)
             #TODO; for simulated noise-less data
             if self.noise[i] == 0.:
                 self.noise[i] = 1.
@@ -506,9 +511,9 @@ class saberTraining(object):
             mask = mask_channels(self.v, mask_ranges, pad_channels=3, remove_intervals=None)
             ###
             if self.phase == 'two':
-                bg_fit, _, _, _ = two_step_extraction(lam1_final, self.p1, lam2_final, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
+                bg_fit, _, _, _ = two_step_extraction(lam1_final, self.p1, lam2_final, self.p2, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i], cunit3=self.cunit3)
             elif self.phase == 'one':
-                bg_fit, _, _, _ = one_step_extraction(lam1_final, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i])
+                bg_fit, _, _, _ = one_step_extraction(lam1_final, self.p1, spectrum=self.training_data[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh[i], cunit3=self.cunit3)
             #TODO; for simulated noise-less data
             if self.noise[i] == 0.:
                 self.noise[i] = 1.

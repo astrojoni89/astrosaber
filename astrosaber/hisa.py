@@ -73,6 +73,9 @@ class HisaExtraction(object):
     velo_range : float, optional
         Velocity range [in km/s] of the spectra that has to contain significant signal
         for it to be considered in the baseline extraction. Default is 15.0.
+    cunit3 : str, optional
+        Type of velocity unit specified in the fits file header keyword 'CUNIT3'.
+        Default is 'm/s'.
     check_signal_sigma : float, optional
         Defines the significance of the signal that has to be present in the spectra
         for at least the range defined by :attr:`.HisaExtraction.velo_range`. Default is 6.0.
@@ -113,6 +116,7 @@ class HisaExtraction(object):
                  lam2 : float = None, p2 : Optional[float] = 0.90, niters : Optional[int] = 20,
                  iterations_for_convergence : Optional[int] = 3, noise : float = None,
                  add_residual : Optional[bool] = True, sig : Optional[float] = 1.0, velo_range : Optional[float] = 15.0,
+                 cunit3 : str = 'm/s',
                  check_signal_sigma : Optional[float] = 6., output_flags : Optional[bool] = True, baby_yoda : Optional[bool] = False,
                  p_limit : Optional[float] = 0.02, ncpus : Optional[int] = None, suffix : Optional[str] = ''):
         
@@ -135,6 +139,7 @@ class HisaExtraction(object):
         self.sig = sig
         
         self.velo_range = velo_range
+        self.cunit3 = cunit3
         self.check_signal_sigma = check_signal_sigma
         
         self.output_flags = output_flags
@@ -164,6 +169,7 @@ class HisaExtraction(object):
                  add_residual: {self.add_residual}
                  sig: {self.sig}
                  velo_range: {self.velo_range}
+                 cunit3: {self.cunit3}
                  check_signal_sigma: {self.check_signal_sigma}
                  output_flags: {self.output_flags}
                  p_limit: {self.p_limit}
@@ -318,7 +324,7 @@ class HisaExtraction(object):
             Flag whether background did/did not converge or whether spectrum does/does not contain signal.
             If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
         """
-        bg, hisa, iterations, flag_map = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.list_data[i][1], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.list_data_thresh[i][1], p_limit=self.p_limit)
+        bg, hisa, iterations, flag_map = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.list_data[i][1], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.list_data_thresh[i][1], p_limit=self.p_limit, cunit3=self.cunit3)
         return self.list_data[i][0], bg, hisa, iterations, flag_map
     
     
@@ -345,7 +351,7 @@ class HisaExtraction(object):
             Flag whether background did/did not converge or whether spectrum does/does not contain signal.
             If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
         """
-        bg, hisa, iterations, flag_map = one_step_extraction(self.lam1, self.p1, spectrum=self.list_data[i][1], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.list_data_thresh[i][1], p_limit=self.p_limit)
+        bg, hisa, iterations, flag_map = one_step_extraction(self.lam1, self.p1, spectrum=self.list_data[i][1], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.list_data_noise[i][1], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.list_data_thresh[i][1], p_limit=self.p_limit, cunit3=self.cunit3)
         return self.list_data[i][0], bg, hisa, iterations, flag_map
        
         

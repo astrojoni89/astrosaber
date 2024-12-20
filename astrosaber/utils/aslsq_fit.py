@@ -91,7 +91,7 @@ def baseline_als_optimized(y : np.ndarray, lam : float, p : float, niter : int, 
 def one_step_extraction(lam1 : float, p1 : float, spectrum : np.ndarray = None, header : fits.Header = None,
                         check_signal_sigma : float = 6., noise : float = None, velo_range : float = 15.0,
                         niters : int = 20, iterations_for_convergence : int = 3, add_residual : bool = False,
-                        thresh : float = None, p_limit : float = 0.02) -> Tuple[np.ndarray, np.ndarray, int, int]:
+                        thresh : float = None, p_limit : float = 0.02, cunit3: str = 'm/s') -> Tuple[np.ndarray, np.ndarray, int, int]:
     """
     Baseline smoothing routine using one lambda smoothing value for all major iterations.
 
@@ -131,6 +131,9 @@ def one_step_extraction(lam1 : float, p1 : float, spectrum : np.ndarray = None, 
     p_limit : float, optional
         The p-limit of the Markov chain to estimate signal ranges in the spectra.
         Default is 0.02.
+    cunit3 : str, optional
+        Type of velocity unit specified in the fits file header keyword 'CUNIT3'.
+        Default is 'm/s'.
 
     Returns
     -------
@@ -145,7 +148,7 @@ def one_step_extraction(lam1 : float, p1 : float, spectrum : np.ndarray = None, 
         If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
     """
     flag_map = 1.
-    if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
+    if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range, cunit3=cunit3):
         # TODO
         max_consec_ch = get_max_consecutive_channels(len(spectrum), p_limit)
         consecutive_channels, ranges = determine_peaks(spectrum, peak='both', amp_threshold=None)
@@ -207,7 +210,7 @@ def one_step_extraction(lam1 : float, p1 : float, spectrum : np.ndarray = None, 
 def two_step_extraction(lam1 : float, p1 : float, lam2 : float, p2 : float, spectrum : np.ndarray = None, header : fits.Header = None,
                         check_signal_sigma : float = 6., noise : float = None, velo_range : float = 15.0,
                         niters : int = 20, iterations_for_convergence : int = 3, add_residual : bool = False,
-                        thresh : float = None, p_limit : float = 0.02) -> Tuple[np.ndarray, np.ndarray, int, int]:
+                        thresh : float = None, p_limit : float = 0.02, cunit3: str = 'm/s') -> Tuple[np.ndarray, np.ndarray, int, int]:
     """
     Baseline smoothing routine using one lambda smoothing value for all major iterations.
 
@@ -251,6 +254,9 @@ def two_step_extraction(lam1 : float, p1 : float, lam2 : float, p2 : float, spec
     p_limit : float, optional
         The p-limit of the Markov chain to estimate signal ranges in the spectra.
         Default is 0.02.
+    cunit3 : str, optional
+        Type of velocity unit specified in the fits file header keyword 'CUNIT3'.
+        Default is 'm/s'.
 
     Returns
     -------
@@ -265,7 +271,7 @@ def two_step_extraction(lam1 : float, p1 : float, lam2 : float, p2 : float, spec
         If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
     """
     flag_map = 1.
-    if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range):
+    if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range, cunit3=cunit3):
         # TODO
         max_consec_ch = get_max_consecutive_channels(len(spectrum), p_limit)
         consecutive_channels, ranges = determine_peaks(spectrum, peak='both', amp_threshold=None)

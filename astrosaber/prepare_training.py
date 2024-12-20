@@ -471,7 +471,7 @@ class saberPrepare(object):
         sigma_amps_HISA : float
             Standard deviation of self-absorption features.
         """
-        bg, _, _, _  = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.spectrum_list[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise_list[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh_list[i])
+        bg, _, _, _  = two_step_extraction(self.lam1, self.p1, self.lam2, self.p2, spectrum=self.spectrum_list[i], header=self.header, check_signal_sigma=self.check_signal_sigma, noise=self.noise_list[i], velo_range=self.velo_range, niters=self.niters, iterations_for_convergence=self.iterations_for_convergence, add_residual=self.add_residual, thresh=self.thresh_list[i], cunit3=self.cunit3)
         
         pad_ch = 5
         consecutive_channels, ranges = determine_peaks(spectrum=self.spectrum_list[i], peak='positive', amp_threshold=None)

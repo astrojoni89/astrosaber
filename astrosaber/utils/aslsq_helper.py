@@ -175,7 +175,7 @@ def check_signal(spectrum : np.ndarray, sigma : float, noise : float) -> bool:
 
 
 #check if there is signal in at least xy neighboring channels corresponding to velo_range [km/s]: default 10 channels
-def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=None):
+def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=None, cunit3='m/s'):
     """
     Check for continuous signal range in an array given a significance threshold.
 
@@ -191,6 +191,9 @@ def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=Non
         Noise level. Signal threshold will be `sigma` * `noise`.
     velo_range : float
         Velocity range [in km/s] of the spectrum that has to contain continuous significant signal.
+    cunit3 : str, optional
+        Type of velocity unit specified in the fits file header keyword 'CUNIT3'.
+        Default is 'm/s'.
 
     Returns
     -------
@@ -199,7 +202,12 @@ def check_signal_ranges(spectrum, header, sigma=None, noise=None, velo_range=Non
     """
     if header is None: # fallback to fit all spectra if no header is given
         return True
-    vdelt = header['CDELT3'] / 1000.
+    if cunit3 == 'm/s':
+        vdelt = header['CDELT3'] / 1000.
+    elif cunit3 == 'km/s':
+        vdelt = header['CDELT3']
+    else:
+        raise ValueError('Unknown velocity unit (cunit3)')
     if sigma is None:
         sigma = 5
     if noise is None:
