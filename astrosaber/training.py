@@ -287,8 +287,6 @@ class saberTraining(object):
             self.weight_1 = 0.0
         if self.weight_2 is None:
             self.weight_2 = 0.0
-        if self.iterations <= 2 * self.window_size:
-            raise ValueError(f'Number of iterations too small! Needs to be >{2*self.window_size} to ensure stable convergence.')
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
         string = 'Done!'
         say(string)
@@ -708,6 +706,9 @@ class saberTraining(object):
 
         if self.lam2_initial is None and self.phase == 'two':
             raise ValueError("'lam2_initial' parameter is required for two-phase optimization.")
+        
+        if self.iterations <= 2 * self.window_size:
+            raise ValueError(f'Number of iterations too small! Needs to be >{2*self.window_size} to ensure stable convergence.')
 
         # Initialize book-keeping object
         gd = self.gradient_descent_lambda_set(self.iterations)
