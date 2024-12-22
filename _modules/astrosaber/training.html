@@ -596,8 +596,6 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">weight_1</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight_2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">weight_2</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of iterations too small! Needs to be &gt;</span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="si">}</span><span class="s1"> to ensure stable convergence.&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_consec_ch</span> <span class="o">=</span> <span class="n">get_max_consecutive_channels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_limit</span><span class="p">)</span>
         <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;Done!&#39;</span>
         <span class="n">say</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
@@ -1017,6 +1015,9 @@ document.write(`
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lam2_initial</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;two&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;lam2_initial&#39; parameter is required for two-phase optimization.&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of iterations too small! Needs to be &gt;</span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="si">}</span><span class="s1"> to ensure stable convergence.&#39;</span><span class="p">)</span>
 
         <span class="c1"># Initialize book-keeping object</span>
         <span class="n">gd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient_descent_lambda_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span>
