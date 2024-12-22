@@ -287,6 +287,8 @@ class saberTraining(object):
             self.weight_1 = 0.0
         if self.weight_2 is None:
             self.weight_2 = 0.0
+        if self.iterations <= 2 * self.window_size:
+            raise ValueError(f'Number of iterations too small! Needs to be >{2*self.window_size} to ensure stable convergence.')
         self.max_consec_ch = get_max_consecutive_channels(self.v, self.p_limit)
         string = 'Done!'
         say(string)
