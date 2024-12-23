@@ -748,24 +748,24 @@ class saberTraining(object):
             gd.lam1_trace[i+1] = gd.lam1_trace[i] - self.learning_rate_l1 * gd.D_lam1_trace[i] + momentum_lam1
             gd.lam2_trace[i+1] = gd.lam2_trace[i] - self.learning_rate_l2 * gd.D_lam2_trace[i] + momentum_lam2
 
-            # lam cannot be negative; keep lambda within bounds
+            # keep lambda within bounds
             if self.lam1_bounds is None:
-                self.lam1_bounds = [0.1,100.0]
+                self.lam1_bounds = [-10.0,10.0]
             if gd.lam1_trace[i+1] < min(self.lam1_bounds):
                 gd.lam1_trace[i+1] = 1.1 * min(self.lam1_bounds) 
             if gd.lam1_trace[i+1] > max(self.lam1_bounds):
                 gd.lam1_trace[i+1] = 0.9 * max(self.lam1_bounds)
             if self.lam2_bounds is None:
-                self.lam2_bounds = [0.1,100.0]
+                self.lam2_bounds = [-10.0,10.0]
             if gd.lam2_trace[i+1] < min(self.lam2_bounds):
                 gd.lam2_trace[i+1] = 1.1 * min(self.lam2_bounds)
             if gd.lam2_trace[i+1] > max(self.lam2_bounds):
                 gd.lam2_trace[i+1] = 0.9 * max(self.lam2_bounds)
         
-            if gd.lam1_trace[i+1] < 0.:
-                gd.lam1_trace[i+1] = 0.
-            if gd.lam2_trace[i+1] < 0.:
-                gd.lam2_trace[i+1] = 0.
+            #if gd.lam1_trace[i+1] < 0.:
+            #    gd.lam1_trace[i+1] = 0.
+            #if gd.lam2_trace[i+1] < 0.:
+            #    gd.lam2_trace[i+1] = 0.
 
             say(f'\niter {i}: red.chi2={gd.accuracy_trace[i]:4.2f}, [lam1, lam2]=[{np.round(gd.lam1_trace[i], 3):.3f}, {np.round(gd.lam2_trace[i], 3):.3f}], [p1, p2]=[{np.round(p1, 3):.3f}, {np.round(p2, 3):.3f}], mom=[{np.round(momentum_lam1, 2):.3f}, {np.round(momentum_lam2, 2):4.3f}]', end=' ')
 
