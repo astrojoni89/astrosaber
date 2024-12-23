@@ -148,7 +148,7 @@ def one_step_extraction(lam1 : float, p1 : float, spectrum : np.ndarray = None, 
         If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
     """
     #TODO test to enforce a similar scale and larger spread
-    lam1 = np.log(1+lam1)
+    lam1 = np.exp(1+lam1)
 
     flag_map = 1.
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range, cunit3=cunit3):
@@ -274,8 +274,8 @@ def two_step_extraction(lam1 : float, p1 : float, lam2 : float, p2 : float, spec
         If flag is 1, the were no issues in the fit. If 0, fit did not converge or did not contain signal.
     """
     #TODO test to enforce a similar scale and larger spread
-    lam1 = np.log(1+lam1)
-    lam2 = np.log(1+5*lam2)
+    lam1 = np.exp(1+lam1)
+    lam2 = np.exp(1+5*lam2)
 
     flag_map = 1.
     if check_signal_ranges(spectrum, header, sigma=check_signal_sigma, noise=noise, velo_range=velo_range, cunit3=cunit3):
