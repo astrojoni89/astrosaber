@@ -135,7 +135,7 @@ def get_title_string(idx, rchi2):
         idx, rchi2_string)
     return title
 
-def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, n_col=None, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], cunit3='m/s', vel_unit=u.km/u.s, seed=111, fontsize=None):
+def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, n_col=None, idx_vals=None, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], cunit3='m/s', vel_unit=u.km/u.s, seed=111, fontsize=None):
     """
     fitsfiles: list of fitsfiles to plot spectra from
     coordinates: array of central coordinates [[Glon, Glat]] to plot spectra from
@@ -184,6 +184,8 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                 plt.annotate('Glon: {} deg\nGlat: {} deg'.format(round(coordinates[i][0],2),round(coordinates[i][1],2)), xy=(0.05, 0.85), xycoords='axes fraction', fontsize=fontsize)
 
     else:
+        if idx_vals is not None:
+            n_spectra = len(idx_vals)
         rng = np.random.default_rng(seed)
         xsize = fits.getdata(fitsfiles[0]).shape[2]
         ysize = fits.getdata(fitsfiles[0]).shape[1]
@@ -199,8 +201,11 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                     edge = int(np.ceil((radius/3600) / px_scale))
                 else:
                     edge = 0.1 * min(xsize, ysize)
-                xValue = rng.integers(edge+1,xsize-edge)
-                yValue = rng.integers(edge+1,ysize-edge)
+                if idx_vals is not None:
+                    xValue, yValue = idx_vals[i]
+                else:
+                    xValue = rng.integers(edge+1,xsize-edge)
+                    yValue = rng.integers(edge+1,ysize-edge)
                 ax = fig.add_subplot(rows,cols,i+1)
                 for idx, fitsfile in enumerate(fitsfiles):
                     pixel_array = pixel_circle_calculation_px(fitsfile,x=xValue,y=yValue,r=radius)
@@ -220,8 +225,11 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
                 temp_beam = temp_header['BMAJ']
                 temp_radius = 1/2. * temp_beam
                 edge = int(np.ceil(temp_radius / px_scale))
-                xValue = rng.integers(edge+1,xsize-edge)
-                yValue = rng.integers(edge+1,ysize-edge)
+                if idx_vals is not None:
+                    xValue, yValue = idx_vals[i]
+                else:
+                    xValue = rng.integers(edge+1,xsize-edge)
+                    yValue = rng.integers(edge+1,ysize-edge)
                 ax = fig.add_subplot(rows,cols,i+1)
                 for idx, fitsfile in enumerate(fitsfiles):
                     header = fits.getheader(fitsfile)
@@ -248,7 +256,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
     #plt.close()
     print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
       
-def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, n_col=None, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111, fontsize=None):
+def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, n_col=None, idx_vals=None, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111, fontsize=None):
     """
     pickle_file: pickled file to plot spectra from
     """
@@ -277,6 +285,8 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
     else:
         header = None
         
+    if idx_vals is not None:
+        n_spectra = len(idx_vals)
     rng = np.random.default_rng(seed)
     xsize = len(data['training_data'])
     cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak, n_col)
@@ -287,7 +297,10 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
         figsize = (cols*colsize, 1.2*rowbreak*rowsize)
     fig = plt.figure(figsize=figsize) #, constrained_layout=True
     gs0 = gridspec.GridSpec(rows, cols, figure=fig)
-    xValue = rng.choice(xsize,size=n_spectra,replace=False)
+    if idx_vals is not None:
+        xValue = np.array(idx_vals)
+    else:
+        xValue = rng.choice(xsize,size=n_spectra,replace=False)
     for i in trange(n_spectra):
         idx = xValue[i]
         velo_min, velo_max = find_nearest(velocity,velocity_range[0]), find_nearest(velocity,velocity_range[1])
