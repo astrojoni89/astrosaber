@@ -135,16 +135,17 @@ def get_title_string(idx, rchi2):
         idx, rchi2_string)
     return title
 
-def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, n_col=None, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], cunit3='m/s', vel_unit=u.km/u.s, seed=111):
+def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, n_col=None, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], cunit3='m/s', vel_unit=u.km/u.s, seed=111, fontsize=None):
     """
     fitsfiles: list of fitsfiles to plot spectra from
     coordinates: array of central coordinates [[Glon, Glat]] to plot spectra from
     radius: radius of area to be averaged for each spectrum [arcseconds]
     """
-    
+
     print("\nPlotting...")
-    
-    fontsize = scale_fontsize(rowsize)
+
+    if fontsize is None:
+        fontsize = scale_fontsize(rowsize)
     color_list, draw_list, line_list = styles()
     
     if coordinates is not None:
@@ -247,14 +248,15 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
     #plt.close()
     print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
       
-def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, n_col=None, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
+def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, n_col=None, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111, fontsize=None):
     """
     pickle_file: pickled file to plot spectra from
     """
-    
+
     print("\nPlotting...")
-    
-    fontsize = scale_fontsize(rowsize)
+
+    if fontsize is None:
+        fontsize = scale_fontsize(rowsize)
     color_list, draw_list, line_list = styles_pickle()
 
     data = pickle_load_file(pickle_file)
