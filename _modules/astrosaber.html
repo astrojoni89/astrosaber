@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -308,11 +308,11 @@ document.write(`
 
 <span class="c1"># Enforce Python version check during package import.</span>
 <span class="c1"># This is the same check as the one at the top of setup.py</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
 <span class="n">__minimum_python_version__</span> <span class="o">=</span> <span class="s2">&quot;3.6&quot;</span>
 
-<div class="viewcode-block" id="UnsupportedPythonError"><a class="viewcode-back" href="../astrosaber.html#astrosaber.UnsupportedPythonError">[docs]</a><span class="k">class</span> <span class="nc">UnsupportedPythonError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="UnsupportedPythonError"><a class="viewcode-back" href="../astrosaber.html#astrosaber.UnsupportedPythonError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">UnsupportedPythonError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="nb">tuple</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">__minimum_python_version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))):</span>
@@ -358,7 +358,7 @@ document.write(`
 
   <p class="copyright">
     
-      © Copyright 2024, Jonas Syed.
+      © Copyright 2026, Jonas Syed.
       <br/>
     
   </p>

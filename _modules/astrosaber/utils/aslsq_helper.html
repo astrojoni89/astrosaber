@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -309,17 +309,17 @@ document.write(`
   <h1>Source code for astrosaber.utils.aslsq_helper</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;helper functions&#39;&#39;&#39;</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">astropy.io</span> <span class="kn">import</span> <span class="n">fits</span>
-<span class="kn">from</span> <span class="nn">astropy.wcs</span> <span class="kn">import</span> <span class="n">WCS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.wcs</span><span class="w"> </span><span class="kn">import</span> <span class="n">WCS</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
 
-<div class="viewcode-block" id="find_nearest"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.find_nearest">[docs]</a><span class="k">def</span> <span class="nf">find_nearest</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="find_nearest"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.find_nearest">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">find_nearest</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the index of an element in an array nearest to a given value.</span>
 
@@ -339,7 +339,7 @@ document.write(`
     <span class="k">return</span> <span class="n">idx</span></div>
 
 
-<div class="viewcode-block" id="velocity_axes"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.velocity_axes">[docs]</a><span class="k">def</span> <span class="nf">velocity_axes</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">cunit3</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;m/s&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="velocity_axes"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.velocity_axes">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">velocity_axes</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">cunit3</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;m/s&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get velocity axis from FITS file in units of km/s.</span>
 
@@ -368,7 +368,7 @@ document.write(`
     <span class="k">return</span> <span class="n">velocity</span></div>
 
 
-<div class="viewcode-block" id="merge_ranges"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.merge_ranges">[docs]</a><span class="k">def</span> <span class="nf">merge_ranges</span><span class="p">(</span><span class="n">ranges</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="merge_ranges"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.merge_ranges">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">merge_ranges</span><span class="p">(</span><span class="n">ranges</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Merge intervals where they overlap.</span>
 
@@ -393,7 +393,7 @@ document.write(`
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">merged_ranges</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="pixel_to_world"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.pixel_to_world">[docs]</a><span class="k">def</span> <span class="nf">pixel_to_world</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<div class="viewcode-block" id="pixel_to_world"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.pixel_to_world">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">pixel_to_world</span><span class="p">(</span><span class="n">fitsfile</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                    <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert pixel coordinates to world coordinates from a FITS file.</span>
@@ -428,7 +428,7 @@ document.write(`
 
 
 <span class="c1">#taken from Lindner (2014) &amp; Riener (2019); GaussPy(+)</span>
-<div class="viewcode-block" id="count_ones_in_row"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.count_ones_in_row">[docs]</a><span class="k">def</span> <span class="nf">count_ones_in_row</span><span class="p">(</span><span class="n">data</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="count_ones_in_row"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.count_ones_in_row">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">count_ones_in_row</span><span class="p">(</span><span class="n">data</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Counts number of continuous trailing &#39;1&#39;s.</span>
 
@@ -461,7 +461,7 @@ document.write(`
 
 
 <span class="c1">#simple check</span>
-<div class="viewcode-block" id="check_signal"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.check_signal">[docs]</a><span class="k">def</span> <span class="nf">check_signal</span><span class="p">(</span><span class="n">spectrum</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sigma</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">noise</span> <span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="check_signal"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.check_signal">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">check_signal</span><span class="p">(</span><span class="n">spectrum</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sigma</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">noise</span> <span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check for signal in an array given a significance threshold.</span>
 
@@ -484,7 +484,7 @@ document.write(`
 
 
 <span class="c1">#check if there is signal in at least xy neighboring channels corresponding to velo_range [km/s]: default 10 channels</span>
-<div class="viewcode-block" id="check_signal_ranges"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.check_signal_ranges">[docs]</a><span class="k">def</span> <span class="nf">check_signal_ranges</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">velo_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cunit3</span><span class="o">=</span><span class="s1">&#39;m/s&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="check_signal_ranges"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.check_signal_ranges">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">check_signal_ranges</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">velo_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cunit3</span><span class="o">=</span><span class="s1">&#39;m/s&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check for continuous signal range in an array given a significance threshold.</span>
 
@@ -538,7 +538,7 @@ document.write(`
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="md_header_2d"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.md_header_2d">[docs]</a><span class="k">def</span> <span class="nf">md_header_2d</span><span class="p">(</span><span class="n">fitsfile</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fits</span><span class="o">.</span><span class="n">Header</span><span class="p">:</span>
+<div class="viewcode-block" id="md_header_2d"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.md_header_2d">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">md_header_2d</span><span class="p">(</span><span class="n">fitsfile</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fits</span><span class="o">.</span><span class="n">Header</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get 2D header from FITS file.</span>
 
@@ -571,14 +571,14 @@ document.write(`
     <span class="k">return</span> <span class="n">header_2d</span></div>
 
 
-<div class="viewcode-block" id="IterationWarning"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.IterationWarning">[docs]</a><span class="k">class</span> <span class="nc">IterationWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
+<div class="viewcode-block" id="IterationWarning"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.IterationWarning">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">IterationWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Passing on diagnostic messages.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="say"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.say">[docs]</a><span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="say"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.say">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">say</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Diagnostic messages.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -586,7 +586,7 @@ document.write(`
         <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="format_warning"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.format_warning">[docs]</a><span class="k">def</span> <span class="nf">format_warning</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="format_warning"><a class="viewcode-back" href="../../../astrosaber.utils.html#astrosaber.utils.aslsq_helper.format_warning">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">format_warning</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Print warning message.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -632,7 +632,7 @@ document.write(`
 
   <p class="copyright">
     
-      © Copyright 2024, Jonas Syed.
+      © Copyright 2026, Jonas Syed.
       <br/>
     
   </p>

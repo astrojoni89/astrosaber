@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -313,27 +313,27 @@ document.write(`
 <span class="c1"># @Last modified by:   syed</span>
 <span class="c1"># @Last modified time: 09-09-2023</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">astropy.io</span> <span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
 
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
-<span class="kn">from</span> <span class="nn">tqdm.utils</span> <span class="kn">import</span> <span class="n">_supports_unicode</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_supports_unicode</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">.utils.aslsq_helper</span> <span class="kn">import</span> <span class="n">md_header_2d</span><span class="p">,</span> <span class="n">say</span><span class="p">,</span> <span class="n">format_warning</span>
-<span class="kn">from</span> <span class="nn">.utils.aslsq_fit</span> <span class="kn">import</span> <span class="n">two_step_extraction</span><span class="p">,</span> <span class="n">one_step_extraction</span>
-<span class="kn">from</span> <span class="nn">.utils.grogu</span> <span class="kn">import</span> <span class="n">yoda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.aslsq_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">md_header_2d</span><span class="p">,</span> <span class="n">say</span><span class="p">,</span> <span class="n">format_warning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.aslsq_fit</span><span class="w"> </span><span class="kn">import</span> <span class="n">two_step_extraction</span><span class="p">,</span> <span class="n">one_step_extraction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.grogu</span><span class="w"> </span><span class="kn">import</span> <span class="n">yoda</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">showwarning</span> <span class="o">=</span> <span class="n">format_warning</span>
 
 
 
-<div class="viewcode-block" id="HisaExtraction"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction">[docs]</a><span class="k">class</span> <span class="nc">HisaExtraction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="HisaExtraction"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">HisaExtraction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class used to execute the self-absorption extraction.</span>
 <span class="sd">    </span>
@@ -420,7 +420,7 @@ document.write(`
 <span class="sd">        Saves all the extracted data into FITS files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitsfile</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_to_noise_map</span> <span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">path_to_data</span> <span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitsfile</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_to_noise_map</span> <span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">path_to_data</span> <span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
                  <span class="n">smoothing</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">phase</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;two&#39;</span><span class="p">,</span> <span class="n">lam1</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">p1</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.90</span><span class="p">,</span>
                  <span class="n">lam2</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">p2</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.90</span><span class="p">,</span> <span class="n">niters</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
                  <span class="n">iterations_for_convergence</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">noise</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -461,7 +461,7 @@ document.write(`
         
         <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
         
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;HisaExtraction(</span>
 <span class="s1">                 fitsfile: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fitsfile</span><span class="si">}</span>
 <span class="s1">                 path_to_noise_map: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_noise_map</span><span class="si">}</span>
@@ -484,7 +484,7 @@ document.write(`
 <span class="s1">                 p_limit: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">p_limit</span><span class="si">}</span>
 <span class="s1">                 ncpus: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ncpus</span><span class="si">}</span><span class="s1">)&#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="HisaExtraction.getting_ready"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.getting_ready">[docs]</a>    <span class="k">def</span> <span class="nf">getting_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="HisaExtraction.getting_ready"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.getting_ready">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">getting_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prints a message when preparation starts.</span>
 <span class="sd">        </span>
@@ -494,7 +494,7 @@ document.write(`
         <span class="n">heading</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">banner</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">banner</span>
         <span class="n">say</span><span class="p">(</span><span class="n">heading</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="HisaExtraction.prepare_data"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.prepare_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="HisaExtraction.prepare_data"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.prepare_data">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">prepare_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepares the extraction by reading in data and put them in a raveled list of spectra.</span>
 <span class="sd">        </span>
@@ -518,7 +518,7 @@ document.write(`
         <span class="n">say</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
     <span class="c1">#TODO</span>
-<div class="viewcode-block" id="HisaExtraction.saber"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.saber">[docs]</a>    <span class="k">def</span> <span class="nf">saber</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="HisaExtraction.saber"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.saber">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">saber</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Runs the self-absorption extraction and saves the data.</span>
 <span class="sd">        It takes the instance attributes and reads in the noise to kick off the extraction routine.</span>
@@ -588,12 +588,12 @@ document.write(`
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">+</span><span class="s1">&#39;Asymmetric least squares smoothing in progress...&#39;</span><span class="p">)</span>
             
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;two&#39;</span><span class="p">:</span>
-                <span class="kn">import</span> <span class="nn">astrosaber.parallel_processing</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">astrosaber.parallel_processing</span>
                 <span class="n">astrosaber</span><span class="o">.</span><span class="n">parallel_processing</span><span class="o">.</span><span class="n">init</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">list_data</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="p">]])</span>
                 <span class="n">results_list</span> <span class="o">=</span> <span class="n">astrosaber</span><span class="o">.</span><span class="n">parallel_processing</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">use_ncpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ncpus</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="s1">&#39;two_step&#39;</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">fran</span><span class="p">)</span> 
                     
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;one&#39;</span><span class="p">:</span>
-                <span class="kn">import</span> <span class="nn">astrosaber.parallel_processing</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">astrosaber.parallel_processing</span>
                 <span class="n">astrosaber</span><span class="o">.</span><span class="n">parallel_processing</span><span class="o">.</span><span class="n">init</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">list_data</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="p">]])</span>
                 <span class="n">results_list</span> <span class="o">=</span> <span class="n">astrosaber</span><span class="o">.</span><span class="n">parallel_processing</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">use_ncpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ncpus</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="s1">&#39;one_step&#39;</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">fran</span><span class="p">)</span>
                 
@@ -610,7 +610,7 @@ document.write(`
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No smoothing applied. Set smoothing to &#39;Y&#39;&quot;</span><span class="p">)</span></div>
         
         
-<div class="viewcode-block" id="HisaExtraction.two_step_extraction_single"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.two_step_extraction_single">[docs]</a>    <span class="k">def</span> <span class="nf">two_step_extraction_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<div class="viewcode-block" id="HisaExtraction.two_step_extraction_single"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.two_step_extraction_single">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">two_step_extraction_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Runs the two-phase extraction for a single spectrum i.</span>
 <span class="sd">        </span>
@@ -637,7 +637,7 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bg</span><span class="p">,</span> <span class="n">hisa</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">flag_map</span></div>
     
     
-<div class="viewcode-block" id="HisaExtraction.one_step_extraction_single"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.one_step_extraction_single">[docs]</a>    <span class="k">def</span> <span class="nf">one_step_extraction_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span>  <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<div class="viewcode-block" id="HisaExtraction.one_step_extraction_single"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.one_step_extraction_single">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">one_step_extraction_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span>  <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Runs the one-phase extraction for a single spectrum i.</span>
 <span class="sd">        </span>
@@ -664,7 +664,7 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bg</span><span class="p">,</span> <span class="n">hisa</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">flag_map</span></div>
        
         
-<div class="viewcode-block" id="HisaExtraction.save_data"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.save_data">[docs]</a>    <span class="k">def</span> <span class="nf">save_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="HisaExtraction.save_data"><a class="viewcode-back" href="../../astrosaber.html#astrosaber.hisa.HisaExtraction.save_data">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">save_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves all the extracted data into FITS files.</span>
 <span class="sd">        </span>
@@ -735,7 +735,7 @@ document.write(`
 
   <p class="copyright">
     
-      © Copyright 2024, Jonas Syed.
+      © Copyright 2026, Jonas Syed.
       <br/>
     
   </p>
