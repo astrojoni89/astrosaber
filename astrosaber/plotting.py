@@ -48,13 +48,14 @@ def styles_pickle():
     line_list = ['-', '-', '-', '-', '-']
     return color_list, draw_list, line_list
 
-def get_figure_params(n_spectra, rowsize, rowbreak):
+def get_figure_params(n_spectra, rowsize, rowbreak, n_col=None):
     golden_ratio = (1 + np.sqrt(5)) / 2.
     colsize = golden_ratio * rowsize
-    cols = int(np.sqrt(n_spectra))
-    rows = int(n_spectra / (cols))
-    if n_spectra % cols != 0:
-        rows += 1
+    if n_col is not None:
+        cols = n_col
+    else:
+        cols = int(np.sqrt(n_spectra))
+    rows = int(np.ceil(n_spectra / cols))
     if rows < rowbreak:
         rowbreak = rows
     if (rowbreak*rowsize*100 > 2**16) or (cols*colsize*100 > 2**16):
@@ -134,7 +135,7 @@ def get_title_string(idx, rchi2):
         idx, rchi2_string)
     return title
 
-def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], cunit3='m/s', vel_unit=u.km/u.s, seed=111):
+def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None, path_to_plots='.', n_spectra=9, n_col=None, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], cunit3='m/s', vel_unit=u.km/u.s, seed=111):
     """
     fitsfiles: list of fitsfiles to plot spectra from
     coordinates: array of central coordinates [[Glon, Glat]] to plot spectra from
@@ -148,7 +149,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
     
     if coordinates is not None:
         n_spectra = len(coordinates)
-        cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
+        cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak, n_col)
         figsize = (cols*colsize, rowbreak*rowsize)
         fig = plt.figure(figsize=figsize)
         
@@ -185,7 +186,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
         rng = np.random.default_rng(seed)
         xsize = fits.getdata(fitsfiles[0]).shape[2]
         ysize = fits.getdata(fitsfiles[0]).shape[1]
-        cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
+        cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak, n_col)
         figsize = (cols*colsize, rowbreak*rowsize)
         fig = plt.figure(figsize=figsize)
 
@@ -246,7 +247,7 @@ def plot_spectra(fitsfiles, outfile='spectra.pdf', coordinates=None, radius=None
     #plt.close()
     print("\n\033[92mSAVED FILE:\033[0m '{}' in '{}'".format(filename, path_to_plots))
       
-def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
+def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to_plots='.', n_spectra=9, n_col=None, rowsize=4., rowbreak=10, dpi=72, velocity_range=[-110,163], vel_unit=u.km/u.s, seed=111):
     """
     pickle_file: pickled file to plot spectra from
     """
@@ -276,7 +277,7 @@ def plot_pickle_spectra(pickle_file, outfile='spectra.pdf', ranges=None, path_to
         
     rng = np.random.default_rng(seed)
     xsize = len(data['training_data'])
-    cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak)
+    cols, rows, rowbreak, colsize = get_figure_params(n_spectra, rowsize, rowbreak, n_col)
     figsize = (cols*colsize, rowbreak*rowsize)
     if bg_fit is not None:
         figsize = (cols*colsize, 1.5*rowbreak*rowsize)
